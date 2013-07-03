@@ -1,0 +1,254 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{97EC7002-42C8-473D-9800-4E7EE9794DEB}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ShogiBoard</RootNamespace>
+    <AssemblyName>ShogiBoard</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net">
+      <HintPath>..\..\ShogiCore\log4net\bin\net\2.0\release\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ConfigLoader.cs" />
+    <Compile Include="Drawing\BlunderGraphics.cs" />
+    <Compile Include="Drawing\BlunderViewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Drawing\BlunderViewControl.Designer.cs">
+      <DependentUpon>BlunderViewControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Drawing\Resources.Designer.cs" />
+    <Compile Include="Config.cs" />
+    <Compile Include="ConfigSerializer.cs" />
+    <Compile Include="CSAFileWriter.cs" />
+    <Compile Include="Engine.cs" />
+    <Compile Include="EngineForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EngineForm.Designer.cs">
+      <DependentUpon>EngineForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EngineList.cs" />
+    <Compile Include="EngineListForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EngineListForm.Designer.cs">
+      <DependentUpon>EngineListForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EngineOptionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EngineOptionsControl.Designer.cs">
+      <DependentUpon>EngineOptionsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EngineSelectControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EngineSelectControl.Designer.cs">
+      <DependentUpon>EngineSelectControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EngineViewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EngineViewControl.Designer.cs">
+      <DependentUpon>EngineViewControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Exceptions\USIEngineException.cs" />
+    <Compile Include="FormUtility.cs" />
+    <Compile Include="GameGraphControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GameGraphControl.Designer.cs">
+      <DependentUpon>GameGraphControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MateForm.Designer.cs">
+      <DependentUpon>MateForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NetworkGameForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NetworkGameForm.Designer.cs">
+      <DependentUpon>NetworkGameForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NetworkGameConnectionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NetworkGameConnectionControl.Designer.cs">
+      <DependentUpon>NetworkGameConnectionControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerInfoControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PlayerInfoControl.Designer.cs">
+      <DependentUpon>PlayerInfoControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ThinkForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ThinkForm.Designer.cs">
+      <DependentUpon>ThinkForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TimePickerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TimePickerControl.Designer.cs">
+      <DependentUpon>TimePickerControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="VolatileConfig.cs" />
+    <Compile Include="GameForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GameForm.Designer.cs">
+      <DependentUpon>GameForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GameTimePickerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GameTimePickerControl.Designer.cs">
+      <DependentUpon>GameTimePickerControl.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Drawing\BlunderViewControl.resx">
+      <DependentUpon>BlunderViewControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Resources.resx" />
+    <EmbeddedResource Include="EngineForm.resx">
+      <DependentUpon>EngineForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EngineListForm.resx">
+      <DependentUpon>EngineListForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EngineOptionsControl.resx">
+      <DependentUpon>EngineOptionsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EngineSelectControl.resx">
+      <DependentUpon>EngineSelectControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EngineViewControl.resx">
+      <DependentUpon>EngineViewControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GameGraphControl.resx">
+      <DependentUpon>GameGraphControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MateForm.resx">
+      <DependentUpon>MateForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NetworkGameForm.resx">
+      <DependentUpon>NetworkGameForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NetworkGameConnectionControl.resx">
+      <DependentUpon>NetworkGameConnectionControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerInfoControl.resx">
+      <DependentUpon>PlayerInfoControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="ThinkForm.resx">
+      <DependentUpon>ThinkForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TimePickerControl.resx">
+      <DependentUpon>TimePickerControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GameForm.resx">
+      <DependentUpon>GameForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GameTimePickerControl.resx">
+      <DependentUpon>GameTimePickerControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\ShogiCore\icon1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ShogiCore\ShogiCore\ShogiCore.csproj">
+      <Project>{42a35c23-9a76-4dd4-98ed-aa1eb3d757cd}</Project>
+      <Name>ShogiCore</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
