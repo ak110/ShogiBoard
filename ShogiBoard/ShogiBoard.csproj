@@ -244,6 +244,15 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if "$(ConfigurationName)"=="Release" (
+    xcopy /Y "$(TargetPath)" "$(SolutionDir)Binary\ShogiBoard\"
+    xcopy /Y "$(TargetPath).config" "$(SolutionDir)Binary\ShogiBoard\"
+    xcopy /Y "$(TargetDir)log4net.dll" "$(SolutionDir)Binary\ShogiBoard\"
+    xcopy /Y "$(TargetDir)ShogiCore.dll" "$(SolutionDir)Binary\ShogiBoard\"
+    "$(SolutionDir)Binary\FolderToZip.exe" "$(SolutionDir)Binary\ShogiBoard"
+)</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
