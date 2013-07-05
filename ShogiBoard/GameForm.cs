@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace ShogiBoard {
     /// <summary>
-    /// 検討の設定ダイアログ
+    /// 対局の設定ダイアログ
     /// </summary>
     public partial class GameForm : Form {
         VolatileConfig volatileConfig;

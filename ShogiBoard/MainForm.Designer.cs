@@ -68,7 +68,7 @@
             this.toolStripButton詰 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
-            this.blunderViewControl = new ShogiBoard.Drawing.BlunderViewControl();
+            this.blunderViewControl = new ShogiCore.Drawing.BlunderViewControl();
             this.gameGraphControl1 = new ShogiBoard.GameGraphControl();
             this.playerInfoControlN = new ShogiBoard.PlayerInfoControl();
             this.playerInfoControlP = new ShogiBoard.PlayerInfoControl();
@@ -656,7 +656,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem ログフォルダを開くLToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 通信対局切断DToolStripMenuItem;
-        private Drawing.BlunderViewControl blunderViewControl;
+        private ShogiCore.Drawing.BlunderViewControl blunderViewControl;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem 検討TToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
