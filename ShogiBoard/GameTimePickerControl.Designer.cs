@@ -43,7 +43,7 @@
             0});
             this.numericUpDown1.Name = "numericUpDown1";
             this.numericUpDown1.Size = new System.Drawing.Size(53, 19);
-            this.numericUpDown1.TabIndex = 0;
+            this.numericUpDown1.TabIndex = 1;
             this.numericUpDown1.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numericUpDown1.Value = new decimal(new int[] {
             9999,
@@ -57,7 +57,7 @@
             this.label1.Location = new System.Drawing.Point(110, 4);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(17, 12);
-            this.label1.TabIndex = 1;
+            this.label1.TabIndex = 2;
             this.label1.Text = "分";
             // 
             // numericUpDown2
@@ -70,7 +70,7 @@
             0});
             this.numericUpDown2.Name = "numericUpDown2";
             this.numericUpDown2.Size = new System.Drawing.Size(53, 19);
-            this.numericUpDown2.TabIndex = 0;
+            this.numericUpDown2.TabIndex = 4;
             this.numericUpDown2.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numericUpDown2.Value = new decimal(new int[] {
             86400,
@@ -84,7 +84,7 @@
             this.label2.Location = new System.Drawing.Point(233, 4);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(17, 12);
-            this.label2.TabIndex = 1;
+            this.label2.TabIndex = 5;
             this.label2.Text = "秒";
             // 
             // label3
@@ -93,7 +93,7 @@
             this.label3.Location = new System.Drawing.Point(0, 4);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(50, 12);
-            this.label3.TabIndex = 1;
+            this.label3.TabIndex = 0;
             this.label3.Text = "持ち時間";
             // 
             // label4
@@ -102,7 +102,7 @@
             this.label4.Location = new System.Drawing.Point(136, 4);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(40, 12);
-            this.label4.TabIndex = 1;
+            this.label4.TabIndex = 3;
             this.label4.Text = "秒読み";
             // 
             // GameTimePickerControl

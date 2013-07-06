@@ -14,7 +14,7 @@ namespace ShogiBoard {
     public partial class GameForm : Form {
         VolatileConfig volatileConfig;
 
-        public GameForm(VolatileConfig volatileConfig, EngineList engineList) {
+        public GameForm(EngineList engineList, VolatileConfig volatileConfig) {
             InitializeComponent();
             engineSelectControl1.Initialize(engineList);
             engineSelectControl2.Initialize(engineList);
@@ -30,12 +30,12 @@ namespace ShogiBoard {
                 case 2: radioButton3.Checked = true; break;
                 default: goto case 0;
             }
-            gameTimePickerControl1.TimeA = volatileConfig.GameTimes[0].TimeA;
-            gameTimePickerControl1.TimeB = volatileConfig.GameTimes[0].TimeB;
-            gameTimePickerControl2.TimeA = volatileConfig.GameTimes[1].TimeA;
-            gameTimePickerControl2.TimeB = volatileConfig.GameTimes[1].TimeB;
-            gameTimePickerControl3.TimeA = volatileConfig.GameTimes[2].TimeA;
-            gameTimePickerControl3.TimeB = volatileConfig.GameTimes[2].TimeB;
+            gameTimePickerControl1.TimeASeconds = volatileConfig.GameTimes[0].TimeASeconds;
+            gameTimePickerControl1.TimeBSeconds = volatileConfig.GameTimes[0].TimeBSeconds;
+            gameTimePickerControl2.TimeASeconds = volatileConfig.GameTimes[1].TimeASeconds;
+            gameTimePickerControl2.TimeBSeconds = volatileConfig.GameTimes[1].TimeBSeconds;
+            gameTimePickerControl3.TimeASeconds = volatileConfig.GameTimes[2].TimeASeconds;
+            gameTimePickerControl3.TimeBSeconds = volatileConfig.GameTimes[2].TimeBSeconds;
             numericUpDown1.Value = volatileConfig.GameCount;
 
             UpdateEnables();
@@ -84,12 +84,12 @@ namespace ShogiBoard {
             else if (radioButton2.Checked) volatileConfig.GameTimeIndex = 1;
             else if (radioButton3.Checked) volatileConfig.GameTimeIndex = 2;
             else volatileConfig.GameTimeIndex = 0;
-            volatileConfig.GameTimes[0].TimeA = gameTimePickerControl1.TimeA;
-            volatileConfig.GameTimes[0].TimeB = gameTimePickerControl1.TimeB;
-            volatileConfig.GameTimes[1].TimeA = gameTimePickerControl2.TimeA;
-            volatileConfig.GameTimes[1].TimeB = gameTimePickerControl2.TimeB;
-            volatileConfig.GameTimes[2].TimeA = gameTimePickerControl3.TimeA;
-            volatileConfig.GameTimes[2].TimeB = gameTimePickerControl3.TimeB;
+            volatileConfig.GameTimes[0].TimeASeconds = gameTimePickerControl1.TimeASeconds;
+            volatileConfig.GameTimes[0].TimeBSeconds = gameTimePickerControl1.TimeBSeconds;
+            volatileConfig.GameTimes[1].TimeASeconds = gameTimePickerControl2.TimeASeconds;
+            volatileConfig.GameTimes[1].TimeBSeconds = gameTimePickerControl2.TimeBSeconds;
+            volatileConfig.GameTimes[2].TimeASeconds = gameTimePickerControl3.TimeASeconds;
+            volatileConfig.GameTimes[2].TimeBSeconds = gameTimePickerControl3.TimeBSeconds;
             volatileConfig.GameCount = (int)numericUpDown1.Value;
 
             // 保存

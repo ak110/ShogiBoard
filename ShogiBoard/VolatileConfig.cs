@@ -16,31 +16,31 @@ namespace ShogiBoard {
             /// <summary>
             /// 持ち時間[秒]
             /// </summary>
-            public int TimeA { get; set; }
+            public int TimeASeconds { get; set; }
             /// <summary>
             /// 秒読み[秒]
             /// </summary>
-            public int TimeB { get; set; }
+            public int TimeBSeconds { get; set; }
         }
 
         /// <summary>
-        /// 通信対局で前回選択したエンジンの名前
+        /// 対局で前回選択したエンジンの名前
         /// </summary>
         public string GameEngine1Name { get; set; }
         /// <summary>
-        /// 通信対局で前回選択したエンジンの実行ファイルパス
+        /// 対局で前回選択したエンジンの実行ファイルパス
         /// </summary>
         public string GameEngine1Path { get; set; }
         /// <summary>
-        /// 通信対局で前回選択したエンジンの名前
+        /// 対局で前回選択したエンジンの名前
         /// </summary>
         public string GameEngine2Name { get; set; }
         /// <summary>
-        /// 通信対局で前回選択したエンジンの実行ファイルパス
+        /// 対局で前回選択したエンジンの実行ファイルパス
         /// </summary>
         public string GameEngine2Path { get; set; }
         /// <summary>
-        /// 通信対局で前回選択した接続先
+        /// 対局で前回選択した時間設定のindex
         /// </summary>
         public int GameTimeIndex { get; set; }
         /// <summary>
@@ -102,7 +102,7 @@ namespace ShogiBoard {
             // 無ければ作る
             for (int i = 0; i < GameTimes.Length; i++) {
                 if (GameTimes[i] == null) {
-                    GameTimes[i] = new GameTime() { TimeA = 25 };
+                    GameTimes[i] = new GameTime() { TimeASeconds = 25, TimeBSeconds = 0 };
                 }
             }
         }

@@ -228,9 +228,12 @@ namespace ShogiBoard {
                     if (update) {
                         if (IsDisposed) break; // 念のため
                         ar = BeginInvoke(new MethodInvoker(() => {
-                            if (!IsDisposed) {
-                                panel2.Invalidate();
-                                panel2.Update();
+                            try {
+                                if (!IsDisposed) {
+                                    panel2.Invalidate();
+                                    panel2.Update();
+                                }
+                            } catch {
                             }
                         }));
                     }

@@ -207,8 +207,8 @@
             this.gameTimePickerControl3.Name = "gameTimePickerControl3";
             this.gameTimePickerControl3.Size = new System.Drawing.Size(273, 21);
             this.gameTimePickerControl3.TabIndex = 3;
-            this.gameTimePickerControl3.TimeA = 599940;
-            this.gameTimePickerControl3.TimeB = 9999;
+            this.gameTimePickerControl3.TimeASeconds = 599940;
+            this.gameTimePickerControl3.TimeBSeconds = 9999;
             // 
             // gameTimePickerControl2
             // 
@@ -216,8 +216,8 @@
             this.gameTimePickerControl2.Name = "gameTimePickerControl2";
             this.gameTimePickerControl2.Size = new System.Drawing.Size(273, 21);
             this.gameTimePickerControl2.TabIndex = 2;
-            this.gameTimePickerControl2.TimeA = 599940;
-            this.gameTimePickerControl2.TimeB = 9999;
+            this.gameTimePickerControl2.TimeASeconds = 599940;
+            this.gameTimePickerControl2.TimeBSeconds = 9999;
             // 
             // gameTimePickerControl1
             // 
@@ -225,8 +225,8 @@
             this.gameTimePickerControl1.Name = "gameTimePickerControl1";
             this.gameTimePickerControl1.Size = new System.Drawing.Size(273, 21);
             this.gameTimePickerControl1.TabIndex = 1;
-            this.gameTimePickerControl1.TimeA = 599940;
-            this.gameTimePickerControl1.TimeB = 9999;
+            this.gameTimePickerControl1.TimeASeconds = 599940;
+            this.gameTimePickerControl1.TimeBSeconds = 9999;
             // 
             // engineSelectControl2
             // 

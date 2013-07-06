@@ -53,7 +53,12 @@ namespace ShogiBoard {
             this.player = player;
             player.CommandReceived += player_CommandReceived;
             player.InfoReceived += player_InfoReceived;
-            labelEngine.Text = player.Driver.IdName; // エンジン名
+            BeginInvoke(new MethodInvoker(() => {
+                try {
+                    labelEngine.Text = player.Driver.IdName; // エンジン名
+                } catch {
+                }
+            }));
         }
 
         /// <summary>
@@ -61,10 +66,17 @@ namespace ShogiBoard {
         /// </summary>
         /// <param name="player"></param>
         public void Detach() {
-            labelEngine.Text = ""; // エンジン名
-            player.InfoReceived -= player_InfoReceived;
-            player.CommandReceived -= player_CommandReceived;
-            this.player = null;
+            if (player != null) {
+                BeginInvoke(new MethodInvoker(() => {
+                    try {
+                        labelEngine.Text = ""; // エンジン名
+                    } catch {
+                    }
+                }));
+                player.InfoReceived -= player_InfoReceived;
+                player.CommandReceived -= player_CommandReceived;
+                player = null;
+            }
         }
 
         /// <summary>

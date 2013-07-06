@@ -74,6 +74,7 @@ namespace ShogiBoard {
         public void StartTurn() {
             tickCalled = false;
             timer1.Enabled = true;
+            ByoyomiSeconds = TimeBSeconds; // 秒読みは毎回リセット
         }
 
         /// <summary>

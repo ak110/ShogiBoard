@@ -38,6 +38,8 @@
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.棋譜局面貼り付けVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.対局GToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.対局GToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
             this.通信対局NToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.通信対局切断DToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -52,10 +54,16 @@
             this.ログフォルダを開くLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.blunderViewControl = new ShogiCore.Drawing.BlunderViewControl();
+            this.gameGraphControl1 = new ShogiBoard.GameGraphControl();
             this.panel1 = new System.Windows.Forms.Panel();
             this.textBoxComment = new System.Windows.Forms.TextBox();
             this.listBox1 = new System.Windows.Forms.ListBox();
+            this.playerInfoControlN = new ShogiBoard.PlayerInfoControl();
+            this.playerInfoControlP = new ShogiBoard.PlayerInfoControl();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
+            this.engineViewControl1 = new ShogiBoard.EngineViewControl();
+            this.engineViewControl2 = new ShogiBoard.EngineViewControl();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton切 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
@@ -67,13 +75,7 @@
             this.toolStripButton検 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton詰 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
-            this.blunderViewControl = new ShogiCore.Drawing.BlunderViewControl();
-            this.gameGraphControl1 = new ShogiBoard.GameGraphControl();
-            this.playerInfoControlN = new ShogiBoard.PlayerInfoControl();
-            this.playerInfoControlP = new ShogiBoard.PlayerInfoControl();
-            this.engineViewControl1 = new ShogiBoard.EngineViewControl();
-            this.engineViewControl2 = new ShogiBoard.EngineViewControl();
+            this.toolStripLabelResult = new System.Windows.Forms.ToolStripLabel();
             this.menuStrip1.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -198,6 +200,8 @@
             // 対局GToolStripMenuItem
             // 
             this.対局GToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.対局GToolStripMenuItem1,
+            this.toolStripSeparator10,
             this.通信対局NToolStripMenuItem,
             this.通信対局切断DToolStripMenuItem,
             this.toolStripSeparator2,
@@ -210,9 +214,23 @@
             this.対局GToolStripMenuItem.Size = new System.Drawing.Size(63, 22);
             this.対局GToolStripMenuItem.Text = "対局(&G)";
             // 
+            // 対局GToolStripMenuItem1
+            // 
+            this.対局GToolStripMenuItem1.Name = "対局GToolStripMenuItem1";
+            this.対局GToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.G)));
+            this.対局GToolStripMenuItem1.Size = new System.Drawing.Size(205, 22);
+            this.対局GToolStripMenuItem1.Text = "対局(&G)";
+            this.対局GToolStripMenuItem1.Click += new System.EventHandler(this.対局GToolStripMenuItem1_Click);
+            // 
+            // toolStripSeparator10
+            // 
+            this.toolStripSeparator10.Name = "toolStripSeparator10";
+            this.toolStripSeparator10.Size = new System.Drawing.Size(202, 6);
+            // 
             // 通信対局NToolStripMenuItem
             // 
             this.通信対局NToolStripMenuItem.Name = "通信対局NToolStripMenuItem";
+            this.通信対局NToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
             this.通信対局NToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
             this.通信対局NToolStripMenuItem.Text = "通信対局(&N)";
             this.通信対局NToolStripMenuItem.Click += new System.EventHandler(this.通信対局NToolStripMenuItem_Click);
@@ -338,6 +356,25 @@
             this.splitContainer2.SplitterDistance = 578;
             this.splitContainer2.TabIndex = 0;
             // 
+            // blunderViewControl
+            // 
+            this.blunderViewControl.BackColor = System.Drawing.Color.Transparent;
+            this.blunderViewControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.blunderViewControl.Location = new System.Drawing.Point(0, 0);
+            this.blunderViewControl.Name = "blunderViewControl";
+            this.blunderViewControl.Size = new System.Drawing.Size(578, 460);
+            this.blunderViewControl.TabIndex = 0;
+            // 
+            // gameGraphControl1
+            // 
+            this.gameGraphControl1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(191)))), ((int)(((byte)(235)))));
+            this.gameGraphControl1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.gameGraphControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gameGraphControl1.Location = new System.Drawing.Point(0, 290);
+            this.gameGraphControl1.Name = "gameGraphControl1";
+            this.gameGraphControl1.Size = new System.Drawing.Size(418, 149);
+            this.gameGraphControl1.TabIndex = 4;
+            // 
             // panel1
             // 
             this.panel1.Controls.Add(this.textBoxComment);
@@ -373,6 +410,38 @@
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
+            // playerInfoControlN
+            // 
+            this.playerInfoControlN.BackColor = System.Drawing.Color.White;
+            this.playerInfoControlN.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.playerInfoControlN.ByoyomiSeconds = 0;
+            this.playerInfoControlN.Dock = System.Windows.Forms.DockStyle.Top;
+            this.playerInfoControlN.Location = new System.Drawing.Point(0, 0);
+            this.playerInfoControlN.Name = "playerInfoControlN";
+            this.playerInfoControlN.PlayerName = "";
+            this.playerInfoControlN.RemainSeconds = 0;
+            this.playerInfoControlN.Size = new System.Drawing.Size(418, 21);
+            this.playerInfoControlN.TabIndex = 2;
+            this.playerInfoControlN.TimeASeconds = 0;
+            this.playerInfoControlN.TimeBSeconds = 0;
+            this.playerInfoControlN.Turn = 1;
+            // 
+            // playerInfoControlP
+            // 
+            this.playerInfoControlP.BackColor = System.Drawing.Color.White;
+            this.playerInfoControlP.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.playerInfoControlP.ByoyomiSeconds = 0;
+            this.playerInfoControlP.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.playerInfoControlP.Location = new System.Drawing.Point(0, 439);
+            this.playerInfoControlP.Name = "playerInfoControlP";
+            this.playerInfoControlP.PlayerName = "";
+            this.playerInfoControlP.RemainSeconds = 0;
+            this.playerInfoControlP.Size = new System.Drawing.Size(418, 21);
+            this.playerInfoControlP.TabIndex = 1;
+            this.playerInfoControlP.TimeASeconds = 0;
+            this.playerInfoControlP.TimeBSeconds = 0;
+            this.playerInfoControlP.Turn = 0;
+            // 
             // splitContainer3
             // 
             this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -391,6 +460,30 @@
             this.splitContainer3.SplitterDistance = 83;
             this.splitContainer3.TabIndex = 0;
             // 
+            // engineViewControl1
+            // 
+            this.engineViewControl1.BackColor = System.Drawing.Color.White;
+            this.engineViewControl1.Board = null;
+            this.engineViewControl1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.engineViewControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.engineViewControl1.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.engineViewControl1.Location = new System.Drawing.Point(0, 0);
+            this.engineViewControl1.Name = "engineViewControl1";
+            this.engineViewControl1.Size = new System.Drawing.Size(1000, 83);
+            this.engineViewControl1.TabIndex = 0;
+            // 
+            // engineViewControl2
+            // 
+            this.engineViewControl2.BackColor = System.Drawing.Color.White;
+            this.engineViewControl2.Board = null;
+            this.engineViewControl2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.engineViewControl2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.engineViewControl2.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.engineViewControl2.Location = new System.Drawing.Point(0, 0);
+            this.engineViewControl2.Name = "engineViewControl2";
+            this.engineViewControl2.Size = new System.Drawing.Size(1000, 80);
+            this.engineViewControl2.TabIndex = 1;
+            // 
             // toolStrip1
             // 
             this.toolStrip1.CanOverflow = false;
@@ -405,7 +498,7 @@
             this.toolStripButton検,
             this.toolStripButton詰,
             this.toolStripSeparator9,
-            this.toolStripLabel1});
+            this.toolStripLabelResult});
             this.toolStrip1.Location = new System.Drawing.Point(0, 26);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1000, 25);
@@ -515,86 +608,14 @@
             this.toolStripSeparator9.Name = "toolStripSeparator9";
             this.toolStripSeparator9.Size = new System.Drawing.Size(6, 25);
             // 
-            // toolStripLabel1
+            // toolStripLabelResult
             // 
-            this.toolStripLabel1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(0, 22);
-            // 
-            // blunderViewControl
-            // 
-            this.blunderViewControl.BackColor = System.Drawing.Color.Transparent;
-            this.blunderViewControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.blunderViewControl.Location = new System.Drawing.Point(0, 0);
-            this.blunderViewControl.Name = "blunderViewControl";
-            this.blunderViewControl.Size = new System.Drawing.Size(578, 460);
-            this.blunderViewControl.TabIndex = 0;
-            // 
-            // gameGraphControl1
-            // 
-            this.gameGraphControl1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(191)))), ((int)(((byte)(235)))));
-            this.gameGraphControl1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.gameGraphControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gameGraphControl1.Location = new System.Drawing.Point(0, 290);
-            this.gameGraphControl1.Name = "gameGraphControl1";
-            this.gameGraphControl1.Size = new System.Drawing.Size(418, 149);
-            this.gameGraphControl1.TabIndex = 4;
-            // 
-            // playerInfoControlN
-            // 
-            this.playerInfoControlN.BackColor = System.Drawing.Color.White;
-            this.playerInfoControlN.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.playerInfoControlN.ByoyomiSeconds = 0;
-            this.playerInfoControlN.Dock = System.Windows.Forms.DockStyle.Top;
-            this.playerInfoControlN.Location = new System.Drawing.Point(0, 0);
-            this.playerInfoControlN.Name = "playerInfoControlN";
-            this.playerInfoControlN.PlayerName = "";
-            this.playerInfoControlN.RemainSeconds = 0;
-            this.playerInfoControlN.Size = new System.Drawing.Size(418, 21);
-            this.playerInfoControlN.TabIndex = 2;
-            this.playerInfoControlN.TimeASeconds = 0;
-            this.playerInfoControlN.TimeBSeconds = 0;
-            this.playerInfoControlN.Turn = 1;
-            // 
-            // playerInfoControlP
-            // 
-            this.playerInfoControlP.BackColor = System.Drawing.Color.White;
-            this.playerInfoControlP.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.playerInfoControlP.ByoyomiSeconds = 0;
-            this.playerInfoControlP.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.playerInfoControlP.Location = new System.Drawing.Point(0, 439);
-            this.playerInfoControlP.Name = "playerInfoControlP";
-            this.playerInfoControlP.PlayerName = "";
-            this.playerInfoControlP.RemainSeconds = 0;
-            this.playerInfoControlP.Size = new System.Drawing.Size(418, 21);
-            this.playerInfoControlP.TabIndex = 1;
-            this.playerInfoControlP.TimeASeconds = 0;
-            this.playerInfoControlP.TimeBSeconds = 0;
-            this.playerInfoControlP.Turn = 0;
-            // 
-            // engineViewControl1
-            // 
-            this.engineViewControl1.BackColor = System.Drawing.Color.White;
-            this.engineViewControl1.Board = null;
-            this.engineViewControl1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.engineViewControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.engineViewControl1.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.engineViewControl1.Location = new System.Drawing.Point(0, 0);
-            this.engineViewControl1.Name = "engineViewControl1";
-            this.engineViewControl1.Size = new System.Drawing.Size(1000, 83);
-            this.engineViewControl1.TabIndex = 0;
-            // 
-            // engineViewControl2
-            // 
-            this.engineViewControl2.BackColor = System.Drawing.Color.White;
-            this.engineViewControl2.Board = null;
-            this.engineViewControl2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.engineViewControl2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.engineViewControl2.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.engineViewControl2.Location = new System.Drawing.Point(0, 0);
-            this.engineViewControl2.Name = "engineViewControl2";
-            this.engineViewControl2.Size = new System.Drawing.Size(1000, 80);
-            this.engineViewControl2.TabIndex = 1;
+            this.toolStripLabelResult.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripLabelResult.DoubleClickEnabled = true;
+            this.toolStripLabelResult.Name = "toolStripLabelResult";
+            this.toolStripLabelResult.Size = new System.Drawing.Size(92, 22);
+            this.toolStripLabelResult.Text = "0-0-0(重複：0)";
+            this.toolStripLabelResult.DoubleClick += new System.EventHandler(this.toolStripLabelResult_DoubleClick);
             // 
             // MainForm
             // 
@@ -686,7 +707,9 @@
         private System.Windows.Forms.ToolStripButton toolStripButton検;
         private System.Windows.Forms.ToolStripButton toolStripButton詰;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel1;
+        private System.Windows.Forms.ToolStripMenuItem 対局GToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
+        private System.Windows.Forms.ToolStripLabel toolStripLabelResult;
     }
 }
 

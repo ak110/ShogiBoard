@@ -27,16 +27,16 @@ namespace ShogiBoard {
         /// <summary>
         /// 持ち時間[秒]
         /// </summary>
-        public int TimeA {
+        public int TimeASeconds {
             get { return (int)numericUpDown1.Value * 60; }
             set { numericUpDown1.Value = value / 60; }
         }
         /// <summary>
         /// 秒読み[秒]
         /// </summary>
-        public int TimeB {
-            get { return (int)numericUpDown1.Value; }
-            set { numericUpDown1.Value = value; }
+        public int TimeBSeconds {
+            get { return (int)numericUpDown2.Value; }
+            set { numericUpDown2.Value = value; }
         }
     }
 }
