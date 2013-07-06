@@ -42,6 +42,7 @@ namespace ShogiBoard {
             labelNPS.Text = "NPS：";
             labelCurMove.Text = "探索手：";
             labelHashFull.Text = "ハッシュ使用率：";
+            labelMeanNPS.Text = "平均NPS：-";
             listView1.Items.Clear();
         }
 
@@ -188,6 +189,12 @@ namespace ShogiBoard {
                     }
                     if (!string.IsNullOrEmpty(infoPVOrString)) {
                         AddListItem(infoTime, infoDepth, infoNodes, infoScore, infoPVOrString, pvLengthString);
+                    }
+                    double? meanNPS = player.MeanNPS;
+                    if (meanNPS.HasValue) {
+                        labelMeanNPS.Text = "平均NPS：" + meanNPS.Value.ToString("#,##0");
+                    } else {
+                        labelMeanNPS.Text = "平均NPS：-";
                     }
                 });
             } catch {

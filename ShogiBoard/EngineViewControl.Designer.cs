@@ -44,6 +44,7 @@
             this.labelCurMove = new System.Windows.Forms.Label();
             this.labelHashFull = new System.Windows.Forms.Label();
             this.labelEngine = new System.Windows.Forms.Label();
+            this.labelMeanNPS = new System.Windows.Forms.Label();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -165,6 +166,17 @@
             this.labelEngine.TabIndex = 0;
             this.labelEngine.Text = "BunderXX-i73960X_4c";
             // 
+            // labelMeanNPS
+            // 
+            this.labelMeanNPS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelMeanNPS.AutoSize = true;
+            this.labelMeanNPS.Font = new System.Drawing.Font("ＭＳ ゴシック", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.labelMeanNPS.Location = new System.Drawing.Point(810, 0);
+            this.labelMeanNPS.Name = "labelMeanNPS";
+            this.labelMeanNPS.Size = new System.Drawing.Size(113, 11);
+            this.labelMeanNPS.TabIndex = 3;
+            this.labelMeanNPS.Text = "平均NPS：x,xxx,xxx";
+            // 
             // EngineViewControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -173,6 +185,7 @@
             this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Controls.Add(this.labelCurMove);
             this.Controls.Add(this.labelNPS);
+            this.Controls.Add(this.labelMeanNPS);
             this.Controls.Add(this.labelHashFull);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.labelEngine);
@@ -202,6 +215,7 @@
         private System.Windows.Forms.ToolStripMenuItem 選択した読み筋をコピーCToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 全ての読み筋をコピーAToolStripMenuItem;
         private System.Windows.Forms.Label labelEngine;
+        private System.Windows.Forms.Label labelMeanNPS;
 
     }
 }

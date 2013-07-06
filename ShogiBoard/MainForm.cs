@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using System.Text.RegularExpressions;
 
 namespace ShogiBoard {
     public partial class MainForm : Form {
@@ -501,8 +502,6 @@ namespace ShogiBoard {
                     var engine2 = configLoader.EngineList.Select(configLoader.VolatileConfig.GameEngine2Name, configLoader.VolatileConfig.GameEngine2Path);
 
                     // USIエンジン起動
-                    SetTitleStatusText("USIエンジン起動中：" + System.IO.Path.GetFileName(engine1.Path));
-                    SetTitleStatusText("USIエンジン起動中：" + System.IO.Path.GetFileName(engine2.Path));
                     using (USIPlayer player1 = CreateUSIPlayer(engine1, 1))
                     using (USIPlayer player2 = CreateUSIPlayer(engine2, 2)) {
                         Players[0] = player1;
@@ -520,7 +519,8 @@ namespace ShogiBoard {
                                 }
                                 // 対局開始
                                 int turnFlip = gameCount & 1;
-                                DoGame(board, hashSet, resultCounts, turnFlip);
+                                DoGame(board, hashSet, resultCounts, new[] { engine1, engine2 }, turnFlip);
+                                gameCount++;
                             } finally {
                                 lock (gameLock) {
                                     csaClient = null;
@@ -564,7 +564,7 @@ namespace ShogiBoard {
         /// <summary>
         /// 対局1局分の処理
         /// </summary>
-        private void DoGame(Board board, HashSet<ulong> hashSet, int[] resultCounts, int turnFlip) {
+        private void DoGame(Board board, HashSet<ulong> hashSet, int[] resultCounts, Engine[] engines, int turnFlip) {
             gameWinner = -2;
             gameEndReason = GameEndReason.Unknown;
 
@@ -587,12 +587,12 @@ namespace ShogiBoard {
                 engineViewControl2.Board = board;
                 engineViewControl2.Clear();
                 // 情報表示
-                UpdateGameResult(resultCounts, turnFlip);
+                UpdateGameResult(resultCounts, engines, turnFlip);
                 // 対局者名などの表示更新
-                playerInfoControlP.PlayerName = Players[turnFlip].Name;
+                playerInfoControlP.PlayerName = engines[turnFlip].Name;
                 playerInfoControlP.TimeASeconds = timeData[turnFlip].TimeA / 1000;
                 playerInfoControlP.TimeBSeconds = timeData[turnFlip].TimeB / 1000;
-                playerInfoControlN.PlayerName = Players[turnFlip].Name;
+                playerInfoControlN.PlayerName = engines[turnFlip ^ 1].Name;
                 playerInfoControlN.TimeASeconds = timeData[turnFlip ^ 1].TimeA / 1000;
                 playerInfoControlN.TimeBSeconds = timeData[turnFlip ^ 1].TimeB / 1000;
                 playerInfoControlP.Reset();
@@ -715,14 +715,13 @@ namespace ShogiBoard {
                 resultCounts[3]++; // 重複
                 gameEndReason = GameEndReason.SameNotation;
             }
-            UpdateGameResult(resultCounts, turnFlip);
-            gameCount++;
+            UpdateGameResult(resultCounts, engines, turnFlip, gameEndReason);
         }
 
         /// <summary>
         /// 勝ち負けの情報表示部分を更新
         /// </summary>
-        private void UpdateGameResult(int[] resultCounts, int turnFlip) {
+        private void UpdateGameResult(int[] resultCounts, Engine[] engines, int turnFlip, GameEndReason gameEndReason = GameEndReason.Unknown) {
             var resultStr = string.Format("{0}-{1}-{2}(重複={3})", resultCounts[0], resultCounts[1], resultCounts[2], resultCounts[3]);
             toolStripLabelResult.Text = resultStr;
 
@@ -747,17 +746,24 @@ namespace ShogiBoard {
             // 有意確率 (引き分けは除く)
             double wp = MathUtility.SignTest(win, lose) * 100.0;
 
-            toolStripLabelResult.ToolTipText = resultStr + Environment.NewLine +
+            string s = resultStr + Environment.NewLine +
                 "勝率：        " + wr.ToString("##0.0").PadLeft(5) + "%" + Environment.NewLine +
                 "R差：         " + rating.ToString("0") + Environment.NewLine +
                 "有意確率：    " + wp.ToString("##0.0").PadLeft(5) + "%" + Environment.NewLine +
                 "95%信頼区間： " + wL.ToString("##0.0") + "% ～ " + wH.ToString("##0.0") + "%" + Environment.NewLine +
                 "";
-            logger.Info(toolStripLabelResult.ToolTipText);
+            toolStripLabelResult.ToolTipText = s;
 
             SetTitleStatusText("連続対局中：" +
-                Players[0 ^ turnFlip].Name + " vs " +
-                Players[1 ^ turnFlip].Name + "：" + resultStr);
+                engines[0 ^ turnFlip].Name + " vs " +
+                engines[1 ^ turnFlip].Name + "：" + resultStr);
+
+            // 終局時はログる。
+            if (gameEndReason != GameEndReason.Unknown) {
+                logger.Info(GameEndReasonUtility.ToString(gameEndReason) + "：" +
+                    Regex.Replace(s.TrimEnd().Replace(Environment.NewLine, " ")
+                        .Replace(" ～ ", "～"), "： *", "=")); // 適当整形
+            }
         }
 
         /// <summary>
@@ -766,6 +772,18 @@ namespace ShogiBoard {
         private void OnGameEnd(int turn, GameEndReason reason) {
             gameWinner = turn;
             gameEndReason = reason;
+            foreach (var player in Players) {
+                var usiPlayer = player as USIPlayer;
+                if (usiPlayer != null) {
+                    Func<double?, string> ToNPSString =
+                        nps => nps.HasValue ? nps.Value.ToString("#,##0") : "-";
+                    logger.InfoFormat("{0} 平均NPS：全体={1} 序盤={2} 終盤={3}",
+                        usiPlayer.Name,
+                        ToNPSString(usiPlayer.MeanNPS),
+                        ToNPSString(usiPlayer.MeanNPSOfOpening),
+                        ToNPSString(usiPlayer.MeanNPSOfEndGame));
+                }
+            }
         }
         #endregion
 
@@ -849,7 +867,6 @@ namespace ShogiBoard {
                     string csaPW = connection.Pass;
 
                     // USIエンジン起動
-                    SetTitleStatusText("USIエンジン起動中：" + System.IO.Path.GetFileName(engine.Path));
                     using (USIPlayer player = CreateUSIPlayer(engine, 1)) {
                         Players[0] = player;
                         engineViewControl1.Attach(player);
@@ -1273,13 +1290,11 @@ namespace ShogiBoard {
                     });
                     return;
                 }
-                string engineFileName = System.IO.Path.GetFileName(engine.Path);
-                SetTitleStatusText("USIエンジン起動中：" + engineFileName);
                 using (USIPlayer player = CreateUSIPlayer(engine, 1)) {
                     Players[0] = player;
                     engineViewControl1.Attach(player);
                     try {
-                        SetTitleStatusText(typeName + "中：" + engineFileName);
+                        SetTitleStatusText(typeName + "中：" + engine.Name + " (" + System.IO.Path.GetFileName(engine.Path) + ")");
                         engineViewControl1.Board = p.Board;
                         if (!player.Driver.GameStarted) {
                             player.Driver.SendUSINewGame();
@@ -1442,9 +1457,10 @@ namespace ShogiBoard {
         /// <summary>
         /// USIPlayerの作成
         /// </summary>
-        private static USIPlayer CreateUSIPlayer(Engine engine, int logID) {
+        private USIPlayer CreateUSIPlayer(Engine engine, int logID) {
             USIPlayer player = null;
             try {
+                SetTitleStatusText("USIエンジン起動中：" + engine.Name + " (" + System.IO.Path.GetFileName(engine.Path) + ")");
                 player = new USIPlayer(engine.Path, null, logID);
                 player.SetOption("USI_Ponder", engine.USIPonder ? "true" : "false");
                 player.SetOption("USI_Hash", engine.USIHash.ToString());
