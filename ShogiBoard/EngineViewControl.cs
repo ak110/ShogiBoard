@@ -133,7 +133,7 @@ namespace ShogiBoard {
                             string mateCountStr = mateCount == 0 ? "" : ":" + mateCount.ToString();
                             infoScore = (0 < player.LastScore ? "+Mate" : "-Mate") + mateCountStr;
                         } else {
-                            infoScore = player.LastScore.ToString();
+                            infoScore = player.LastScoreString;
                         }
                         break;
 

@@ -455,25 +455,11 @@ namespace ShogiBoard {
                 return;
             }
 
-            CSAClient client;
             lock (gameLock) {
-                client = this.csaClient; // ローカルへ。
-                if (client == null) {
-                    // スレッド停止フラグ
-                    threadValid = false;
-                } else {
-                    // 対局中の閉じる確認
-                    Monitor.Exit(gameLock);
-                    if (MessageBox.Show(this, "対局を中断します。よろしいですか?", "確認", MessageBoxButtons.OKCancel) != DialogResult.OK) {
-                        Monitor.Enter(gameLock);
-                        return; // 停止しない。
-                    }
-                    Monitor.Enter(gameLock);
-                    // スレッド停止フラグ
-                    threadValid = false;
-                    // 強制停止
-                    foreach (var player in Players) player.Abort();
-                }
+                // スレッド停止フラグ
+                threadValid = false;
+                // 強制停止
+                foreach (var player in Players) player.Abort();
             }
             // 5秒くらい待ってダメならAbort
             for (int i = 0; ; i++) {
