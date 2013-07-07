@@ -120,13 +120,13 @@ namespace ShogiBoard {
 
             foreach (USIInfo info in e.SubCommands) {
                 switch (info.Name) {
-                    case "depth": infoDepth = info.Parameters; break;
-                    case "seldepth": infoSelDepth = info.Parameters; break;
-                    case "time": infoTime = info.Parameters; break;
-                    case "nodes": infoNodes = info.Parameters; break;
-                    case "nps": infoNPS = info.Parameters; break;
-                    case "currmove": infoCurrMove = info.Parameters; break;
-                    case "hashfull": infoHashFull = info.Parameters; break;
+                    case "depth": infoDepth = info.Parameters.FirstOrDefault(); break;
+                    case "seldepth": infoSelDepth = info.Parameters.FirstOrDefault(); break;
+                    case "time": infoTime = info.Parameters.FirstOrDefault(); break;
+                    case "nodes": infoNodes = info.Parameters.FirstOrDefault(); break;
+                    case "nps": infoNPS = info.Parameters.FirstOrDefault(); break;
+                    case "currmove": infoCurrMove = info.Parameters.FirstOrDefault(); break;
+                    case "hashfull": infoHashFull = info.Parameters.FirstOrDefault(); break;
                     case "score":
                         if (player.LastScoreWasMate) {
                             int mateCount = Math.Abs(player.LastScore) - USIPlayer.MateValue;
@@ -137,16 +137,32 @@ namespace ShogiBoard {
                         }
                         break;
 
-                    case "pv":
-                        var pvList = (info.Parameters ?? "").Split(' ');
-                        infoPVOrString = Board == null ?
-                            string.Join(" ", pvList.Select(x => SFENNotationReader.ToMoveData(x).ToString()).ToArray()) :
-                            MoveUtility.ToPVString(pvList.Select(x => SFENNotationReader.ToMoveData(x)), -1, Board, Board.Turn);
-                        pvLengthString = "PV長=" + pvList.Length;
+                    case "pv": {
+                            var pvList = info.Parameters;
+                            BoardData b = Board == null ? null : Board.ToBoardData();
+                            List<string> itemList = new List<string>();
+                            int pvLength = 0;
+                            foreach (var pv in pvList) {
+                                try {
+                                    MoveData moveData = SFENNotationReader.ToMoveData(pv);
+                                    if (b == null) {
+                                        itemList.Add(moveData.ToString());
+                                    } else {
+                                        itemList.Add(moveData.ToString(b));
+                                        b.Do(moveData);
+                                    }
+                                    pvLength++;
+                                } catch (NotationException) {
+                                    itemList.Add(pv);
+                                }
+                            }
+                            infoPVOrString = string.Concat(itemList.ToArray());
+                            pvLengthString = "PV長=" + pvLength;
+                        }
                         break;
 
                     case "string":
-                        infoPVOrString = info.Parameters;
+                        infoPVOrString = string.Join(" ", info.Parameters);
                         break;
                 }
             }

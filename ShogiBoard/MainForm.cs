@@ -1164,15 +1164,23 @@ namespace ShogiBoard {
                 int score = usiPlayer.LastScore;
                 if (b.Turn != 0) score = -score; // 後手番なら符号を反転
                 string pvString = "";
-                var moves = usiPlayer.LastPV.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Select(x => SFENNotationReader.ToMoveData(x));
+                List<MoveData> moves = new List<MoveData>();
+                foreach (string pv in usiPlayer.LastPV) {
+                    try {
+                        moves.Add(SFENNotationReader.ToMoveData(pv));
+                    } catch (NotationException) {
+                        break;
+                    }
+                }
                 if (0 < moves.Count()) {
                     // PVの先頭がこれから指す手なら(通常はそのはず)、その手をskip。
                     MoveData curMoveData = move.ToNotation();
                     if (moves.First() == curMoveData) {
-                        moves = moves.Skip(1);
                         b.Do(curMoveData); // 局面はPV生成用に進めておく。
+                        pvString = PCLNotationWriter.ToString(b, moves.Skip(1));
+                    } else {
+                        pvString = PCLNotationWriter.ToString(b, moves);
                     }
-                    pvString = PCLNotationWriter.ToString(b, moves);
                 }
                 return "* " + score.ToString() + " " + pvString;
             } catch (Exception e) {
