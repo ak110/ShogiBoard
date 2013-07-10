@@ -48,9 +48,29 @@ namespace ShogiBoard {
         /// </summary>
         public GameTime[] GameTimes { get; set; }
         /// <summary>
+        /// 時間切れを負けとするのかどうか
+        /// </summary>
+        public bool GameJudgeTimeUp { get; set; }
+        /// <summary>
         /// 通信対局の回数。0で無制限。
         /// </summary>
         public int GameCount { get; set; }
+        /// <summary>
+        /// 開始局面。0で初期局面、1で棋譜の局面。
+        /// </summary>
+        public int GameStartPosType { get; set; }
+        /// <summary>
+        /// 開始局面の棋譜。
+        /// </summary>
+        public string GameStartPosNotationPath { get; set; }
+        /// <summary>
+        /// 開始局面の棋譜のシャッフル
+        /// </summary>
+        public bool GameStartPosNotationShuffle { get; set; }
+        /// <summary>
+        /// 開始局面の棋譜の開始手数。
+        /// </summary>
+        public int GameStartPosNotationStartCount { get; set; }
 
         /// <summary>
         /// 通信対局で前回選択したエンジンの名前
@@ -86,6 +106,15 @@ namespace ShogiBoard {
         /// 詰将棋解答で前回選択したエンジンの実行ファイルパス
         /// </summary>
         public string MateEnginePath { get; set; }
+
+        /// <summary>
+        /// 初期値の設定
+        /// </summary>
+        public VolatileConfig() {
+            GameJudgeTimeUp = true;
+            GameStartPosNotationShuffle = true;
+            GameStartPosNotationStartCount = 30;
+        }
 
         /// <summary>
         /// 初期化

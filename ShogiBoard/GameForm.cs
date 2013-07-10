@@ -36,7 +36,16 @@ namespace ShogiBoard {
             gameTimePickerControl2.TimeBSeconds = volatileConfig.GameTimes[1].TimeBSeconds;
             gameTimePickerControl3.TimeASeconds = volatileConfig.GameTimes[2].TimeASeconds;
             gameTimePickerControl3.TimeBSeconds = volatileConfig.GameTimes[2].TimeBSeconds;
+            checkBox2.Checked = volatileConfig.GameJudgeTimeUp;
             numericUpDown1.Value = volatileConfig.GameCount;
+            switch (volatileConfig.GameStartPosType) {
+                case 0: radioButton5.Checked = true; break;
+                case 1: radioButton6.Checked = true; break;
+                default: goto case 0;
+            }
+            textBox1.Text = volatileConfig.GameStartPosNotationPath;
+            checkBox1.Checked = volatileConfig.GameStartPosNotationShuffle;
+            numericUpDown2.Value = volatileConfig.GameStartPosNotationStartCount;
 
             UpdateEnables();
         }
@@ -90,7 +99,13 @@ namespace ShogiBoard {
             volatileConfig.GameTimes[1].TimeBSeconds = gameTimePickerControl2.TimeBSeconds;
             volatileConfig.GameTimes[2].TimeASeconds = gameTimePickerControl3.TimeASeconds;
             volatileConfig.GameTimes[2].TimeBSeconds = gameTimePickerControl3.TimeBSeconds;
+            volatileConfig.GameJudgeTimeUp = checkBox2.Checked;
             volatileConfig.GameCount = (int)numericUpDown1.Value;
+            if (radioButton5.Checked) volatileConfig.GameStartPosType = 0;
+            else volatileConfig.GameStartPosType = 1;
+            volatileConfig.GameStartPosNotationPath = textBox1.Text;
+            volatileConfig.GameStartPosNotationShuffle = checkBox1.Checked;
+            volatileConfig.GameStartPosNotationStartCount = (int)numericUpDown2.Value;
 
             // 保存
             ConfigSerializer.Serialize(volatileConfig);
@@ -100,11 +115,40 @@ namespace ShogiBoard {
             UpdateEnables();
         }
 
+        private void radioButton5_CheckedChanged(object sender, EventArgs e) {
+            UpdateEnables();
+        }
+
+        private void radioButton6_CheckedChanged(object sender, EventArgs e) {
+            UpdateEnables();
+        }
+
         private void UpdateEnables() {
             // エンジンの有無によってEnabledを変更
-            bool hasEngine1 = engineSelectControl1.SelectedItem != null; ;
-            bool hasEngine2 = engineSelectControl2.SelectedItem != null; ;
+            bool hasEngine1 = engineSelectControl1.SelectedItem != null;
+            bool hasEngine2 = engineSelectControl2.SelectedItem != null;
             buttonOk.Enabled = hasEngine1 && hasEngine2;
+            // 棋譜の局面かどうかによってEnabledを変更
+            bool isNotationPosition = radioButton6.Checked;
+            textBox1.Enabled = isNotationPosition;
+            numericUpDown2.Enabled = isNotationPosition;
+            button1.Enabled = isNotationPosition;
+            button2.Enabled = isNotationPosition;
+            checkBox1.Enabled = isNotationPosition;
+        }
+
+        private void button1_Click(object sender, EventArgs e) {
+            openFileDialog1.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            if (openFileDialog1.ShowDialog(this) == DialogResult.OK) {
+                textBox1.Text = openFileDialog1.FileName;
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e) {
+            folderBrowserDialog1.SelectedPath = AppDomain.CurrentDomain.BaseDirectory;
+            if (folderBrowserDialog1.ShowDialog(this) == DialogResult.OK) {
+                textBox1.Text = folderBrowserDialog1.SelectedPath;
+            }
         }
     }
 }

@@ -234,12 +234,12 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if "$(ConfigurationName)"=="Release" (
-    xcopy /D /Y "$(TargetPath)" "$(ProjectDir)..\Binary\ShogiBoard\"
-    xcopy /D /Y "$(TargetPath).config" "$(ProjectDir)..\Binary\ShogiBoard\"
-    xcopy /D /Y "$(TargetDir)log4net.dll" "$(ProjectDir)..\Binary\ShogiBoard\"
-    xcopy /D /Y "$(TargetDir)ShogiCore.dll" "$(ProjectDir)..\Binary\ShogiBoard\"
-    xcopy /D /Y "$(ProjectDir)..\..\ShogiCore\log4net\*.txt" "$(ProjectDir)..\Binary\ShogiBoard\log4net\"
-    "$(ProjectDir)..\Binary\FolderToZip.exe" "$(ProjectDir)..\Binary\ShogiBoard"
+    xcopy /D /Y "$(TargetPath)" "$(ProjectDir)..\Binary\$(TargetName)\"
+    xcopy /D /Y "$(TargetPath).config" "$(ProjectDir)..\Binary\$(TargetName)\"
+    xcopy /D /Y "$(TargetDir)log4net.dll" "$(ProjectDir)..\Binary\$(TargetName)\"
+    xcopy /D /Y "$(TargetDir)ShogiCore.dll" "$(ProjectDir)..\Binary\$(TargetName)\"
+    xcopy /D /Y "$(ProjectDir)..\..\ShogiCore\log4net\*.txt" "$(ProjectDir)..\Binary\$(TargetName)\log4net\"
+    "$(ProjectDir)..\Binary\FolderToZip.exe" "$(ProjectDir)..\Binary\$(TargetName)"
 )</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

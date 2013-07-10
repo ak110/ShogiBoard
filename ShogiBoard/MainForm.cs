@@ -459,7 +459,9 @@ namespace ShogiBoard {
                 // スレッド停止フラグ
                 threadValid = false;
                 // 強制停止
-                foreach (var player in Players) player.Abort();
+                foreach (var player in Players) {
+                    if (player != null) player.Abort();
+                }
             }
             // 5秒くらい待ってダメならAbort
             for (int i = 0; ; i++) {
@@ -477,8 +479,62 @@ namespace ShogiBoard {
         /// 対局スレッド
         /// </summary>
         private void GameThread() {
-            HashSet<ulong> hashSet = new HashSet<ulong>(); // 終局時の盤面ハッシュのリスト。終局図が同じなら完全に重複なので結果から除外する。
-            int[] resultCounts = new int[4];
+            var hashSet = new HashSet<ulong>(); // 終局時の盤面ハッシュのリスト。終局図が同じなら完全に重複なので結果から除外する。
+            var resultCounts = new int[4];
+
+            int startposIndex = -1;
+            List<BoardData> startposList = new List<BoardData>();
+            try {
+                if (configLoader.VolatileConfig.GameStartPosType == 1) { // 開始局面＝棋譜の局面
+                    // 読み込み
+                    string path = configLoader.VolatileConfig.GameStartPosNotationPath;
+                    SetTitleStatusText("棋譜の読み込み中 : " + path);
+                    List<Notation> notations;
+                    if (File.Exists(path)) {
+                        notations = new NotationLoader().Load(File.ReadAllText(path, Encoding.GetEncoding(932)));
+                    } else if (Directory.Exists(path)) {
+                        notations = new List<Notation>();
+                        foreach (string file in Directory.GetFiles(path, "*.*", SearchOption.AllDirectories)) {
+                            notations.AddRange(new NotationLoader().Load(File.ReadAllText(file, Encoding.GetEncoding(932))));
+                        }
+                    } else {
+                        FormUtility.SafeInvoke(this, () => {
+                            MessageBox.Show(this, "開始局面指定用の棋譜 " + path + " が存在しません。");
+                        });
+                        goto ExitThread;
+                    }
+                    // 開始局面を重複除去してリストアップ
+                    HashSet<ulong> set = new HashSet<ulong>();
+                    foreach (var notation in notations) {
+                        try {
+                            Board board = Board.FromNotation(notation,
+                                Math.Min(notation.Moves.Length,
+                                    configLoader.VolatileConfig.GameStartPosNotationStartCount - 1));
+                            if (set.Add(board.RandomizedFullHash)) {
+                                startposList.Add(board.ToBoardData());
+                            }
+                        } catch {
+                        }
+                    }
+                    if (!startposList.Any()) {
+                        FormUtility.SafeInvoke(this, () => {
+                            MessageBox.Show(this, "開始局面指定用の棋譜 " + path + " の読み込みに失敗しました。");
+                        });
+                        goto ExitThread;
+                    }
+                    logger.DebugFormat("開始局面指定用の棋譜を読み込みました。局面数={0}", startposList.Count);
+                    // シャッフル
+                    if (configLoader.VolatileConfig.GameStartPosNotationShuffle) {
+                        RandUtility.Shuffle(startposList);
+                    }
+                }
+            } catch (Exception ex) {
+                logger.Warn("開始局面指定用の棋譜の読み込みに失敗。", ex);
+                FormUtility.SafeInvoke(this, () => {
+                    MessageBox.Show(this, "開始局面指定用の棋譜の読み込みに失敗しました。" + ex.Message);
+                });
+                goto ExitThread;
+            }
 
             for (gameCount = 0; threadValid && (
                 configLoader.VolatileConfig.GameCount == 0 ||
@@ -498,6 +554,12 @@ namespace ShogiBoard {
                             try {
                                 // 対局スレッド用。this.BoardはGUIスレッド用なので注意。
                                 Board board = new ShogiCore.Board();
+                                if (configLoader.VolatileConfig.GameStartPosType == 1) { // 開始局面＝棋譜の局面
+                                    if (gameCount % 2 == 0) { // 偶数回目なら進める
+                                        startposIndex = (startposIndex + 1) % startposList.Count;
+                                    }
+                                    board.Reset(startposList[startposIndex]);
+                                }
 
                                 lock (gameLock) {
                                     if (!threadValid) break;
@@ -540,6 +602,7 @@ namespace ShogiBoard {
             }
 
             // 対局終了
+        ExitThread:
             threadValid = false;
             FormUtility.SafeInvoke(this, () => {
                 SetTitleStatusText(null);
@@ -631,7 +694,9 @@ namespace ShogiBoard {
 
                 // 時間の処理
                 int consumeTime = Math.Max(1000, thinkTime - thinkTime % 1000); // CSAルール：端数切り捨て最低1秒。
-                bool timeUp = !timeData[board.Turn].ConsumeTime(consumeTime);
+                bool timeUp =
+                    configLoader.VolatileConfig.GameJudgeTimeUp &&
+                    !timeData[board.Turn].ConsumeTime(consumeTime);
                 if (timeUp) {
                     OnGameEnd(board.Turn ^ 1, GameEndReason.TimeUp);
                 } else if (move == ShogiCore.Move.Win) {
