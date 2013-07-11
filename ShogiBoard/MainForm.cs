@@ -548,36 +548,31 @@ namespace ShogiBoard {
                     var engine2 = configLoader.EngineList.Select(configLoader.VolatileConfig.GameEngine2Name, configLoader.VolatileConfig.GameEngine2Path);
 
                     // USIエンジン起動
-                    using (USIPlayer player1 = CreateUSIPlayer(engine1, 1))
-                    using (USIPlayer player2 = CreateUSIPlayer(engine2, 2)) {
-                        Players[0] = player1;
-                        Players[1] = player2;
-                        engineViewControl1.Attach(player1);
-                        engineViewControl2.Attach(player2);
-                        using (CSAFileWriter fileWriter = new CSAFileWriter()) {
-                            try {
-                                // 対局スレッド用。this.BoardはGUIスレッド用なので注意。
-                                Board board = new ShogiCore.Board();
-                                if (configLoader.VolatileConfig.GameStartPosType == 1) { // 開始局面＝棋譜の局面
-                                    if (gameCount % 2 == 0) { // 偶数回目なら進める
-                                        startposIndex = (startposIndex + 1) % startposList.Count;
-                                    }
-                                    board.Reset(startposList[startposIndex]);
+                    using (USIPlayer player1 = CreateUSIPlayer(engine1, 0))
+                    using (USIPlayer player2 = CreateUSIPlayer(engine2, 1))
+                    using (CSAFileWriter fileWriter = new CSAFileWriter()) {
+                        try {
+                            // 対局スレッド用。this.BoardはGUIスレッド用なので注意。
+                            Board board = new ShogiCore.Board();
+                            if (configLoader.VolatileConfig.GameStartPosType == 1) { // 開始局面＝棋譜の局面
+                                if (gameCount % 2 == 0) { // 偶数回目なら進める
+                                    startposIndex = (startposIndex + 1) % startposList.Count;
                                 }
+                                board.Reset(startposList[startposIndex]);
+                            }
 
-                                lock (gameLock) {
-                                    if (!threadValid) break;
-                                    csaFileWriter = fileWriter;
-                                }
-                                // 対局開始
-                                int turnFlip = gameCount & 1;
-                                DoGame(board, new[] { engine1, engine2 }, turnFlip);
-                                gameCount++;
-                            } finally {
-                                lock (gameLock) {
-                                    csaClient = null;
-                                    csaFileWriter = null;
-                                }
+                            lock (gameLock) {
+                                if (!threadValid) break;
+                                csaFileWriter = fileWriter;
+                            }
+                            // 対局開始
+                            int turnFlip = gameCount & 1;
+                            DoGame(board, new[] { engine1, engine2 }, turnFlip);
+                            gameCount++;
+                        } finally {
+                            lock (gameLock) {
+                                csaClient = null;
+                                csaFileWriter = null;
                             }
                         }
                     }
@@ -946,9 +941,7 @@ namespace ShogiBoard {
                     string csaPW = connection.Pass;
 
                     // USIエンジン起動
-                    using (USIPlayer player = CreateUSIPlayer(engine, 1)) {
-                        Players[0] = player;
-                        engineViewControl1.Attach(player);
+                    using (USIPlayer player = CreateUSIPlayer(engine, 0)) {
                         // ログイン
                         SetTitleStatusText("対局待ち：" + csaHost + " - " + csaID);
                         using (CSAClient client = new CSAClient(csaHost))
@@ -1377,9 +1370,7 @@ namespace ShogiBoard {
                     });
                     return;
                 }
-                using (USIPlayer player = CreateUSIPlayer(engine, 1)) {
-                    Players[0] = player;
-                    engineViewControl1.Attach(player);
+                using (USIPlayer player = CreateUSIPlayer(engine, 0)) {
                     try {
                         SetTitleStatusText(typeName + "中：" + engine.Name + " (" + System.IO.Path.GetFileName(engine.Path) + ")");
                         engineViewControl1.Board = p.Board;
@@ -1544,11 +1535,12 @@ namespace ShogiBoard {
         /// <summary>
         /// USIPlayerの作成
         /// </summary>
-        private USIPlayer CreateUSIPlayer(Engine engine, int logID) {
+        private USIPlayer CreateUSIPlayer(Engine engine, int playerIndex) {
             USIPlayer player = null;
             try {
                 SetTitleStatusText("USIエンジン起動中：" + engine.Name + " (" + System.IO.Path.GetFileName(engine.Path) + ")");
-                player = new USIPlayer(engine.Path, null, logID);
+                Players[playerIndex] = player = new USIPlayer(engine.Path, null, playerIndex + 1);
+                GetEngineViewControl(playerIndex).Attach(player);
                 player.SetOption("USI_Ponder", engine.USIPonder ? "true" : "false");
                 player.SetOption("USI_Hash", engine.USIHash.ToString());
                 foreach (var p in engine.Options) {
