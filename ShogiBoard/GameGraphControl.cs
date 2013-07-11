@@ -15,9 +15,13 @@ namespace ShogiBoard {
         /// </summary>
         const int WidthPerMoves = 4;
         /// <summary>
+        /// 評価値の点の高さ
+        /// </summary>
+        const int ValueLineHeight = 8;
+        /// <summary>
         /// Bitmapの高さ
         /// </summary>
-        const int BitmapHeight = 256;
+        const int BitmapHeight = 200;
         /// <summary>
         /// 最初の表示可能手数
         /// </summary>
@@ -29,6 +33,10 @@ namespace ShogiBoard {
         object bitmapLock = new object();
         Bitmap bitmap;
         int bitmapWidth;
+        Pen[] valuePens = new[] {
+            new Pen(Color.Black, ValueLineHeight),
+            new Pen(Color.White, ValueLineHeight),
+        };
 
         struct GraphData {
             public int MoveCount;
@@ -60,6 +68,7 @@ namespace ShogiBoard {
             thread.Join();
 
             bitmap.Dispose();
+            foreach (Pen pen in valuePens) pen.Dispose();
         }
 
         private void panel2_Paint(object sender, PaintEventArgs e) {
@@ -184,8 +193,10 @@ namespace ShogiBoard {
                     g.DrawLine(Pens.Gray, 0, BitmapHeight / 2, bitmap.Width - 1, BitmapHeight / 2);
                     // 評価値
                     const int zeroCenter = BitmapHeight / 2;
-                    const int YCenterMin = 0 + WidthPerMoves / 2;
-                    const int YCenterMax = BitmapHeight - WidthPerMoves / 2;
+                    const int YCenterMin = 0 + ValueLineHeight / 2;
+                    const int YCenterMax = BitmapHeight - ValueLineHeight / 2;
+                    int[] lastX = new[] { 0, 0 };
+                    int[] lastYCenter = new[] { BitmapHeight / 2, BitmapHeight / 2 }; // 0
                     foreach (GraphData gr in graphData) {
                         if (gr.Value == int.MinValue) continue; // 無効値はスキップ
                         int turn = gr.MoveCount % 2;
@@ -193,10 +204,11 @@ namespace ShogiBoard {
                         int yCenter = Math.Min(Math.Max(
                             gr.Value * (BitmapHeight / 2) / 2000 + zeroCenter,
                             YCenterMin), YCenterMax);
-                        // 評価値（四角い点）
-                        g.FillRectangle(turn == 0 ? Brushes.Black : Brushes.White,
-                            xCurr, yCenter - WidthPerMoves / 2,
-                            WidthPerMoves, WidthPerMoves);
+
+                        g.DrawLine(valuePens[turn], lastX[turn], lastYCenter[turn], xCurr, yCenter);
+
+                        lastX[turn] = xCurr;
+                        lastYCenter[turn] = yCenter;
                     }
                 }
             }
