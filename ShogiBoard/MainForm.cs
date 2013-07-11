@@ -849,10 +849,15 @@ namespace ShogiBoard {
             foreach (var player in Players) {
                 var usiPlayer = player as USIPlayer;
                 if (usiPlayer != null) {
+                    Func<double?, string> ToDepthString =
+                        depth => depth.HasValue ? depth.Value.ToString("0.0") : "-";
                     Func<double?, string> ToNPSString =
                         nps => nps.HasValue ? nps.Value.ToString("#,##0") : "-";
-                    logger.InfoFormat("{0} 平均NPS：全体={1} 序盤={2} 終盤={3}",
+                    logger.InfoFormat("{0} 平均深さ：全体={1} 序盤={2} 終盤={3} 平均NPS：全体={1} 序盤={2} 終盤={3}",
                         usiPlayer.Name,
+                        ToDepthString(usiPlayer.MeanDepth),
+                        ToDepthString(usiPlayer.MeanDepthOfOpening),
+                        ToDepthString(usiPlayer.MeanDepthOfEndGame),
                         ToNPSString(usiPlayer.MeanNPS),
                         ToNPSString(usiPlayer.MeanNPSOfOpening),
                         ToNPSString(usiPlayer.MeanNPSOfEndGame));

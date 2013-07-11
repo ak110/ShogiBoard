@@ -45,6 +45,7 @@
             this.labelHashFull = new System.Windows.Forms.Label();
             this.labelEngine = new System.Windows.Forms.Label();
             this.labelMeanNPS = new System.Windows.Forms.Label();
+            this.labelMeanDepth = new System.Windows.Forms.Label();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -177,6 +178,17 @@
             this.labelMeanNPS.TabIndex = 3;
             this.labelMeanNPS.Text = "平均NPS：x,xxx,xxx";
             // 
+            // labelMeanDepth
+            // 
+            this.labelMeanDepth.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelMeanDepth.AutoSize = true;
+            this.labelMeanDepth.Font = new System.Drawing.Font("ＭＳ ゴシック", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.labelMeanDepth.Location = new System.Drawing.Point(715, 0);
+            this.labelMeanDepth.Name = "labelMeanDepth";
+            this.labelMeanDepth.Size = new System.Drawing.Size(89, 11);
+            this.labelMeanDepth.TabIndex = 3;
+            this.labelMeanDepth.Text = "平均深さ：xx.x";
+            // 
             // EngineViewControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -185,6 +197,7 @@
             this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Controls.Add(this.labelCurMove);
             this.Controls.Add(this.labelNPS);
+            this.Controls.Add(this.labelMeanDepth);
             this.Controls.Add(this.labelMeanNPS);
             this.Controls.Add(this.labelHashFull);
             this.Controls.Add(this.listView1);
@@ -216,6 +229,7 @@
         private System.Windows.Forms.ToolStripMenuItem 全ての読み筋をコピーAToolStripMenuItem;
         private System.Windows.Forms.Label labelEngine;
         private System.Windows.Forms.Label labelMeanNPS;
+        private System.Windows.Forms.Label labelMeanDepth;
 
     }
 }
