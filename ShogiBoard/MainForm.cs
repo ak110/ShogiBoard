@@ -118,8 +118,11 @@ namespace ShogiBoard {
         int gameCount;
         Thread gameThread;
         object gameLock = new object();
-        int gameWinner;
+        int gameWinnerTurn;
         GameEndReason gameEndReason;
+        HashSet<ulong> gameHashSet = new HashSet<ulong>(); // 終局時の盤面ハッシュのリスト。終局図が同じなら完全に重複なので結果から除外する。
+        int[] gameResultCounts = new int[3];
+        Dictionary<GameEndReason, int> gameResultCountsPerReason = new Dictionary<GameEndReason, int>();
         #endregion
         #region 通信対局用
         int networkGameCount;
@@ -479,8 +482,9 @@ namespace ShogiBoard {
         /// 対局スレッド
         /// </summary>
         private void GameThread() {
-            var hashSet = new HashSet<ulong>(); // 終局時の盤面ハッシュのリスト。終局図が同じなら完全に重複なので結果から除外する。
-            var resultCounts = new int[4];
+            gameHashSet.Clear();
+            Array.Clear(gameResultCounts, 0, gameResultCounts.Length);
+            gameResultCountsPerReason.Clear();
 
             int startposIndex = -1;
             List<BoardData> startposList = new List<BoardData>();
@@ -567,7 +571,7 @@ namespace ShogiBoard {
                                 }
                                 // 対局開始
                                 int turnFlip = gameCount & 1;
-                                DoGame(board, hashSet, resultCounts, new[] { engine1, engine2 }, turnFlip);
+                                DoGame(board, new[] { engine1, engine2 }, turnFlip);
                                 gameCount++;
                             } finally {
                                 lock (gameLock) {
@@ -613,8 +617,8 @@ namespace ShogiBoard {
         /// <summary>
         /// 対局1局分の処理
         /// </summary>
-        private void DoGame(Board board, HashSet<ulong> hashSet, int[] resultCounts, Engine[] engines, int turnFlip) {
-            gameWinner = -2;
+        private void DoGame(Board board, Engine[] engines, int turnFlip) {
+            gameWinnerTurn = -2;
             gameEndReason = GameEndReason.Unknown;
 
             var gameTime = configLoader.VolatileConfig.GameTimes[configLoader.VolatileConfig.GameTimeIndex];
@@ -636,7 +640,7 @@ namespace ShogiBoard {
                 engineViewControl2.Board = board;
                 engineViewControl2.Clear();
                 // 情報表示
-                UpdateGameResult(resultCounts, engines, turnFlip);
+                UpdateGameResult(engines, turnFlip);
                 // 対局者名などの表示更新
                 playerInfoControlP.PlayerName = engines[turnFlip].Name;
                 playerInfoControlP.TimeASeconds = timeData[turnFlip].TimeA / 1000;
@@ -658,7 +662,7 @@ namespace ShogiBoard {
                 gameID,
                 board.ToCSAStandard());
 
-            while (gameWinner == -2) {
+            while (gameWinnerTurn == -2) {
                 if (!threadValid) return;
 
                 MoveList moves = board.GetMovesSafe();
@@ -756,29 +760,41 @@ namespace ShogiBoard {
                 playerInfoControlN.EndTurn();
             });
             // 勝ち数の集計・統計情報の表示
-            if (hashSet.Add(board.RandomizedFullHash)) {
-                if (gameWinner == -1) { // 引き分け
-                    resultCounts[1]++;
-                } else {
-                    resultCounts[(gameWinner ^ turnFlip) * 2]++;
-                }
+            if (gameWinnerTurn == -1) { // 引き分け
+                gameResultCounts[1]++;
             } else {
-                resultCounts[3]++; // 重複
+                gameResultCounts[(gameWinnerTurn ^ turnFlip) * 2]++;
+            }
+            if (!gameHashSet.Add(board.RandomizedFullHash)) {
                 gameEndReason = GameEndReason.SameNotation;
             }
-            UpdateGameResult(resultCounts, engines, turnFlip, gameEndReason);
+            if (gameResultCountsPerReason.ContainsKey(gameEndReason)) {
+                gameResultCountsPerReason[gameEndReason]++;
+            } else {
+                gameResultCountsPerReason[gameEndReason] = 1;
+            }
+            UpdateGameResult(engines, turnFlip, gameEndReason);
         }
 
         /// <summary>
         /// 勝ち負けの情報表示部分を更新
         /// </summary>
-        private void UpdateGameResult(int[] resultCounts, Engine[] engines, int turnFlip, GameEndReason gameEndReason = GameEndReason.Unknown) {
-            var resultStr = string.Format("{0}-{1}-{2}(重複={3})", resultCounts[0], resultCounts[1], resultCounts[2], resultCounts[3]);
-            toolStripLabelResult.Text = resultStr;
+        private void UpdateGameResult(Engine[] engines, int turnFlip, GameEndReason gameEndReason = GameEndReason.Unknown) {
+            StringBuilder str = new StringBuilder();
+            str.AppendFormat("{0}-{1}-{2}/{3}",
+                gameResultCounts[0], gameResultCounts[1], gameResultCounts[2],
+                gameResultCounts.Sum());
+            string resultStr = str.ToString();
+            str.AppendLine();
 
-            int win = resultCounts[0];
-            int draw = resultCounts[1];
-            int lose = resultCounts[2];
+            toolStripLabelResult.Text = resultStr;
+            SetTitleStatusText("連続対局中：" +
+                engines[0].Name + " vs " +
+                engines[1].Name + "：" + resultStr);
+
+            int win = gameResultCounts[0];
+            int draw = gameResultCounts[1];
+            int lose = gameResultCounts[2];
             int N = win + lose;
             // 勝率 (引き分けは0.5勝扱い)
             double NN = N + draw;
@@ -797,22 +813,29 @@ namespace ShogiBoard {
             // 有意確率 (引き分けは除く)
             double wp = MathUtility.SignTest(win, lose) * 100.0;
 
-            string s = resultStr + Environment.NewLine +
-                "勝率：        " + wr.ToString("##0.0").PadLeft(5) + "%" + Environment.NewLine +
-                "R差：         " + rating.ToString("0") + Environment.NewLine +
-                "有意確率：    " + wp.ToString("##0.0").PadLeft(5) + "%" + Environment.NewLine +
-                "95%信頼区間： " + wL.ToString("##0.0") + "% ～ " + wH.ToString("##0.0") + "%" + Environment.NewLine +
-                "";
-            toolStripLabelResult.ToolTipText = s;
-
-            SetTitleStatusText("連続対局中：" +
-                engines[0 ^ turnFlip].Name + " vs " +
-                engines[1 ^ turnFlip].Name + "：" + resultStr);
+            if (0 < gameResultCountsPerReason.Count) {
+                str.AppendLine();
+                foreach (var p in gameResultCountsPerReason.OrderByDescending(x => x.Key)) {
+                    str.Append(GameEndReasonUtility.ToString(p.Key));
+                    str.Append('：');
+                    str.Append(p.Value);
+                    str.AppendLine();
+                }
+            }
+            str.AppendLine();
+            str.Append("勝率：        ").Append(wr.ToString("##0.0").PadLeft(5)).Append("%").AppendLine();
+            str.Append("R差：         ").Append(rating.ToString("0")).AppendLine();
+            str.Append("有意確率：    ").Append(wp.ToString("##0.0").PadLeft(5)).Append("%").AppendLine();
+            str.Append("95%信頼区間： ").Append(wL.ToString("##0.0")).Append("% ～ ").Append(wH.ToString("##0.0")).Append("%").AppendLine();
+            string resultDetail = str.ToString();
+            toolStripLabelResult.ToolTipText = resultDetail;
 
             // 終局時はログる。
             if (gameEndReason != GameEndReason.Unknown) {
                 logger.Info(GameEndReasonUtility.ToString(gameEndReason) + "：" +
-                    Regex.Replace(s.TrimEnd().Replace(Environment.NewLine, " ")
+                    Regex.Replace(resultDetail.TrimEnd()
+                        .Replace(Environment.NewLine, " ")
+                        .Replace("  ", "")
                         .Replace(" ～ ", "～"), "： *", "=")); // 適当整形
             }
         }
@@ -821,7 +844,7 @@ namespace ShogiBoard {
         /// 対局終了
         /// </summary>
         private void OnGameEnd(int turn, GameEndReason reason) {
-            gameWinner = turn;
+            gameWinnerTurn = turn;
             gameEndReason = reason;
             foreach (var player in Players) {
                 var usiPlayer = player as USIPlayer;
