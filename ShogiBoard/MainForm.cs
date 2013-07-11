@@ -726,7 +726,7 @@ namespace ShogiBoard {
                         comment = BuildComment(usiPlayer, boardData.Clone(), move);
                         value = Board.NegativeByTurn(usiPlayer.LastScore, board.Turn);
                     }
-                    csaFileWriter.AppendMove(PCLNotationWriter.ToString(boardData, moveData), comment);
+                    csaFileWriter.AppendMove(PCLNotationWriter.ToString(boardData, moveData) + ",T" + (consumeTime / 1000).ToString(), comment);
                     AddMoveToList(boardData.Turn,
                         new MoveDataEx(moveData, comment, value, consumeTime),
                         true, true, moveData.ToString(boardData));
