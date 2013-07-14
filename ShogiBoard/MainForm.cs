@@ -1472,6 +1472,7 @@ namespace ShogiBoard {
                         // メッセージ表示
                         engineViewControl1.AddListItem(time: sw.ElapsedMilliseconds.ToString("#,##0"), pvOrString: "詰みました。");
                     });
+                    return;
                 }
             }
         }
