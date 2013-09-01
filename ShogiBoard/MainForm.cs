@@ -389,11 +389,19 @@ namespace ShogiBoard {
             if (e.Data.GetDataPresent(DataFormats.FileDrop)) {
                 string[] pathList = e.Data.GetData(DataFormats.FileDrop) as string[];
                 if (pathList != null && pathList.Length == 1 && File.Exists(pathList[0])) {
-                    try {
-                        LoadNotationFromString(File.ReadAllText(pathList[0], Encoding.GetEncoding(932))); // sjis
-                    } catch (Exception ex) {
-                        logger.Warn("棋譜・局面読み込み失敗", ex);
-                        MessageBox.Show(this, "読み込みに失敗しました。" + Environment.NewLine + ex.Message, "エラー");
+                    if (string.Compare(Path.GetExtension(pathList[0]), ".exe", StringComparison.OrdinalIgnoreCase) == 0) {
+                        // 拡張子が.exeならエンジン一覧へドロップしたのと同じような動作にする。
+                        // Linuxなどでは拡張子無しが一般的な気もするが、とりあえず。。
+                        using (EngineListForm form = new EngineListForm(configLoader.EngineList, pathList[0])) {
+                            form.ShowDialog(this);
+                        }
+                    } else {
+                        try {
+                            LoadNotationFromString(File.ReadAllText(pathList[0], Encoding.GetEncoding(932))); // sjis
+                        } catch (Exception ex) {
+                            logger.Warn("棋譜・局面読み込み失敗", ex);
+                            MessageBox.Show(this, "読み込みに失敗しました。" + Environment.NewLine + ex.Message, "エラー");
+                        }
                     }
                 }
             }

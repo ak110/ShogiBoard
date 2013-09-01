@@ -12,6 +12,7 @@ using System.Windows.Forms;
 namespace ShogiBoard {
     public partial class EngineListForm : Form {
         EngineList engineList;
+        string addEnginePath;
 
         class ListViewItemTagSorter<TagType> : System.Collections.IComparer {
             int System.Collections.IComparer.Compare(object x, object y) {
@@ -27,9 +28,10 @@ namespace ShogiBoard {
             }
         }
 
-        public EngineListForm(EngineList engineList) {
+        public EngineListForm(EngineList engineList, string addEnginePath = null) {
             InitializeComponent();
             this.engineList = engineList;
+            this.addEnginePath = addEnginePath;
             listView1.BeginUpdate();
             foreach (Engine engine in engineList.Engines) {
                 listView1.Items.Add(ToListViewItem(engine));
@@ -43,6 +45,8 @@ namespace ShogiBoard {
 
         private void EngineListForm_Shown(object sender, EventArgs e) {
             listView1.Focus();
+            if (!string.IsNullOrEmpty(addEnginePath))
+                AddEngineAsync(addEnginePath);
         }
 
         private void contextMenuStrip1_Opening(object sender, CancelEventArgs e) {
@@ -119,13 +123,20 @@ namespace ShogiBoard {
                 string[] files = e.Data.GetData(DataFormats.FileDrop) as string[];
                 if (files.Length == 1 && File.Exists(files[0])) {
                     // ずっとD&D元のエクスプローラが固まるのが嫌なので一度制御を返してからInvoke()してダイアログ開く
-                    ThreadPool.QueueUserWorkItem(new WaitCallback(arg => {
-                        FormUtility.SafeInvoke(this, () => {
-                            AddEngine(new Engine { Path = files[0] });
-                        });
-                    }));
+                    AddEngineAsync(files[0]);
                 }
             }
+        }
+
+        /// <summary>
+        /// エンジンの追加(非同期版)
+        /// </summary>
+        private void AddEngineAsync(string path) {
+            ThreadPool.QueueUserWorkItem(new WaitCallback(arg => {
+                FormUtility.SafeInvoke(this, () => {
+                    AddEngine(new Engine { Path = path });
+                });
+            }));
         }
 
         /// <summary>
