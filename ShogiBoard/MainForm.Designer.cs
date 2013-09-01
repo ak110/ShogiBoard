@@ -297,19 +297,20 @@
             // エンジン一覧EToolStripMenuItem
             // 
             this.エンジン一覧EToolStripMenuItem.Name = "エンジン一覧EToolStripMenuItem";
-            this.エンジン一覧EToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+            this.エンジン一覧EToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
+            this.エンジン一覧EToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
             this.エンジン一覧EToolStripMenuItem.Text = "エンジン一覧(&E)";
             this.エンジン一覧EToolStripMenuItem.Click += new System.EventHandler(this.エンジン一覧EToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(198, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(208, 6);
             // 
             // ログフォルダを開くLToolStripMenuItem
             // 
             this.ログフォルダを開くLToolStripMenuItem.Name = "ログフォルダを開くLToolStripMenuItem";
-            this.ログフォルダを開くLToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+            this.ログフォルダを開くLToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
             this.ログフォルダを開くLToolStripMenuItem.Text = "ログフォルダを開く(&L)";
             this.ログフォルダを開くLToolStripMenuItem.Click += new System.EventHandler(this.ログフォルダを開くLToolStripMenuItem_Click);
             // 
