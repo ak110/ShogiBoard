@@ -34,6 +34,7 @@
             this.設定MToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.削除DToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.複製を追加CToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -53,6 +54,7 @@
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(727, 521);
+            this.listView1.SmallImageList = this.imageList1;
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -115,6 +117,12 @@
             this.複製を追加CToolStripMenuItem.Text = "複製を追加(&C)";
             this.複製を追加CToolStripMenuItem.Click += new System.EventHandler(this.複製を追加CToolStripMenuItem_Click);
             // 
+            // imageList1
+            // 
+            this.imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            this.imageList1.ImageSize = new System.Drawing.Size(16, 16);
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            // 
             // EngineListForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -125,6 +133,7 @@
             this.Name = "EngineListForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "ShogiBoard - エンジン一覧";
+            this.Load += new System.EventHandler(this.EngineListForm_Load);
             this.Shown += new System.EventHandler(this.EngineListForm_Shown);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.EngineListForm_KeyDown);
             this.contextMenuStrip1.ResumeLayout(false);
@@ -143,5 +152,6 @@
         private System.Windows.Forms.ToolStripMenuItem 設定MToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 削除DToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 複製を追加CToolStripMenuItem;
+        private System.Windows.Forms.ImageList imageList1;
     }
 }

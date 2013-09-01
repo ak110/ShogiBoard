@@ -8,9 +8,14 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using ShogiCore.USI;
+using System.Runtime.InteropServices;
 
 namespace ShogiBoard {
     public partial class EngineListForm : Form {
+        static readonly log4net.ILog logger = log4net.LogManager.GetLogger(
+            System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         EngineList engineList;
         string addEnginePath;
 
@@ -32,6 +37,9 @@ namespace ShogiBoard {
             InitializeComponent();
             this.engineList = engineList;
             this.addEnginePath = addEnginePath;
+        }
+
+        private void EngineListForm_Load(object sender, EventArgs e) {
             listView1.BeginUpdate();
             foreach (Engine engine in engineList.Engines) {
                 listView1.Items.Add(ToListViewItem(engine));
@@ -66,6 +74,7 @@ namespace ShogiBoard {
                 Engine engine = (Engine)listView1.SelectedItems[0].Tag;
                 using (EngineForm form = new EngineForm(engine, engineList)) {
                     if (form.ShowDialog(this) == DialogResult.OK) {
+                        SetIconToListViewItem(listView1.SelectedItems[0]);
                         // 保存
                         ConfigSerializer.Serialize(engineList);
                     }
@@ -185,13 +194,83 @@ namespace ShogiBoard {
         /// EngineからListViewItemを作成
         /// </summary>
         private ListViewItem ToListViewItem(Engine engine) {
-            return new ListViewItem(new[] {
+            var item = new ListViewItem(new[] {
                 engine.Name,
                 engine.Path,
                 engine.Author,
             }) {
                 Tag = engine,
             };
+            SetIconToListViewItem(item);
+            return item;
         }
+
+        /// <summary>
+        /// リストビューアイテムにアイコンを設定
+        /// </summary>
+        private void SetIconToListViewItem(ListViewItem item) {
+            string path = "";
+            try {
+                path = USIDriver.NormalizeEnginePath(((Engine)item.Tag).Path);
+                if (File.Exists(path)) {
+                    Icon icon = GetIcon(path);
+                    FormUtility.SafeInvoke(listView1, () => {
+                        item.ImageIndex = imageList1.Images.Add(icon.ToBitmap(), Color.Transparent);
+                        listView1.RedrawItems(item.Index, item.Index, false);
+                    });
+                } else {
+                    logger.Debug("アイコンの読み込みに失敗: " + path);
+                }
+            } catch (Exception e) {
+                logger.Warn("アイコンの読み込みに失敗: " + path, e);
+            }
+        }
+
+        #region GetIcon
+
+        /// <summary>
+        /// Icon.ExtractAssociatedIcon()がしょんぼりなので、自前のSHGetFileInfoのラッパー。
+        /// </summary>
+        /// <param name="path">取得するファイルやフォルダのパス</param>
+        /// <returns>失敗時はnull</returns>
+        static Icon GetIcon(string path) {
+            SHFILEINFO shinfo = new SHFILEINFO();
+            IntPtr hSuccess = SHGetFileInfo(path, 0, ref shinfo, (uint)Marshal.SizeOf(shinfo), SHGFI_ICON | SHGFI_SMALLICON | SHGFI_LARGEICON);
+            if (hSuccess == IntPtr.Zero) {
+                throw new Exception(path + " のアイコンの取得に失敗しました");
+            }
+            return Icon.FromHandle(shinfo.hIcon);
+        }
+
+        /// <summary>
+        /// GetIcon()したアイコンのリソースの解放。
+        /// Icon.Dispose()する前に呼ぶ必要があるような気がしなくもない。
+        /// </summary>
+        static void ReleaseIcon(Icon icon) {
+            DestroyIcon(icon.Handle);
+        }
+
+        #region SHGetFileInfo()関係
+        private struct SHFILEINFO {
+            public IntPtr hIcon;
+            public IntPtr iIcon;
+            public uint dwAttributes;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+            public string szDisplayName;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
+            public string szTypeName;
+        };
+
+        private const uint SHGFI_ICON = 0x100;
+        private const uint SHGFI_LARGEICON = 0x0;
+        private const uint SHGFI_SMALLICON = 0x1;
+
+        [DllImport("shell32.dll")]
+        private static extern IntPtr SHGetFileInfo(string pszPath, uint dwFileAttributes, ref SHFILEINFO psfi, uint cbSizeFileInfo, uint uFlags);
+        [DllImport("user32.dll")]
+        extern static bool DestroyIcon(IntPtr handle);
+
+        #endregion        
+        #endregion
     }
 }
