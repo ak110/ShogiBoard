@@ -105,14 +105,29 @@ namespace ShogiBoard {
         }
 
         /// <summary>
-        /// Deleteキーで「削除」
+        /// Deleteキーで「削除」、Escキーで閉じる。
         /// </summary>
         private void listView1_KeyDown(object sender, KeyEventArgs e) {
             if (e.KeyCode == Keys.Delete) {
                 削除DToolStripMenuItem_Click(this, EventArgs.Empty);
+                e.Handled = true;
+            } else if (e.KeyCode == Keys.Escape) {
+                Close();
+                e.Handled = true;
             }
         }
 
+        /// <summary>
+        /// Escキーで閉じる。
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EngineListForm_KeyDown(object sender, KeyEventArgs e) {
+            if (e.KeyCode == Keys.Escape) {
+                Close();
+                e.Handled = true;
+            }
+        }
 
         private void listView1_DragOver(object sender, DragEventArgs e) {
             e.Effect = DragDropEffects.None;

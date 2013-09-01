@@ -126,6 +126,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "ShogiBoard - エンジン一覧";
             this.Shown += new System.EventHandler(this.EngineListForm_Shown);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.EngineListForm_KeyDown);
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
 
