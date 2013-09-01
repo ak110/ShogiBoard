@@ -77,7 +77,8 @@ namespace ShogiBoard {
             if (0 < listView1.SelectedItems.Count) {
                 ListViewItem item = listView1.SelectedItems[0];
                 Engine engine = (Engine)item.Tag;
-                if (MessageBox.Show(this, engine.Name + "を削除します。よろしいですか?", "確認") == System.Windows.Forms.DialogResult.OK) {
+                if (MessageBox.Show(this, engine.Name + "を削除します。よろしいですか?", "確認",
+                    MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.OK) {
                     if (engineList.Engines.Remove(engine)) {
                         listView1.Items.Remove(item);
                         // 書き込み
@@ -102,6 +103,16 @@ namespace ShogiBoard {
                 設定MToolStripMenuItem_Click(this, EventArgs.Empty);
             }
         }
+
+        /// <summary>
+        /// Deleteキーで「削除」
+        /// </summary>
+        private void listView1_KeyDown(object sender, KeyEventArgs e) {
+            if (e.KeyCode == Keys.Delete) {
+                削除DToolStripMenuItem_Click(this, EventArgs.Empty);
+            }
+        }
+
 
         private void listView1_DragOver(object sender, DragEventArgs e) {
             e.Effect = DragDropEffects.None;
