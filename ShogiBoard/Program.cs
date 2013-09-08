@@ -18,6 +18,8 @@ namespace ShogiBoard {
                 GC.KeepAlive(new ShogiCore.Diagnostics.Log4netLazyMinimalLock());
                 // log4net初期化
                 log4net.Config.XmlConfigurator.Configure();
+                logger = log4net.LogManager.GetLogger(
+                    System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
                 AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
                 Application.ThreadException += Application_ThreadException;
