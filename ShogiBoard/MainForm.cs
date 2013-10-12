@@ -58,8 +58,8 @@ namespace ShogiBoard {
             /// <summary>
             /// 時間を消費する
             /// </summary>
-            /// <param name="time">時間[s]</param>
-            /// <returns>時間切れならfalse。</returns>
+            /// <param name="time">時間[ms]</param>
+            /// <returns>時間が大丈夫ならtrue、時間切れならfalse。</returns>
             public bool ConsumeTime(int time) {
                 if (TimeA <= 0) {
                     if (TimeB <= 0) {
@@ -645,11 +645,11 @@ namespace ShogiBoard {
                 // 情報表示
                 UpdateGameResult(engines, turnFlip);
                 // 対局者名などの表示更新
-                playerInfoControlP.PlayerName = engines[turnFlip].Name;
-                playerInfoControlP.TimeASeconds = timeData[turnFlip].TimeA / 1000;
-                playerInfoControlP.TimeBSeconds = timeData[turnFlip].TimeB / 1000;
+                playerInfoControlP.PlayerName = engines[turnFlip ^ 0].Name;
                 playerInfoControlN.PlayerName = engines[turnFlip ^ 1].Name;
+                playerInfoControlP.TimeASeconds = timeData[turnFlip ^ 0].TimeA / 1000;
                 playerInfoControlN.TimeASeconds = timeData[turnFlip ^ 1].TimeA / 1000;
+                playerInfoControlP.TimeBSeconds = timeData[turnFlip ^ 0].TimeB / 1000;
                 playerInfoControlN.TimeBSeconds = timeData[turnFlip ^ 1].TimeB / 1000;
                 playerInfoControlP.Reset();
                 playerInfoControlN.Reset();
@@ -681,14 +681,16 @@ namespace ShogiBoard {
 
                 FormUtility.SafeInvoke(this, () => {
                     // 自分の時間消費の開始
+                    playerInfoControlP.RemainSeconds = timeData[turnFlip ^ 0].RemainTime / 1000;
+                    playerInfoControlN.RemainSeconds = timeData[turnFlip ^ 1].RemainTime / 1000;
                     GetPlayerInfoControl(board.Turn).StartTurn();
                     // エンジンの表示をクリア
                     GetEngineViewControl(playerIndex).Clear();
                 });
                 int startTime = Environment.TickCount;
                 Move move = player.DoTurn(board,
-                    timeData[board.Turn].TimeA,
-                    timeData[board.Turn ^ 1].TimeA,
+                    timeData[0].RemainTime,
+                    timeData[1].RemainTime,
                     timeData[board.Turn].TimeB);
                 int thinkTime = unchecked(Environment.TickCount - startTime);
                 FormUtility.SafeInvoke(this, () => {
@@ -701,10 +703,9 @@ namespace ShogiBoard {
 
                 // 時間の処理
                 int consumeTime = Math.Max(1000, thinkTime - thinkTime % 1000); // CSAルール：端数切り捨て最低1秒。
-                bool timeUp =
-                    configLoader.VolatileConfig.GameJudgeTimeUp &&
-                    !timeData[board.Turn].ConsumeTime(consumeTime);
-                if (timeUp) {
+                bool timeUp = !timeData[board.Turn].ConsumeTime(consumeTime);
+
+                if (timeUp && configLoader.VolatileConfig.GameJudgeTimeUp) {
                     OnGameEnd(board.Turn ^ 1, GameEndReason.TimeUp);
                 } else if (move == ShogiCore.Move.Win) {
                     if (board.IsNyuugyokuWin()) {
