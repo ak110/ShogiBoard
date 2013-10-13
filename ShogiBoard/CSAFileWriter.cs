@@ -22,13 +22,7 @@ namespace ShogiBoard {
         /// </summary>
         public bool Created { get { return writer != null; } }
 
-        /// <summary>
-        /// 終局理由
-        /// </summary>
-        public GameEndReason GameEndReason { get; set; }
-
         public CSAFileWriter() {
-            GameEndReason = GameEndReason.Interruption; // 最後まで行かなかった(?)なら中断扱いにする
         }
 
         /// <summary>

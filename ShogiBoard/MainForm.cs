@@ -663,10 +663,13 @@ namespace ShogiBoard {
                 Players[0 ^ turnFlip].Name,
                 Players[1 ^ turnFlip].Name,
                 gameID,
-                board.ToCSAStandard());
+                PCLNotationWriter.ToString(board.ToBoardData()));
 
             while (gameWinnerTurn == -2) {
-                if (!threadValid) return;
+                if (!threadValid) {
+                    OnGameEnd(-2, GameEndReason.Abort);
+                    break;
+                }
 
                 MoveList moves = board.GetMovesSafe();
                 if (moves.Count == 0) { // 合法手が無いなら勝負あり。
@@ -758,26 +761,32 @@ namespace ShogiBoard {
 
             // 終局理由を画面へ
             AddMoveToList(GameEndReasonUtility.ToString(gameEndReason));
+            if (csaFileWriter.Created) {
+                csaFileWriter.AppendMove((gameEndReason == GameEndReason.Mate ?
+                    GameEndReason.Resign : gameEndReason).ToStringCSA());
+            }
             // 時間消費の停止
             FormUtility.SafeInvoke(this, () => {
                 playerInfoControlP.EndTurn();
                 playerInfoControlN.EndTurn();
             });
             // 勝ち数の集計・統計情報の表示
-            if (gameWinnerTurn == -1) { // 引き分け
-                gameResultCounts[1]++;
-            } else {
-                gameResultCounts[(gameWinnerTurn ^ turnFlip) * 2]++;
+            if (gameWinnerTurn != -2) {
+                if (gameWinnerTurn == -1) { // 引き分け
+                    gameResultCounts[1]++;
+                } else {
+                    gameResultCounts[(gameWinnerTurn ^ turnFlip) * 2]++;
+                }
+                if (!gameHashSet.Add(board.RandomizedFullHash)) {
+                    gameEndReason = GameEndReason.SameNotation;
+                }
+                if (gameResultCountsPerReason.ContainsKey(gameEndReason)) {
+                    gameResultCountsPerReason[gameEndReason]++;
+                } else {
+                    gameResultCountsPerReason[gameEndReason] = 1;
+                }
+                UpdateGameResult(engines, turnFlip, gameEndReason);
             }
-            if (!gameHashSet.Add(board.RandomizedFullHash)) {
-                gameEndReason = GameEndReason.SameNotation;
-            }
-            if (gameResultCountsPerReason.ContainsKey(gameEndReason)) {
-                gameResultCountsPerReason[gameEndReason]++;
-            } else {
-                gameResultCountsPerReason[gameEndReason] = 1;
-            }
-            UpdateGameResult(engines, turnFlip, gameEndReason);
         }
 
         /// <summary>
