@@ -25,17 +25,24 @@
         private void InitializeComponent() {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GameForm));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.engineSelectControl1 = new ShogiBoard.EngineSelectControl();
             this.buttonOk = new System.Windows.Forms.Button();
             this.buttonSave = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.engineSelectControl2 = new ShogiBoard.EngineSelectControl();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.gameTimePickerControl3 = new ShogiBoard.GameTimePickerControl();
+            this.gameTimePickerControl2 = new ShogiBoard.GameTimePickerControl();
+            this.gameTimePickerControl1 = new ShogiBoard.GameTimePickerControl();
             this.panel1 = new System.Windows.Forms.Panel();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.label6 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
@@ -51,13 +58,6 @@
             this.radioButton6 = new System.Windows.Forms.RadioButton();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.label4 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.gameTimePickerControl3 = new ShogiBoard.GameTimePickerControl();
-            this.gameTimePickerControl2 = new ShogiBoard.GameTimePickerControl();
-            this.gameTimePickerControl1 = new ShogiBoard.GameTimePickerControl();
-            this.engineSelectControl2 = new ShogiBoard.EngineSelectControl();
-            this.engineSelectControl1 = new ShogiBoard.EngineSelectControl();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -79,6 +79,15 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "先手";
+            // 
+            // engineSelectControl1
+            // 
+            this.engineSelectControl1.Location = new System.Drawing.Point(6, 18);
+            this.engineSelectControl1.Name = "engineSelectControl1";
+            this.engineSelectControl1.SelectedItem = null;
+            this.engineSelectControl1.Size = new System.Drawing.Size(682, 25);
+            this.engineSelectControl1.TabIndex = 0;
+            this.engineSelectControl1.SelectedIndexChanged += new System.EventHandler(this.engineSelectControl1_SelectedIndexChanged);
             // 
             // buttonOk
             // 
@@ -127,6 +136,15 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "後手";
             // 
+            // engineSelectControl2
+            // 
+            this.engineSelectControl2.Location = new System.Drawing.Point(6, 18);
+            this.engineSelectControl2.Name = "engineSelectControl2";
+            this.engineSelectControl2.SelectedItem = null;
+            this.engineSelectControl2.Size = new System.Drawing.Size(682, 25);
+            this.engineSelectControl2.TabIndex = 0;
+            this.engineSelectControl2.SelectedIndexChanged += new System.EventHandler(this.engineSelectControl1_SelectedIndexChanged);
+            // 
             // groupBox3
             // 
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -146,6 +164,46 @@
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "対局設定";
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "判定しない",
+            "負け扱い",
+            "引き分け扱い"});
+            this.comboBox1.Location = new System.Drawing.Point(440, 22);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(121, 20);
+            this.comboBox1.TabIndex = 8;
+            // 
+            // gameTimePickerControl3
+            // 
+            this.gameTimePickerControl3.Location = new System.Drawing.Point(100, 66);
+            this.gameTimePickerControl3.Name = "gameTimePickerControl3";
+            this.gameTimePickerControl3.Size = new System.Drawing.Size(273, 21);
+            this.gameTimePickerControl3.TabIndex = 3;
+            this.gameTimePickerControl3.TimeASeconds = 599940;
+            this.gameTimePickerControl3.TimeBSeconds = 9999;
+            // 
+            // gameTimePickerControl2
+            // 
+            this.gameTimePickerControl2.Location = new System.Drawing.Point(100, 44);
+            this.gameTimePickerControl2.Name = "gameTimePickerControl2";
+            this.gameTimePickerControl2.Size = new System.Drawing.Size(273, 21);
+            this.gameTimePickerControl2.TabIndex = 2;
+            this.gameTimePickerControl2.TimeASeconds = 599940;
+            this.gameTimePickerControl2.TimeBSeconds = 9999;
+            // 
+            // gameTimePickerControl1
+            // 
+            this.gameTimePickerControl1.Location = new System.Drawing.Point(100, 19);
+            this.gameTimePickerControl1.Name = "gameTimePickerControl1";
+            this.gameTimePickerControl1.Size = new System.Drawing.Size(273, 21);
+            this.gameTimePickerControl1.TabIndex = 1;
+            this.gameTimePickerControl1.TimeASeconds = 599940;
+            this.gameTimePickerControl1.TimeBSeconds = 9999;
             // 
             // panel1
             // 
@@ -211,6 +269,15 @@
             this.label6.Size = new System.Drawing.Size(122, 12);
             this.label6.TabIndex = 7;
             this.label6.Text = "(0で無制限に連続対局)";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(378, 26);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(52, 12);
+            this.label4.TabIndex = 5;
+            this.label4.Text = "時間切れ";
             // 
             // label5
             // 
@@ -371,73 +438,6 @@
             // folderBrowserDialog1
             // 
             this.folderBrowserDialog1.Description = "棋譜ファイルの入ったフォルダを選択してください。";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(378, 26);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(52, 12);
-            this.label4.TabIndex = 5;
-            this.label4.Text = "時間切れ";
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            "判定しない",
-            "負け扱いとする",
-            "引き分け扱いとする"});
-            this.comboBox1.Location = new System.Drawing.Point(440, 22);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 20);
-            this.comboBox1.TabIndex = 8;
-            // 
-            // gameTimePickerControl3
-            // 
-            this.gameTimePickerControl3.Location = new System.Drawing.Point(100, 66);
-            this.gameTimePickerControl3.Name = "gameTimePickerControl3";
-            this.gameTimePickerControl3.Size = new System.Drawing.Size(273, 21);
-            this.gameTimePickerControl3.TabIndex = 3;
-            this.gameTimePickerControl3.TimeASeconds = 599940;
-            this.gameTimePickerControl3.TimeBSeconds = 9999;
-            // 
-            // gameTimePickerControl2
-            // 
-            this.gameTimePickerControl2.Location = new System.Drawing.Point(100, 44);
-            this.gameTimePickerControl2.Name = "gameTimePickerControl2";
-            this.gameTimePickerControl2.Size = new System.Drawing.Size(273, 21);
-            this.gameTimePickerControl2.TabIndex = 2;
-            this.gameTimePickerControl2.TimeASeconds = 599940;
-            this.gameTimePickerControl2.TimeBSeconds = 9999;
-            // 
-            // gameTimePickerControl1
-            // 
-            this.gameTimePickerControl1.Location = new System.Drawing.Point(100, 19);
-            this.gameTimePickerControl1.Name = "gameTimePickerControl1";
-            this.gameTimePickerControl1.Size = new System.Drawing.Size(273, 21);
-            this.gameTimePickerControl1.TabIndex = 1;
-            this.gameTimePickerControl1.TimeASeconds = 599940;
-            this.gameTimePickerControl1.TimeBSeconds = 9999;
-            // 
-            // engineSelectControl2
-            // 
-            this.engineSelectControl2.Location = new System.Drawing.Point(6, 18);
-            this.engineSelectControl2.Name = "engineSelectControl2";
-            this.engineSelectControl2.SelectedItem = null;
-            this.engineSelectControl2.Size = new System.Drawing.Size(682, 25);
-            this.engineSelectControl2.TabIndex = 0;
-            this.engineSelectControl2.SelectedIndexChanged += new System.EventHandler(this.engineSelectControl1_SelectedIndexChanged);
-            // 
-            // engineSelectControl1
-            // 
-            this.engineSelectControl1.Location = new System.Drawing.Point(6, 18);
-            this.engineSelectControl1.Name = "engineSelectControl1";
-            this.engineSelectControl1.SelectedItem = null;
-            this.engineSelectControl1.Size = new System.Drawing.Size(682, 25);
-            this.engineSelectControl1.TabIndex = 0;
-            this.engineSelectControl1.SelectedIndexChanged += new System.EventHandler(this.engineSelectControl1_SelectedIndexChanged);
             // 
             // GameForm
             // 
