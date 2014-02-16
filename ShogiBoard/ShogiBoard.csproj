@@ -58,6 +58,12 @@
     <Compile Include="ConfigSerializer.cs" />
     <Compile Include="CSAFileWriter.cs" />
     <Compile Include="Engine.cs" />
+    <Compile Include="ConfigForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfigForm.Designer.cs">
+      <DependentUpon>ConfigForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="EngineForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -154,6 +160,9 @@
     <Compile Include="GameTimePickerControl.Designer.cs">
       <DependentUpon>GameTimePickerControl.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="ConfigForm.resx">
+      <DependentUpon>ConfigForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="EngineForm.resx">
       <DependentUpon>EngineForm.cs</DependentUpon>
     </EmbeddedResource>

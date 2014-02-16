@@ -76,6 +76,8 @@
             this.toolStripButton詰 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripLabelResult = new System.Windows.Forms.ToolStripLabel();
+            this.設定CToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip1.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -114,7 +116,7 @@
             // 終了XToolStripMenuItem
             // 
             this.終了XToolStripMenuItem.Name = "終了XToolStripMenuItem";
-            this.終了XToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
+            this.終了XToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.終了XToolStripMenuItem.Text = "終了(&X)";
             this.終了XToolStripMenuItem.Click += new System.EventHandler(this.終了XToolStripMenuItem_Click);
             // 
@@ -288,6 +290,8 @@
             // 
             this.設定CToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.エンジン一覧EToolStripMenuItem,
+            this.toolStripSeparator11,
+            this.設定CToolStripMenuItem1,
             this.toolStripSeparator1,
             this.ログフォルダを開くLToolStripMenuItem});
             this.設定CToolStripMenuItem.Name = "設定CToolStripMenuItem";
@@ -618,6 +622,18 @@
             this.toolStripLabelResult.Text = "0-0-0(重複：0)";
             this.toolStripLabelResult.DoubleClick += new System.EventHandler(this.toolStripLabelResult_DoubleClick);
             // 
+            // 設定CToolStripMenuItem1
+            // 
+            this.設定CToolStripMenuItem1.Name = "設定CToolStripMenuItem1";
+            this.設定CToolStripMenuItem1.Size = new System.Drawing.Size(211, 22);
+            this.設定CToolStripMenuItem1.Text = "設定(&C)";
+            this.設定CToolStripMenuItem1.Click += new System.EventHandler(this.設定CToolStripMenuItem1_Click);
+            // 
+            // toolStripSeparator11
+            // 
+            this.toolStripSeparator11.Name = "toolStripSeparator11";
+            this.toolStripSeparator11.Size = new System.Drawing.Size(208, 6);
+            // 
             // MainForm
             // 
             this.AllowDrop = true;
@@ -711,6 +727,8 @@
         private System.Windows.Forms.ToolStripMenuItem 対局GToolStripMenuItem1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
         private System.Windows.Forms.ToolStripLabel toolStripLabelResult;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
+        private System.Windows.Forms.ToolStripMenuItem 設定CToolStripMenuItem1;
     }
 }
 

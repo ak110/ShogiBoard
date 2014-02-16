@@ -291,6 +291,12 @@ namespace ShogiBoard {
             }
         }
 
+        private void 設定CToolStripMenuItem1_Click(object sender, EventArgs e) {
+            using (ConfigForm form = new ConfigForm(configLoader.Config)) {
+                form.ShowDialog(this);
+            }
+        }
+
         private void ログフォルダを開くLToolStripMenuItem_Click(object sender, EventArgs e) {
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
             if (Directory.Exists(path)) {
@@ -1561,8 +1567,10 @@ namespace ShogiBoard {
             USIPlayer player = null;
             try {
                 SetTitleStatusText("USIエンジン起動中：" + engine.Name + " (" + System.IO.Path.GetFileName(engine.Path) + ")");
-                Players[playerIndex] = player = new USIPlayer(engine.Path, null, playerIndex + 1);
+                USIDriver usiDriver = new USIDriver(engine.Path, null, playerIndex + 1);
+                Players[playerIndex] = player = new USIPlayer(usiDriver);
                 GetEngineViewControl(playerIndex).Attach(player);
+                usiDriver.Start(configLoader.Config.EnginePriority);
                 player.ByoyomiHack = engine.ByoyomiHack;
                 player.SetOption("USI_Ponder", engine.USIPonder ? "true" : "false");
                 player.SetOption("USI_Hash", engine.USIHash.ToString());

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -48,6 +49,10 @@ namespace ShogiBoard {
         /// 接続先設定
         /// </summary>
         public NetworkGameConnection[] NetworkGameConnections { get; set; }
+        /// <summary>
+        /// エンジンのプロセス優先度
+        /// </summary>
+        public ProcessPriorityClass EnginePriority { get; set; }
 
         /// <summary>
         /// 初期化
@@ -67,6 +72,7 @@ namespace ShogiBoard {
                     NetworkGameConnections[i] = new NetworkGameConnection(); // デフォルト値
                 }
             }
+            EnginePriority = ProcessPriorityClass.Normal;
         }
     }
 }

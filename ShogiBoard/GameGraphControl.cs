@@ -218,6 +218,16 @@ namespace ShogiBoard {
         /// 描画スレッド
         /// </summary>
         void DrawingThread() {
+            try {
+                DrawingThreadImpl();
+            } catch (Exception e) {
+                logger.Error("グラフ描画スレッドで例外発生", e);
+            }
+        }
+        /// <summary>
+        /// 描画スレッド
+        /// </summary>
+        void DrawingThreadImpl() {
             IAsyncResult ar = null;
             while (true) {
                 try {
