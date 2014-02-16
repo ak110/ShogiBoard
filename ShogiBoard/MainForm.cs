@@ -67,9 +67,8 @@ namespace ShogiBoard {
                         return true;
                     } else {
                         // 秒読みのみ
-                        // shogi-serverの実装は < のはず（秒読み2秒で最大1秒+端数までOK）だが、
-                        // 秒読み1秒で最大1秒+端数まで考えるプログラムが多い気がするので変えてしまう。
-                        return time <= TimeB;
+                        // 例：秒読み2秒の場合、最大で1秒+端数までOK
+                        return time < TimeB;
                     }
                 } else {
                     if (RemainTime < time) {
