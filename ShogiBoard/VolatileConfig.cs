@@ -120,6 +120,7 @@ namespace ShogiBoard {
         /// </summary>
         public VolatileConfig() {
             GameJudgeTimeUp = true;
+            GameTimeUpType = 1; // 負け扱い
             GameStartPosNotationShuffle = true;
             GameStartPosNotationStartCount = 30;
         }
