@@ -23,6 +23,7 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EngineForm));
             this.label1 = new System.Windows.Forms.Label();
             this.textBoxName = new System.Windows.Forms.TextBox();
@@ -34,8 +35,8 @@
             this.button1 = new System.Windows.Forms.Button();
             this.buttonGetByEngine = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.button4 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
-            this.engineOptionsControl1 = new ShogiBoard.EngineOptionsControl();
             this.button2 = new System.Windows.Forms.Button();
             this.numericUpDownHash = new System.Windows.Forms.NumericUpDown();
             this.label5 = new System.Windows.Forms.Label();
@@ -44,7 +45,9 @@
             this.buttonOk = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.button4 = new System.Windows.Forms.Button();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.engineOptionsControl1 = new ShogiBoard.EngineOptionsControl();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownHash)).BeginInit();
@@ -155,6 +158,7 @@
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.checkBox1);
             this.groupBox2.Controls.Add(this.button4);
             this.groupBox2.Controls.Add(this.button3);
             this.groupBox2.Controls.Add(this.engineOptionsControl1);
@@ -170,6 +174,16 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "エンジン設定";
             // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(410, 17);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(131, 23);
+            this.button4.TabIndex = 8;
+            this.button4.Text = "エンジンへ送信してクリア";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
             // button3
             // 
             this.button3.Location = new System.Drawing.Point(329, 17);
@@ -179,18 +193,6 @@
             this.button3.Text = "クリア";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
-            // 
-            // engineOptionsControl1
-            // 
-            this.engineOptionsControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.engineOptionsControl1.AutoScroll = true;
-            this.engineOptionsControl1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.engineOptionsControl1.Location = new System.Drawing.Point(205, 46);
-            this.engineOptionsControl1.Name = "engineOptionsControl1";
-            this.engineOptionsControl1.Size = new System.Drawing.Size(336, 289);
-            this.engineOptionsControl1.TabIndex = 6;
             // 
             // button2
             // 
@@ -272,15 +274,34 @@
             this.openFileDialog1.RestoreDirectory = true;
             this.openFileDialog1.SupportMultiDottedExtensions = true;
             // 
-            // button4
+            // checkBox1
             // 
-            this.button4.Location = new System.Drawing.Point(410, 17);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(131, 23);
-            this.button4.TabIndex = 8;
-            this.button4.Text = "エンジンへ送信してクリア";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(19, 85);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(148, 16);
+            this.checkBox1.TabIndex = 9;
+            this.checkBox1.Text = "秒読みを1秒減らして送信";
+            this.toolTip1.SetToolTip(this.checkBox1, "チェックを入れた場合、秒読みをエンジンに送信するとき、1秒減らした値を送信します。\r\n例として、秒読みが2秒の場合、2.0秒以上思考するとShogiBoardは時" +
+        "間切れと判定しますが、\r\n秒読みが2秒の場合に2秒+端数まで思考するエンジンの場合にチェックを入れると、\r\nそのエンジンに対してのみ、秒読みが2秒の場合に1秒と" +
+        "して送信するため、\r\n1秒＋端数まで思考する動作となることを期待できます。");
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // toolTip1
+            // 
+            this.toolTip1.AutomaticDelay = 0;
+            // 
+            // engineOptionsControl1
+            // 
+            this.engineOptionsControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.engineOptionsControl1.AutoScroll = true;
+            this.engineOptionsControl1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.engineOptionsControl1.Location = new System.Drawing.Point(205, 46);
+            this.engineOptionsControl1.Name = "engineOptionsControl1";
+            this.engineOptionsControl1.Size = new System.Drawing.Size(336, 289);
+            this.engineOptionsControl1.TabIndex = 6;
             // 
             // EngineForm
             // 
@@ -330,5 +351,7 @@
         private EngineOptionsControl engineOptionsControl1;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

@@ -1563,6 +1563,7 @@ namespace ShogiBoard {
                 SetTitleStatusText("USIエンジン起動中：" + engine.Name + " (" + System.IO.Path.GetFileName(engine.Path) + ")");
                 Players[playerIndex] = player = new USIPlayer(engine.Path, null, playerIndex + 1);
                 GetEngineViewControl(playerIndex).Attach(player);
+                player.ByoyomiHack = engine.ByoyomiHack;
                 player.SetOption("USI_Ponder", engine.USIPonder ? "true" : "false");
                 player.SetOption("USI_Hash", engine.USIHash.ToString());
                 foreach (var p in engine.Options) {

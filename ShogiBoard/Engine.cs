@@ -57,6 +57,12 @@ namespace ShogiBoard {
         [XmlElement("options")]
         public List<Option> Options { get; set; }
 
+        /// <summary>
+        /// 秒読みを1秒減らしてエンジンへ送信するならtrue
+        /// </summary>
+        [XmlElement("byoyomiHack")]
+        public bool ByoyomiHack { get; set; }
+
         public Engine() {
             USIPonder = true;
             USIHash = 128;

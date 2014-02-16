@@ -28,6 +28,7 @@ namespace ShogiBoard {
             textBoxPath.Text = engine.Path;
             checkBoxUSIPonder.Checked = engine.USIPonder;
             numericUpDownHash.Value = engine.USIHash;
+            checkBox1.Checked = engine.ByoyomiHack;
             engineOptionsControl1.FromList(engine.Options);
             // 有効無効を設定
             textBoxPath_TextChanged(this, EventArgs.Empty);
@@ -56,6 +57,7 @@ namespace ShogiBoard {
             engine.Path = textBoxPath.Text;
             engine.USIPonder = checkBoxUSIPonder.Checked;
             engine.USIHash = (int)numericUpDownHash.Value;
+            engine.ByoyomiHack = checkBox1.Checked;
             engine.Options = engineOptionsControl1.ToList();
         }
 
