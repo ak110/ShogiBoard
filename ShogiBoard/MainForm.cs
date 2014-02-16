@@ -707,8 +707,12 @@ namespace ShogiBoard {
                 int consumeTime = Math.Max(1000, thinkTime - thinkTime % 1000); // CSAルール：端数切り捨て最低1秒。
                 bool timeUp = !timeData[board.Turn].ConsumeTime(consumeTime);
 
-                if (timeUp && configLoader.VolatileConfig.GameJudgeTimeUp) {
-                    OnGameEnd(board.Turn ^ 1, GameEndReason.TimeUp);
+                if (timeUp && configLoader.VolatileConfig.GameTimeUpType != 0) {
+                    if (configLoader.VolatileConfig.GameTimeUpType == 1) {
+                        OnGameEnd(board.Turn ^ 1, GameEndReason.TimeUp); // 負け扱い
+                    } else {
+                        OnGameEnd(-1, GameEndReason.TimeUp); // 引き分け扱い
+                    }
                 } else if (move == ShogiCore.Move.Win) {
                     if (board.IsNyuugyokuWin()) {
                         OnGameEnd(board.Turn, GameEndReason.Nyuugyoku);

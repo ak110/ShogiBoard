@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace ShogiBoard {
     /// <summary>
@@ -47,10 +48,17 @@ namespace ShogiBoard {
         /// 対局の時間設定
         /// </summary>
         public GameTime[] GameTimes { get; set; }
+
         /// <summary>
         /// 時間切れを負けとするのかどうか
         /// </summary>
-        public bool GameJudgeTimeUp { get; set; }
+        [XmlIgnore] // 移行用のため記録しない
+        private bool GameJudgeTimeUp { get; set; }
+        /// <summary>
+        /// 時間切れの扱い。0:判定しない、1:負け扱い、2:引き分け扱い
+        /// </summary>
+        public int GameTimeUpType { get; set; }
+
         /// <summary>
         /// 通信対局の回数。0で無制限。
         /// </summary>
@@ -134,6 +142,10 @@ namespace ShogiBoard {
                     GameTimes[i] = new GameTime() { TimeASeconds = 25, TimeBSeconds = 0 };
                 }
             }
+
+            // 移行
+            if (!GameJudgeTimeUp)
+                GameTimeUpType = 0; // 判定しない
         }
     }
 }

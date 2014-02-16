@@ -36,7 +36,7 @@ namespace ShogiBoard {
             gameTimePickerControl2.TimeBSeconds = volatileConfig.GameTimes[1].TimeBSeconds;
             gameTimePickerControl3.TimeASeconds = volatileConfig.GameTimes[2].TimeASeconds;
             gameTimePickerControl3.TimeBSeconds = volatileConfig.GameTimes[2].TimeBSeconds;
-            checkBox2.Checked = volatileConfig.GameJudgeTimeUp;
+            comboBox1.SelectedIndex = volatileConfig.GameTimeUpType;
             numericUpDown1.Value = volatileConfig.GameCount;
             switch (volatileConfig.GameStartPosType) {
                 case 0: radioButton5.Checked = true; break;
@@ -99,7 +99,7 @@ namespace ShogiBoard {
             volatileConfig.GameTimes[1].TimeBSeconds = gameTimePickerControl2.TimeBSeconds;
             volatileConfig.GameTimes[2].TimeASeconds = gameTimePickerControl3.TimeASeconds;
             volatileConfig.GameTimes[2].TimeBSeconds = gameTimePickerControl3.TimeBSeconds;
-            volatileConfig.GameJudgeTimeUp = checkBox2.Checked;
+            volatileConfig.GameTimeUpType = comboBox1.SelectedIndex;
             volatileConfig.GameCount = (int)numericUpDown1.Value;
             if (radioButton5.Checked) volatileConfig.GameStartPosType = 0;
             else volatileConfig.GameStartPosType = 1;
