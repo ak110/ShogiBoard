@@ -38,6 +38,8 @@ namespace ShogiBoard {
             gameTimePickerControl3.TimeBSeconds = volatileConfig.GameTimes[2].TimeBSeconds;
             comboBox1.SelectedIndex = volatileConfig.GameTimeUpType;
             numericUpDown1.Value = volatileConfig.GameCount;
+            checkBox2.Checked = volatileConfig.GameEndByMoveCount;
+            numericUpDown3.Value = volatileConfig.GameEndMoveCount;
             switch (volatileConfig.GameStartPosType) {
                 case 0: radioButton5.Checked = true; break;
                 case 1: radioButton6.Checked = true; break;
@@ -101,6 +103,8 @@ namespace ShogiBoard {
             volatileConfig.GameTimes[2].TimeBSeconds = gameTimePickerControl3.TimeBSeconds;
             volatileConfig.GameTimeUpType = comboBox1.SelectedIndex;
             volatileConfig.GameCount = (int)numericUpDown1.Value;
+            volatileConfig.GameEndByMoveCount = checkBox2.Checked;
+            volatileConfig.GameEndMoveCount = (int)numericUpDown3.Value;
             if (radioButton5.Checked) volatileConfig.GameStartPosType = 0;
             else volatileConfig.GameStartPosType = 1;
             volatileConfig.GameStartPosNotationPath = textBox1.Text;
@@ -123,11 +127,17 @@ namespace ShogiBoard {
             UpdateEnables();
         }
 
+        private void checkBox2_CheckedChanged(object sender, EventArgs e) {
+            UpdateEnables();
+        }
+
         private void UpdateEnables() {
             // エンジンの有無によってEnabledを変更
             bool hasEngine1 = engineSelectControl1.SelectedItem != null;
             bool hasEngine2 = engineSelectControl2.SelectedItem != null;
             buttonOk.Enabled = hasEngine1 && hasEngine2;
+            // 強制引き分け化手数
+            numericUpDown3.Enabled = checkBox2.Checked;
             // 棋譜の局面かどうかによってEnabledを変更
             bool isNotationPosition = radioButton6.Checked;
             textBox1.Enabled = isNotationPosition;

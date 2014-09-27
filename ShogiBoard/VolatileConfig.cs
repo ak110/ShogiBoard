@@ -58,11 +58,19 @@ namespace ShogiBoard {
         /// 時間切れの扱い。0:判定しない、1:負け扱い、2:引き分け扱い
         /// </summary>
         public int GameTimeUpType { get; set; }
-
         /// <summary>
         /// 通信対局の回数。0で無制限。
         /// </summary>
         public int GameCount { get; set; }
+        /// <summary>
+        /// 指定手数で強制的に引き分け扱いにする
+        /// </summary>
+        public bool GameEndByMoveCount { get; set; }
+        /// <summary>
+        /// 強制的に引き分け扱いにする手数
+        /// </summary>
+        public int GameEndMoveCount { get; set; }
+
         /// <summary>
         /// 開始局面。0で初期局面、1で棋譜の局面。
         /// </summary>
@@ -123,6 +131,7 @@ namespace ShogiBoard {
             GameTimeUpType = 1; // 負け扱い
             GameStartPosNotationShuffle = true;
             GameStartPosNotationStartCount = 30;
+            GameEndMoveCount = 256;
         }
 
         /// <summary>

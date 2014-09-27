@@ -449,6 +449,7 @@ namespace ShogiBoard {
             }
             listBox1.Focus();
         }
+
         #region 対局
 
         /// <summary>
@@ -679,6 +680,11 @@ namespace ShogiBoard {
                 MoveList moves = board.GetMovesSafe();
                 if (moves.Count == 0) { // 合法手が無いなら勝負あり。
                     OnGameEnd(board.Turn ^ 1, GameEndReason.Mate); // 最後の一手の方の勝ち
+                    break;
+                }
+                if (configLoader.VolatileConfig.GameEndByMoveCount &&
+                    configLoader.VolatileConfig.GameEndMoveCount <= board.MoveCount) { // 指定手数で強制引き分け
+                    OnGameEnd(-1, GameEndReason.Interruption);
                     break;
                 }
 
