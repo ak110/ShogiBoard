@@ -125,6 +125,7 @@ namespace ShogiBoard {
             ThreadPool.QueueUserWorkItem(new WaitCallback(arg => {
                 try {
                     using (USIDriver usi = new USIDriver(textBoxPath.Text)) {
+                        usi.Start();
                         FormUtility.SafeInvoke(this, () => {
                             textBoxName.Text = usi.IdName;
                             textBoxAuthor.Text = usi.IdAuthor;
@@ -173,6 +174,7 @@ namespace ShogiBoard {
             ThreadPool.QueueUserWorkItem(new WaitCallback(arg => {
                 try {
                     using (USIDriver usi = new USIDriver(textBoxPath.Text)) {
+                        usi.Start();
                         FormUtility.SafeInvoke(this, () => {
                             engineOptionsControl1.Clear();
                             foreach (var opt in usi.Options) {
@@ -217,6 +219,7 @@ namespace ShogiBoard {
             ThreadPool.QueueUserWorkItem(new WaitCallback(arg => {
                 try {
                     using (USIDriver usi = new USIDriver(textBoxPath.Text)) {
+                        usi.Start();
                         foreach (var p in list) {
                             usi.SendSetOption(p.Name, p.Value);
                         }

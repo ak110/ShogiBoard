@@ -216,7 +216,9 @@ namespace ShogiBoard {
                     Icon icon = GetIcon(path);
                     FormUtility.SafeInvoke(listView1, () => {
                         item.ImageIndex = imageList1.Images.Add(icon.ToBitmap(), Color.Transparent);
-                        listView1.RedrawItems(item.Index, item.Index, false);
+                        if (0 <= item.Index) {
+                            listView1.RedrawItems(item.Index, item.Index, false);
+                        }
                     });
                 } else {
                     logger.Debug("アイコンの読み込みに失敗: " + path);

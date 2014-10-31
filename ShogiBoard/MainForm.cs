@@ -121,6 +121,7 @@ namespace ShogiBoard {
         GameEndReason gameEndReason;
         HashSet<ulong> gameHashSet = new HashSet<ulong>(); // 終局時の盤面ハッシュのリスト。終局図が同じなら完全に重複なので結果から除外する。
         int[] gameResultCounts = new int[3];
+        int[,] halfGameResultCounts = new int[4, 3];
         Dictionary<GameEndReason, int> gameResultCountsPerReason = new Dictionary<GameEndReason, int>();
         #endregion
         #region 通信対局用
@@ -146,8 +147,6 @@ namespace ShogiBoard {
         #region 検討・詰将棋解答用
         Thread singleEngineThread;
         object singleEngineThreadLock = new object();
-        #endregion
-        #region 対局用
         #endregion
 
         public MainForm() {
@@ -498,6 +497,7 @@ namespace ShogiBoard {
         private void GameThread() {
             gameHashSet.Clear();
             Array.Clear(gameResultCounts, 0, gameResultCounts.Length);
+            Array.Clear(halfGameResultCounts, 0, halfGameResultCounts.Length);
             gameResultCountsPerReason.Clear();
 
             int startposIndex = -1;
