@@ -134,6 +134,15 @@ namespace ShogiBoard {
                 } catch (Exception ex) {
                     logger.Warn("エンジンからの情報取得に失敗", ex);
                     FormUtility.SafeInvoke(this, () => {
+                        // 空なら仮でファイル名を設定
+                        if (textBoxName.TextLength <= 0) {
+                            try {
+                                textBoxName.Text = Path.GetFileNameWithoutExtension(textBoxPath.Text);
+                            } catch (Exception ex2) {
+                                logger.Warn("ファイル名の取得に失敗", ex2);
+                            }
+                        }
+                        // エラーメッセージ
                         MessageBox.Show(this, "エンジンからの名前/作者取得に失敗しました。", "エラー");
                     });
                 } finally {
