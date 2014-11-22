@@ -167,6 +167,8 @@ namespace ShogiBoard {
                 });
             };
             configLoader.StartThread();
+
+            SetTitleStatusText("");
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e) {
@@ -1676,8 +1678,11 @@ namespace ShogiBoard {
             if (InvokeRequired) {
                 FormUtility.SafeInvoke(this, () => { SetTitleStatusText(statusText); });
             } else {
-                string text = string.IsNullOrEmpty(statusText) ? "ShogiBoard" : "ShogiBoard - " + statusText;
-                Text = text;
+                int build = System.Diagnostics.Process.GetCurrentProcess()
+                    .MainModule.FileVersionInfo.FileBuildPart;
+                string appName = "ShogiBoard build-" + build;
+                string text = string.IsNullOrEmpty(statusText) ? "" : " - " + statusText;
+                Text = appName + text;
                 logger.DebugFormat("Text = {0}", text);
             }
         }
