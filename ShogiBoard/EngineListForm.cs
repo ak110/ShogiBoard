@@ -74,7 +74,7 @@ namespace ShogiBoard {
                 Engine engine = (Engine)listView1.SelectedItems[0].Tag;
                 using (EngineForm form = new EngineForm(engine, engineList)) {
                     if (form.ShowDialog(this) == DialogResult.OK) {
-                        SetIconToListViewItem(listView1.SelectedItems[0]);
+                        ApplyToListViewItem(listView1.SelectedItems[0], engine);
                         // 保存
                         ConfigSerializer.Serialize(engineList);
                     }
@@ -105,7 +105,7 @@ namespace ShogiBoard {
         }
 
         /// <summary>
-        /// ダブルクリックは「変更」扱い
+        /// ダブルクリックは「設定」扱い
         /// </summary>
         private void listView1_MouseDoubleClick(object sender, MouseEventArgs e) {
             if (e.Button == System.Windows.Forms.MouseButtons.Left) {
@@ -203,6 +203,17 @@ namespace ShogiBoard {
             };
             SetIconToListViewItem(item);
             return item;
+        }
+
+        /// <summary>
+        /// Engineの情報をListViewItemへ反映
+        /// </summary>
+        private void ApplyToListViewItem(ListViewItem item, Engine engine) {
+            item.SubItems[0].Text = engine.Name;
+            item.SubItems[1].Text = engine.Path;
+            item.SubItems[2].Text = engine.Author;
+            item.Tag = engine;
+            SetIconToListViewItem(item);
         }
 
         /// <summary>
