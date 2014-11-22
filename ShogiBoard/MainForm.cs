@@ -442,7 +442,7 @@ namespace ShogiBoard {
                     moveCount++;
                     AddMoveToListForAppliedBoard(boardData.Turn ^ 1, boardData, moveDataEx, false, moveCount == notation.Moves.Length);
                 }
-                listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                listBox1.SelectedIndex = 0;
             } finally {
                 listBox1.EndUpdate();
             }
