@@ -17,8 +17,3 @@ USI対応のGUI。
 - 対局中に平均深さと平均NPSを怪しい方法で算出して表示したりします。
 - 連続対局で勝率や検定の結果をツールチップ表示したりします。(ツールバーの右端)
 
-
-
-最新バイナリ
-------
-https://github.com/ak110/ShogiBoard/blob/master/Binary/ShogiBoard.zip?raw=true
