@@ -1596,6 +1596,8 @@ namespace ShogiBoard {
         private USIPlayer CreateUSIPlayer(Engine engine, int playerIndex) {
             USIPlayer player = null;
             try {
+                if (!threadValid)
+                    return null;
                 SetTitleStatusText("USIエンジン起動中：" + engine.Name + " (" + System.IO.Path.GetFileName(engine.Path) + ")");
                 USIDriver usiDriver = new USIDriver(engine.Path, null, playerIndex + 1);
                 Players[playerIndex] = player = new USIPlayer(usiDriver);
