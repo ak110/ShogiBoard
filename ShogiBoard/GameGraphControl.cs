@@ -220,11 +220,7 @@ namespace ShogiBoard {
         /// </summary>
         void DrawingThread() {
             try {
-                try {
-                    DrawingThreadImpl();
-                } catch (Exception e) {
-                    logger.Error("グラフ描画スレッドで例外発生", e);
-                }
+                DrawingThreadImpl();
             } catch {
             }
         }
