@@ -96,7 +96,7 @@ namespace ShogiBoard {
                 return;
             }
             listView1.Items.Insert(0, new ListViewItem(new[] {
-                time.PadLeft(8), // 時間
+                (time + "").PadLeft(8), // 時間
                 depth, // 深さ
                 nodes, // ノード
                 score, // 評価値

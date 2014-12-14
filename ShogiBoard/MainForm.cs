@@ -1516,14 +1516,17 @@ namespace ShogiBoard {
                         // リストを詰み手順だけにする
                         ClearMoveList();
                         BoardData boardData = p.Board.ToBoardData();
+                        StringBuilder pvString = new StringBuilder();
                         foreach (string moveStr in (command.Parameters ?? "").Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)) {
                             MoveData moveData = SFENNotationReader.ToMoveData(moveStr);
+                            pvString.Append(moveData.ToString(boardData));
                             boardData.Do(moveData);
                             AddMoveToListForAppliedBoard(boardData.Turn ^ 1, boardData, new MoveDataEx(moveData));
                         }
 
                         // メッセージ表示
                         engineViewControl1.AddListItem(time: sw.ElapsedMilliseconds.ToString("#,##0"), pvOrString: "詰みました。");
+                        engineViewControl1.AddListItem(pvOrString: pvString.ToString());
                     });
                     return;
                 }
