@@ -1718,7 +1718,15 @@ namespace ShogiBoard {
         private Notation GetNotation() {
             Notation notation;
             lock (Board) {
-                notation = Board.ToNotation();
+                var b = Board.Clone();
+                while (0 < b.History.Count)
+                    b.Undo();
+                for (int i = 1; i < listBox1.Items.Count; i++) {
+                    MoveData moveData = ((MoveListBoxItem)listBox1.Items[i]).MoveDataEx.MoveData;
+                    if (moveData.IsEmpty) break; // 終局の理由とかの場合。
+                    b.Do(ShogiCore.Move.FromNotation(b, moveData));
+                }
+                notation = b.ToNotation();
                 notation.FirstPlayerName = playerInfoControlP.PlayerName;
                 notation.SecondPlayerName = playerInfoControlN.PlayerName;
             }
