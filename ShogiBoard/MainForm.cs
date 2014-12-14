@@ -169,6 +169,7 @@ namespace ShogiBoard {
             configLoader.StartThread();
 
             SetTitleStatusText("");
+            ClearMoveList();
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e) {
@@ -230,6 +231,23 @@ namespace ShogiBoard {
                 logger.Warn("棋譜・局面貼り付け失敗", ex);
                 MessageBox.Show(this, "貼り付けに失敗しました。" + Environment.NewLine + ex.Message, "エラー");
             }
+        }
+
+        private void 手番変更TToolStripMenuItem_Click(object sender, EventArgs e) {
+            var data = Board.ToBoardData();
+            data.Turn ^= 1;
+            LoadNotationFromString(new SFENNotationWriter().WriteToString(new Notation { InitialBoard = data }));
+        }
+
+        private void 左右反転SToolStripMenuItem_Click(object sender, EventArgs e) {
+            var b = Board.Clone();
+            b.ReverseLR();
+            LoadNotationFromString(new SFENNotationWriter().WriteToString(new Notation { InitialBoard = b.ToBoardData() }));
+        }
+
+        private void 先後反転FToolStripMenuItem_Click(object sender, EventArgs e) {
+            var b = Board.ReverseClone();
+            LoadNotationFromString(new SFENNotationWriter().WriteToString(new Notation { InitialBoard = b.ToBoardData() }));
         }
 
         private void 対局GToolStripMenuItem1_Click(object sender, EventArgs e) {
@@ -1538,6 +1556,7 @@ namespace ShogiBoard {
             中断AToolStripMenuItem.Enabled = abortable && start;
             対局GToolStripMenuItem.Enabled = !start;
             通信対局NToolStripMenuItem.Enabled = !start;
+            局面編集BToolStripMenuItem.Enabled = !start;
             //toolStripButton投.Enabled =
             //toolStripButton待.Enabled =
             //toolStripButton急.Enabled =
@@ -1616,6 +1635,7 @@ namespace ShogiBoard {
         private void ClearMoveList() {
             listBox1.Items.Clear();
             listBox1.Items.Add(new MoveListBoxItem(" === 開始局面 ===", new MoveDataEx(new MoveData())));
+            listBox1.SelectedIndex = 0;
             gameGraphControl1.ClearAsync();
         }
 

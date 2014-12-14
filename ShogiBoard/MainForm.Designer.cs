@@ -50,6 +50,8 @@
             this.中断AToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.設定CToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.エンジン一覧EToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
+            this.設定CToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.ログフォルダを開くLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -76,8 +78,10 @@
             this.toolStripButton詰 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripLabelResult = new System.Windows.Forms.ToolStripLabel();
-            this.設定CToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
+            this.局面編集BToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.左右反転SToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.先後反転FToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.手番変更TToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -97,6 +101,7 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ファイルFToolStripMenuItem,
             this.編集EToolStripMenuItem,
+            this.局面編集BToolStripMenuItem,
             this.対局GToolStripMenuItem,
             this.設定CToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
@@ -116,7 +121,7 @@
             // 終了XToolStripMenuItem
             // 
             this.終了XToolStripMenuItem.Name = "終了XToolStripMenuItem";
-            this.終了XToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.終了XToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
             this.終了XToolStripMenuItem.Text = "終了(&X)";
             this.終了XToolStripMenuItem.Click += new System.EventHandler(this.終了XToolStripMenuItem_Click);
             // 
@@ -305,6 +310,18 @@
             this.エンジン一覧EToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
             this.エンジン一覧EToolStripMenuItem.Text = "エンジン一覧(&E)";
             this.エンジン一覧EToolStripMenuItem.Click += new System.EventHandler(this.エンジン一覧EToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator11
+            // 
+            this.toolStripSeparator11.Name = "toolStripSeparator11";
+            this.toolStripSeparator11.Size = new System.Drawing.Size(208, 6);
+            // 
+            // 設定CToolStripMenuItem1
+            // 
+            this.設定CToolStripMenuItem1.Name = "設定CToolStripMenuItem1";
+            this.設定CToolStripMenuItem1.Size = new System.Drawing.Size(211, 22);
+            this.設定CToolStripMenuItem1.Text = "設定(&C)";
+            this.設定CToolStripMenuItem1.Click += new System.EventHandler(this.設定CToolStripMenuItem1_Click);
             // 
             // toolStripSeparator1
             // 
@@ -622,17 +639,36 @@
             this.toolStripLabelResult.Text = "0-0-0(重複：0)";
             this.toolStripLabelResult.DoubleClick += new System.EventHandler(this.toolStripLabelResult_DoubleClick);
             // 
-            // 設定CToolStripMenuItem1
+            // 局面編集BToolStripMenuItem
             // 
-            this.設定CToolStripMenuItem1.Name = "設定CToolStripMenuItem1";
-            this.設定CToolStripMenuItem1.Size = new System.Drawing.Size(211, 22);
-            this.設定CToolStripMenuItem1.Text = "設定(&C)";
-            this.設定CToolStripMenuItem1.Click += new System.EventHandler(this.設定CToolStripMenuItem1_Click);
+            this.局面編集BToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.手番変更TToolStripMenuItem,
+            this.左右反転SToolStripMenuItem,
+            this.先後反転FToolStripMenuItem});
+            this.局面編集BToolStripMenuItem.Name = "局面編集BToolStripMenuItem";
+            this.局面編集BToolStripMenuItem.Size = new System.Drawing.Size(86, 22);
+            this.局面編集BToolStripMenuItem.Text = "局面編集(&B)";
             // 
-            // toolStripSeparator11
+            // 左右反転SToolStripMenuItem
             // 
-            this.toolStripSeparator11.Name = "toolStripSeparator11";
-            this.toolStripSeparator11.Size = new System.Drawing.Size(208, 6);
+            this.左右反転SToolStripMenuItem.Name = "左右反転SToolStripMenuItem";
+            this.左右反転SToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.左右反転SToolStripMenuItem.Text = "左右反転(&S)";
+            this.左右反転SToolStripMenuItem.Click += new System.EventHandler(this.左右反転SToolStripMenuItem_Click);
+            // 
+            // 先後反転FToolStripMenuItem
+            // 
+            this.先後反転FToolStripMenuItem.Name = "先後反転FToolStripMenuItem";
+            this.先後反転FToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.先後反転FToolStripMenuItem.Text = "先後反転(&F)";
+            this.先後反転FToolStripMenuItem.Click += new System.EventHandler(this.先後反転FToolStripMenuItem_Click);
+            // 
+            // 手番変更TToolStripMenuItem
+            // 
+            this.手番変更TToolStripMenuItem.Name = "手番変更TToolStripMenuItem";
+            this.手番変更TToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.手番変更TToolStripMenuItem.Text = "手番変更(&T)";
+            this.手番変更TToolStripMenuItem.Click += new System.EventHandler(this.手番変更TToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -729,6 +765,10 @@
         private System.Windows.Forms.ToolStripLabel toolStripLabelResult;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
         private System.Windows.Forms.ToolStripMenuItem 設定CToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem 局面編集BToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 手番変更TToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 左右反転SToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 先後反転FToolStripMenuItem;
     }
 }
 

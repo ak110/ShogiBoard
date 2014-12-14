@@ -57,6 +57,7 @@ namespace ShogiBoard {
             Disposed += GameGraphControl_Disposed;
             Clear();
             thread = new Thread(DrawingThread);
+            thread.IsBackground = true;
             thread.Start();
         }
 
@@ -219,9 +220,12 @@ namespace ShogiBoard {
         /// </summary>
         void DrawingThread() {
             try {
-                DrawingThreadImpl();
-            } catch (Exception e) {
-                logger.Error("グラフ描画スレッドで例外発生", e);
+                try {
+                    DrawingThreadImpl();
+                } catch (Exception e) {
+                    logger.Error("グラフ描画スレッドで例外発生", e);
+                }
+            } catch {
             }
         }
         /// <summary>
