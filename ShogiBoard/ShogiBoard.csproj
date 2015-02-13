@@ -89,6 +89,12 @@
     <Compile Include="EngineSelectControl.Designer.cs">
       <DependentUpon>EngineSelectControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="EngineTimeOptionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EngineTimeOptionControl.Designer.cs">
+      <DependentUpon>EngineTimeOptionControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="EngineViewControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -174,6 +180,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="EngineSelectControl.resx">
       <DependentUpon>EngineSelectControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EngineTimeOptionControl.resx">
+      <DependentUpon>EngineTimeOptionControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="EngineViewControl.resx">
       <DependentUpon>EngineViewControl.cs</DependentUpon>

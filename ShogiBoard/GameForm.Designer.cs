@@ -23,21 +23,17 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GameForm));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.engineSelectControl1 = new ShogiBoard.EngineSelectControl();
             this.buttonOk = new System.Windows.Forms.Button();
             this.buttonSave = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.engineSelectControl2 = new ShogiBoard.EngineSelectControl();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.gameTimePickerControl3 = new ShogiBoard.GameTimePickerControl();
-            this.gameTimePickerControl2 = new ShogiBoard.GameTimePickerControl();
-            this.gameTimePickerControl1 = new ShogiBoard.GameTimePickerControl();
             this.panel1 = new System.Windows.Forms.Panel();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
@@ -60,6 +56,14 @@
             this.radioButton6 = new System.Windows.Forms.RadioButton();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.gameTimePickerControl3 = new ShogiBoard.GameTimePickerControl();
+            this.gameTimePickerControl2 = new ShogiBoard.GameTimePickerControl();
+            this.gameTimePickerControl1 = new ShogiBoard.GameTimePickerControl();
+            this.engineTimeOptionControl2 = new ShogiBoard.EngineTimeOptionControl();
+            this.engineSelectControl2 = new ShogiBoard.EngineSelectControl();
+            this.engineTimeOptionControl1 = new ShogiBoard.EngineTimeOptionControl();
+            this.engineSelectControl1 = new ShogiBoard.EngineSelectControl();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -75,28 +79,20 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.engineTimeOptionControl1);
             this.groupBox1.Controls.Add(this.engineSelectControl1);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(702, 65);
+            this.groupBox1.Size = new System.Drawing.Size(742, 98);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "先手";
-            // 
-            // engineSelectControl1
-            // 
-            this.engineSelectControl1.Location = new System.Drawing.Point(6, 18);
-            this.engineSelectControl1.Name = "engineSelectControl1";
-            this.engineSelectControl1.SelectedItem = null;
-            this.engineSelectControl1.Size = new System.Drawing.Size(682, 25);
-            this.engineSelectControl1.TabIndex = 0;
-            this.engineSelectControl1.SelectedIndexChanged += new System.EventHandler(this.engineSelectControl1_SelectedIndexChanged);
             // 
             // buttonOk
             // 
             this.buttonOk.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOk.Location = new System.Drawing.Point(211, 394);
+            this.buttonOk.Location = new System.Drawing.Point(231, 481);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(96, 23);
             this.buttonOk.TabIndex = 4;
@@ -108,7 +104,7 @@
             // 
             this.buttonSave.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.buttonSave.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonSave.Location = new System.Drawing.Point(313, 394);
+            this.buttonSave.Location = new System.Drawing.Point(333, 481);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(96, 23);
             this.buttonSave.TabIndex = 5;
@@ -120,7 +116,7 @@
             // 
             this.buttonCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(415, 394);
+            this.buttonCancel.Location = new System.Drawing.Point(435, 481);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(96, 23);
             this.buttonCancel.TabIndex = 6;
@@ -131,22 +127,14 @@
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.engineTimeOptionControl2);
             this.groupBox2.Controls.Add(this.engineSelectControl2);
-            this.groupBox2.Location = new System.Drawing.Point(12, 83);
+            this.groupBox2.Location = new System.Drawing.Point(12, 116);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(702, 65);
+            this.groupBox2.Size = new System.Drawing.Size(742, 98);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "後手";
-            // 
-            // engineSelectControl2
-            // 
-            this.engineSelectControl2.Location = new System.Drawing.Point(6, 18);
-            this.engineSelectControl2.Name = "engineSelectControl2";
-            this.engineSelectControl2.SelectedItem = null;
-            this.engineSelectControl2.Size = new System.Drawing.Size(682, 25);
-            this.engineSelectControl2.TabIndex = 0;
-            this.engineSelectControl2.SelectedIndexChanged += new System.EventHandler(this.engineSelectControl1_SelectedIndexChanged);
             // 
             // groupBox3
             // 
@@ -163,16 +151,16 @@
             this.groupBox3.Controls.Add(this.label6);
             this.groupBox3.Controls.Add(this.label4);
             this.groupBox3.Controls.Add(this.label5);
-            this.groupBox3.Location = new System.Drawing.Point(12, 154);
+            this.groupBox3.Location = new System.Drawing.Point(12, 220);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(702, 107);
+            this.groupBox3.Size = new System.Drawing.Size(742, 129);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "対局設定";
             // 
             // numericUpDown3
             // 
-            this.numericUpDown3.Location = new System.Drawing.Point(440, 76);
+            this.numericUpDown3.Location = new System.Drawing.Point(478, 76);
             this.numericUpDown3.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -185,7 +173,7 @@
             0});
             this.numericUpDown3.Name = "numericUpDown3";
             this.numericUpDown3.Size = new System.Drawing.Size(60, 19);
-            this.numericUpDown3.TabIndex = 10;
+            this.numericUpDown3.TabIndex = 18;
             this.numericUpDown3.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numericUpDown3.Value = new decimal(new int[] {
             1,
@@ -196,10 +184,10 @@
             // checkBox2
             // 
             this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(380, 77);
+            this.checkBox2.Location = new System.Drawing.Point(418, 77);
             this.checkBox2.Name = "checkBox2";
             this.checkBox2.Size = new System.Drawing.Size(268, 16);
-            this.checkBox2.TabIndex = 9;
+            this.checkBox2.TabIndex = 17;
             this.checkBox2.Text = "手数が　　　　　　　　　　手を超えたら引き分けにする";
             this.checkBox2.UseVisualStyleBackColor = true;
             this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
@@ -212,37 +200,10 @@
             "判定しない",
             "負け扱い",
             "引き分け扱い"});
-            this.comboBox1.Location = new System.Drawing.Point(440, 22);
+            this.comboBox1.Location = new System.Drawing.Point(478, 22);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(121, 20);
-            this.comboBox1.TabIndex = 8;
-            // 
-            // gameTimePickerControl3
-            // 
-            this.gameTimePickerControl3.Location = new System.Drawing.Point(100, 66);
-            this.gameTimePickerControl3.Name = "gameTimePickerControl3";
-            this.gameTimePickerControl3.Size = new System.Drawing.Size(273, 21);
-            this.gameTimePickerControl3.TabIndex = 3;
-            this.gameTimePickerControl3.TimeASeconds = 599940;
-            this.gameTimePickerControl3.TimeBSeconds = 9999;
-            // 
-            // gameTimePickerControl2
-            // 
-            this.gameTimePickerControl2.Location = new System.Drawing.Point(100, 44);
-            this.gameTimePickerControl2.Name = "gameTimePickerControl2";
-            this.gameTimePickerControl2.Size = new System.Drawing.Size(273, 21);
-            this.gameTimePickerControl2.TabIndex = 2;
-            this.gameTimePickerControl2.TimeASeconds = 599940;
-            this.gameTimePickerControl2.TimeBSeconds = 9999;
-            // 
-            // gameTimePickerControl1
-            // 
-            this.gameTimePickerControl1.Location = new System.Drawing.Point(100, 19);
-            this.gameTimePickerControl1.Name = "gameTimePickerControl1";
-            this.gameTimePickerControl1.Size = new System.Drawing.Size(273, 21);
-            this.gameTimePickerControl1.TabIndex = 1;
-            this.gameTimePickerControl1.TimeASeconds = 599940;
-            this.gameTimePickerControl1.TimeBSeconds = 9999;
+            this.comboBox1.TabIndex = 13;
             // 
             // panel1
             // 
@@ -251,7 +212,7 @@
             this.panel1.Controls.Add(this.radioButton1);
             this.panel1.Location = new System.Drawing.Point(7, 19);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(87, 74);
+            this.panel1.Size = new System.Drawing.Size(101, 74);
             this.panel1.TabIndex = 0;
             // 
             // radioButton3
@@ -289,7 +250,7 @@
             // 
             // numericUpDown1
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(440, 51);
+            this.numericUpDown1.Location = new System.Drawing.Point(478, 51);
             this.numericUpDown1.Maximum = new decimal(new int[] {
             9999,
             0,
@@ -297,34 +258,34 @@
             0});
             this.numericUpDown1.Name = "numericUpDown1";
             this.numericUpDown1.Size = new System.Drawing.Size(105, 19);
-            this.numericUpDown1.TabIndex = 6;
+            this.numericUpDown1.TabIndex = 15;
             this.numericUpDown1.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(551, 53);
+            this.label6.Location = new System.Drawing.Point(589, 53);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(122, 12);
-            this.label6.TabIndex = 7;
+            this.label6.TabIndex = 16;
             this.label6.Text = "(0で無制限に連続対局)";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(378, 26);
+            this.label4.Location = new System.Drawing.Point(416, 26);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(52, 12);
-            this.label4.TabIndex = 5;
+            this.label4.TabIndex = 12;
             this.label4.Text = "時間切れ";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(378, 55);
+            this.label5.Location = new System.Drawing.Point(416, 55);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(53, 12);
-            this.label5.TabIndex = 5;
+            this.label5.TabIndex = 14;
             this.label5.Text = "対局回数";
             // 
             // groupBox4
@@ -340,9 +301,9 @@
             this.groupBox4.Controls.Add(this.textBox1);
             this.groupBox4.Controls.Add(this.label1);
             this.groupBox4.Controls.Add(this.panel2);
-            this.groupBox4.Location = new System.Drawing.Point(12, 268);
+            this.groupBox4.Location = new System.Drawing.Point(12, 355);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(702, 97);
+            this.groupBox4.Size = new System.Drawing.Size(742, 97);
             this.groupBox4.TabIndex = 3;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "開始局面";
@@ -478,13 +439,78 @@
             // 
             this.folderBrowserDialog1.Description = "棋譜ファイルの入ったフォルダを選択してください。";
             // 
+            // gameTimePickerControl3
+            // 
+            this.gameTimePickerControl3.Location = new System.Drawing.Point(107, 68);
+            this.gameTimePickerControl3.Name = "gameTimePickerControl3";
+            this.gameTimePickerControl3.Size = new System.Drawing.Size(273, 21);
+            this.gameTimePickerControl3.TabIndex = 3;
+            this.gameTimePickerControl3.TimeASeconds = 599940;
+            this.gameTimePickerControl3.TimeBSeconds = 9999;
+            // 
+            // gameTimePickerControl2
+            // 
+            this.gameTimePickerControl2.Location = new System.Drawing.Point(107, 46);
+            this.gameTimePickerControl2.Name = "gameTimePickerControl2";
+            this.gameTimePickerControl2.Size = new System.Drawing.Size(273, 21);
+            this.gameTimePickerControl2.TabIndex = 2;
+            this.gameTimePickerControl2.TimeASeconds = 599940;
+            this.gameTimePickerControl2.TimeBSeconds = 9999;
+            // 
+            // gameTimePickerControl1
+            // 
+            this.gameTimePickerControl1.Location = new System.Drawing.Point(107, 21);
+            this.gameTimePickerControl1.Name = "gameTimePickerControl1";
+            this.gameTimePickerControl1.Size = new System.Drawing.Size(273, 21);
+            this.gameTimePickerControl1.TabIndex = 1;
+            this.gameTimePickerControl1.TimeASeconds = 599940;
+            this.gameTimePickerControl1.TimeBSeconds = 9999;
+            // 
+            // engineTimeOptionControl2
+            // 
+            this.engineTimeOptionControl2.Depth = 1;
+            this.engineTimeOptionControl2.Location = new System.Drawing.Point(13, 55);
+            this.engineTimeOptionControl2.Name = "engineTimeOptionControl2";
+            this.engineTimeOptionControl2.Nodes = ((long)(10000));
+            this.engineTimeOptionControl2.Size = new System.Drawing.Size(590, 24);
+            this.engineTimeOptionControl2.TabIndex = 1;
+            this.engineTimeOptionControl2.TimeControl = ShogiBoard.VolatileConfig.TimeControl.Nodes;
+            // 
+            // engineSelectControl2
+            // 
+            this.engineSelectControl2.Location = new System.Drawing.Point(6, 18);
+            this.engineSelectControl2.Name = "engineSelectControl2";
+            this.engineSelectControl2.SelectedItem = null;
+            this.engineSelectControl2.Size = new System.Drawing.Size(682, 25);
+            this.engineSelectControl2.TabIndex = 0;
+            this.engineSelectControl2.SelectedIndexChanged += new System.EventHandler(this.engineSelectControl1_SelectedIndexChanged);
+            // 
+            // engineTimeOptionControl1
+            // 
+            this.engineTimeOptionControl1.Depth = 1;
+            this.engineTimeOptionControl1.Location = new System.Drawing.Point(13, 53);
+            this.engineTimeOptionControl1.Name = "engineTimeOptionControl1";
+            this.engineTimeOptionControl1.Nodes = ((long)(10000));
+            this.engineTimeOptionControl1.Size = new System.Drawing.Size(590, 24);
+            this.engineTimeOptionControl1.TabIndex = 1;
+            this.engineTimeOptionControl1.TimeControl = ShogiBoard.VolatileConfig.TimeControl.Nodes;
+            // 
+            // engineSelectControl1
+            // 
+            this.engineSelectControl1.Location = new System.Drawing.Point(6, 18);
+            this.engineSelectControl1.Name = "engineSelectControl1";
+            this.engineSelectControl1.SelectedItem = null;
+            this.engineSelectControl1.Size = new System.Drawing.Size(682, 25);
+            this.engineSelectControl1.TabIndex = 0;
+            this.engineSelectControl1.SelectedIndexChanged += new System.EventHandler(this.engineSelectControl1_SelectedIndexChanged);
+            // 
             // GameForm
             // 
             this.AcceptButton = this.buttonOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(726, 428);
+            this.ClientSize = new System.Drawing.Size(766, 515);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.buttonCancel);
@@ -553,5 +579,8 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.NumericUpDown numericUpDown3;
         private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.ToolTip toolTip1;
+        private EngineTimeOptionControl engineTimeOptionControl1;
+        private EngineTimeOptionControl engineTimeOptionControl2;
     }
 }

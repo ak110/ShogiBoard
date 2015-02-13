@@ -24,6 +24,12 @@ namespace ShogiBoard {
                 volatileConfig.GameEngine1Name, volatileConfig.GameEngine1Path);
             engineSelectControl2.SelectedItem = engineList.Select(
                 volatileConfig.GameEngine2Name, volatileConfig.GameEngine2Path);
+            engineTimeOptionControl1.TimeControl = volatileConfig.GameEngineTimeControls[0];
+            engineTimeOptionControl2.TimeControl = volatileConfig.GameEngineTimeControls[1];
+            engineTimeOptionControl1.Depth = volatileConfig.GameEngineDepths[0];
+            engineTimeOptionControl2.Depth = volatileConfig.GameEngineDepths[1];
+            engineTimeOptionControl1.Nodes = volatileConfig.GameEngineNodes[0];
+            engineTimeOptionControl2.Nodes = volatileConfig.GameEngineNodes[1];
             switch (volatileConfig.GameTimeIndex) {
                 case 0: radioButton1.Checked = true; break;
                 case 1: radioButton2.Checked = true; break;
@@ -91,9 +97,17 @@ namespace ShogiBoard {
                     volatileConfig.GameEngine2Path = engine.Path;
                 }
             }
+            volatileConfig.GameEngineTimeControls[0] = engineTimeOptionControl1.TimeControl;
+            volatileConfig.GameEngineTimeControls[1] = engineTimeOptionControl2.TimeControl;
+            volatileConfig.GameEngineDepths[0] = engineTimeOptionControl1.Depth;
+            volatileConfig.GameEngineDepths[1] = engineTimeOptionControl2.Depth;
+            volatileConfig.GameEngineNodes[0] = engineTimeOptionControl1.Nodes;
+            volatileConfig.GameEngineNodes[1] = engineTimeOptionControl2.Nodes;
             if (radioButton1.Checked) volatileConfig.GameTimeIndex = 0;
             else if (radioButton2.Checked) volatileConfig.GameTimeIndex = 1;
             else if (radioButton3.Checked) volatileConfig.GameTimeIndex = 2;
+            //else if (radioButton4.Checked) volatileConfig.GameTimeIndex = VolatileConfig.GameTimeIndexDepth;
+            //else if (radioButton7.Checked) volatileConfig.GameTimeIndex = VolatileConfig.GameTimeIndexNodes;
             else volatileConfig.GameTimeIndex = 0;
             volatileConfig.GameTimes[0].TimeASeconds = gameTimePickerControl1.TimeASeconds;
             volatileConfig.GameTimes[0].TimeBSeconds = gameTimePickerControl1.TimeBSeconds;

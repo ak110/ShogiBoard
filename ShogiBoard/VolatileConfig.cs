@@ -23,6 +23,10 @@ namespace ShogiBoard {
             /// </summary>
             public int TimeBSeconds { get; set; }
         }
+        /// <summary>
+        /// エンジンの時間制御方法
+        /// </summary>
+        public enum TimeControl { Normal, Depth, Nodes }
 
         /// <summary>
         /// 対局で前回選択したエンジンの名前
@@ -48,6 +52,18 @@ namespace ShogiBoard {
         /// 対局の時間設定
         /// </summary>
         public GameTime[] GameTimes { get; set; }
+        /// <summary>
+        /// 時間制御
+        /// </summary>
+        public TimeControl[] GameEngineTimeControls { get; set; }
+        /// <summary>
+        /// 読む深さ
+        /// </summary>
+        public int[] GameEngineDepths { get; set; }
+        /// <summary>
+        /// ノード数
+        /// </summary>
+        public long[] GameEngineNodes { get; set; }
 
         /// <summary>
         /// 時間切れを負けとするのかどうか
@@ -132,6 +148,9 @@ namespace ShogiBoard {
             GameStartPosNotationShuffle = true;
             GameStartPosNotationStartCount = 30;
             GameEndMoveCount = 256;
+            GameEngineTimeControls = new[] { TimeControl.Normal, TimeControl.Normal };
+            GameEngineDepths = new[] { 5, 5 };
+            GameEngineNodes = new[] { 10000L, 10000L };
         }
 
         /// <summary>

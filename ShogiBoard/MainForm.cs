@@ -650,11 +650,21 @@ namespace ShogiBoard {
             gameWinnerTurn = -2;
             gameEndReason = GameEndReason.Unknown;
 
-            var gameTime = configLoader.VolatileConfig.GameTimes[configLoader.VolatileConfig.GameTimeIndex];
-            for (int i = 0; i < timeData.Length; i++) {
-                timeData[i].TimeA = gameTime.TimeASeconds * 1000;
-                timeData[i].TimeB = gameTime.TimeBSeconds * 1000;
-                timeData[i].Reset();
+            VolatileConfig.GameTime gameTime;
+            if (0 <= configLoader.VolatileConfig.GameTimeIndex) {
+                gameTime = configLoader.VolatileConfig.GameTimes[configLoader.VolatileConfig.GameTimeIndex];
+                for (int i = 0; i < timeData.Length; i++) {
+                    timeData[i].TimeA = gameTime.TimeASeconds * 1000;
+                    timeData[i].TimeB = gameTime.TimeBSeconds * 1000;
+                    timeData[i].Reset();
+                }
+            } else {
+                gameTime = new VolatileConfig.GameTime();
+                for (int i = 0; i < timeData.Length; i++) {
+                    timeData[i].TimeA = 0;
+                    timeData[i].TimeB = 0;
+                    timeData[i].Reset();
+                }
             }
             lock (Board) {
                 Board = board.Clone();
@@ -712,6 +722,19 @@ namespace ShogiBoard {
 
                 int playerIndex = (board.MoveCount & 1) ^ turnFlip;
                 var player = Players[playerIndex];
+                var usiPlayer = player as USIPlayer;
+                if (usiPlayer != null) {
+                    if (configLoader.VolatileConfig.GameEngineTimeControls[playerIndex] == VolatileConfig.TimeControl.Depth) {
+                        usiPlayer.GoDepth = configLoader.VolatileConfig.GameEngineDepths[playerIndex];
+                        usiPlayer.GoNodes = null;
+                    } else if (configLoader.VolatileConfig.GameEngineTimeControls[playerIndex] == VolatileConfig.TimeControl.Nodes) {
+                        usiPlayer.GoDepth = null;
+                        usiPlayer.GoNodes = configLoader.VolatileConfig.GameEngineNodes[playerIndex];
+                    } else {
+                        usiPlayer.GoDepth = null;
+                        usiPlayer.GoNodes = null;
+                    }
+                }
 
                 FormUtility.SafeInvoke(this, () => {
                     // 自分の時間消費の開始
@@ -758,7 +781,6 @@ namespace ShogiBoard {
                 } else {
                     var boardData = board.ToBoardData();
                     var moveData = move.ToNotation();
-                    var usiPlayer = player as USIPlayer;
                     string comment;
                     int? value;
                     if (usiPlayer == null || !usiPlayer.HasScore) { // scoreを受信してないならコメント無し。(PVが無くてもscoreがあればコメントあり)
