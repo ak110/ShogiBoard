@@ -57,6 +57,12 @@ namespace ShogiBoard {
             this.stat = stat;
             player.CommandReceived += player_CommandReceived;
             player.InfoReceived += player_InfoReceived;
+        }
+
+        /// <summary>
+        /// プレイヤー情報を更新
+        /// </summary>
+        public void UpdatePlayerInfo(USIPlayer player) {
             BeginInvoke(new MethodInvoker(() => {
                 try {
                     labelEngine.Text = player.Driver.IdName; // エンジン名

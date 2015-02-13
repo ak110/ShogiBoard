@@ -1668,6 +1668,7 @@ namespace ShogiBoard {
                     player.SetOption(p.Name, p.Value);
                 }
                 player.GameStart();
+                GetEngineViewControl(playerIndex).UpdatePlayerInfo(player);
                 return player;
             } catch (Exception e) {
                 try {
