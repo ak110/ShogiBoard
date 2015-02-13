@@ -17,6 +17,7 @@ namespace ShogiBoard {
             System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         USIPlayer player;
+        EngineStatisticsForGame stat;
 
         /// <summary>
         /// 局面(PV構築など用に参照を設定しておく)
@@ -51,8 +52,9 @@ namespace ShogiBoard {
         /// アタッチ
         /// </summary>
         /// <param name="player"></param>
-        public void Attach(USIPlayer player) {
+        public void Attach(USIPlayer player, EngineStatisticsForGame stat) {
             this.player = player;
+            this.stat = stat;
             player.CommandReceived += player_CommandReceived;
             player.InfoReceived += player_InfoReceived;
             BeginInvoke(new MethodInvoker(() => {
@@ -207,8 +209,10 @@ namespace ShogiBoard {
                     if (!string.IsNullOrEmpty(infoPVOrString)) {
                         AddListItem(infoTime, infoDepth, infoNodes, infoScore, infoPVOrString, pvLengthString);
                     }
-                    double? meanDepth = player.MeanDepth;
-                    double? meanNPS = player.MeanNPS;
+                    stat.Depth.Calculate();
+                    stat.NPS.Calculate();
+                    double? meanDepth = stat.Depth.Result.MeanOfAll;
+                    double? meanNPS = stat.NPS.Result.MeanOfAll;
                     if (meanDepth.HasValue) {
                         labelMeanDepth.Text = "平均深さ：" + meanDepth.Value.ToString("#0.0");
                     } else {

@@ -89,6 +89,7 @@
     <Compile Include="EngineSelectControl.Designer.cs">
       <DependentUpon>EngineSelectControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="EngineStatisticsForAllGames.cs" />
     <Compile Include="EngineTimeOptionControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -103,12 +104,14 @@
     </Compile>
     <Compile Include="Exceptions\USIEngineException.cs" />
     <Compile Include="FormUtility.cs" />
+    <Compile Include="EngineStatisticsForGame.cs" />
     <Compile Include="GameGraphControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="GameGraphControl.Designer.cs">
       <DependentUpon>GameGraphControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="GameMeanValue.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

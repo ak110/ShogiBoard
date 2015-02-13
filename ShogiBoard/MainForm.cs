@@ -32,6 +32,10 @@ namespace ShogiBoard {
         /// プレイヤー。対局・検討・詰将棋解答中か否かは、このプロパティを用いてPlayers[0]がnullか否かで判定する。
         /// </summary>
         public IPlayer[] Players { get; private set; }
+        /// <summary>
+        /// 全対局を通してのエンジンごとの統計情報
+        /// </summary>
+        public EngineStatisticsForAllGames[] EngineStatisticesForAllGames { get; private set; }
 
         /// <summary>
         /// 持ち時間情報
@@ -154,6 +158,10 @@ namespace ShogiBoard {
             ClearToolStripLabelResult();
             Board = new Board();
             Players = new IPlayer[2];
+            EngineStatisticesForAllGames = new[] {
+                new EngineStatisticsForAllGames(),
+                new EngineStatisticsForAllGames(),
+            };
 
             // コンフィグの読み込み
             configLoader.ConfigLoadFailed += (sender, e) => {
@@ -519,6 +527,10 @@ namespace ShogiBoard {
             Array.Clear(gameResultCounts, 0, gameResultCounts.Length);
             Array.Clear(halfGameResultCounts, 0, halfGameResultCounts.Length);
             gameResultCountsPerReason.Clear();
+            EngineStatisticesForAllGames = new[] {
+                new EngineStatisticsForAllGames(),
+                new EngineStatisticsForAllGames(),
+            };
 
             int startposIndex = -1;
             List<BoardData> startposList = new List<BoardData>();
@@ -580,10 +592,14 @@ namespace ShogiBoard {
                 try {
                     var engine1 = configLoader.EngineList.Select(configLoader.VolatileConfig.GameEngine1Name, configLoader.VolatileConfig.GameEngine1Path);
                     var engine2 = configLoader.EngineList.Select(configLoader.VolatileConfig.GameEngine2Name, configLoader.VolatileConfig.GameEngine2Path);
+                    var stats = new[] {
+                        new EngineStatisticsForGame(),
+                        new EngineStatisticsForGame(),
+                    };
 
                     // USIエンジン起動
-                    using (USIPlayer player1 = CreateUSIPlayer(engine1, 0))
-                    using (USIPlayer player2 = CreateUSIPlayer(engine2, 1))
+                    using (USIPlayer player1 = CreateUSIPlayer(engine1, stats[0], 0))
+                    using (USIPlayer player2 = CreateUSIPlayer(engine2, stats[1], 1))
                     using (CSAFileWriter fileWriter = new CSAFileWriter()) {
                         try {
                             // 対局スレッド用。this.BoardはGUIスレッド用なので注意。
@@ -601,7 +617,7 @@ namespace ShogiBoard {
                             }
                             // 対局開始
                             int turnFlip = gameCount & 1;
-                            DoGame(board, new[] { engine1, engine2 }, turnFlip);
+                            DoGame(board, new[] { engine1, engine2 }, stats, turnFlip);
                             gameCount++;
                         } finally {
                             lock (gameLock) {
@@ -646,7 +662,7 @@ namespace ShogiBoard {
         /// <summary>
         /// 対局1局分の処理
         /// </summary>
-        private void DoGame(Board board, Engine[] engines, int turnFlip) {
+        private void DoGame(Board board, Engine[] engines, EngineStatisticsForGame[] stats, int turnFlip) {
             gameWinnerTurn = -2;
             gameEndReason = GameEndReason.Unknown;
 
@@ -703,18 +719,18 @@ namespace ShogiBoard {
 
             while (gameWinnerTurn == -2) {
                 if (!threadValid) {
-                    OnGameEnd(-2, GameEndReason.Abort);
+                    OnGameEnd(stats, -2, GameEndReason.Abort);
                     break;
                 }
 
                 MoveList moves = board.GetMovesSafe();
                 if (moves.Count == 0) { // 合法手が無いなら勝負あり。
-                    OnGameEnd(board.Turn ^ 1, GameEndReason.Mate); // 最後の一手の方の勝ち
+                    OnGameEnd(stats, board.Turn ^ 1, GameEndReason.Mate); // 最後の一手の方の勝ち
                     break;
                 }
                 if (configLoader.VolatileConfig.GameEndByMoveCount &&
                     configLoader.VolatileConfig.GameEndMoveCount <= board.MoveCount) { // 指定手数で強制引き分け
-                    OnGameEnd(-1, GameEndReason.Interruption);
+                    OnGameEnd(stats, -1, GameEndReason.Interruption);
                     break;
                 }
 
@@ -744,12 +760,12 @@ namespace ShogiBoard {
                     // エンジンの表示をクリア
                     GetEngineViewControl(playerIndex).Clear();
                 });
-                int startTime = Environment.TickCount;
-                Move move = player.DoTurn(board,
+                var startTime = Stopwatch.GetTimestamp();
+                var move = player.DoTurn(board,
                     timeData[0].RemainTime,
                     timeData[1].RemainTime,
                     timeData[board.Turn].TimeB);
-                int thinkTime = unchecked(Environment.TickCount - startTime);
+                var thinkTime = (int)unchecked((Stopwatch.GetTimestamp() - startTime) * 1000L / Stopwatch.Frequency);
                 FormUtility.SafeInvoke(this, () => {
                     GetPlayerInfoControl(board.Turn).EndTurn();
                 });
@@ -758,26 +774,31 @@ namespace ShogiBoard {
                     break;
                 }
 
+                // 統計
+                if (usiPlayer != null) {
+                    stats[playerIndex].Add(usiPlayer, thinkTime);
+                }
+
                 // 時間の処理
                 int consumeTime = Math.Max(1000, thinkTime - thinkTime % 1000); // CSAルール：端数切り捨て最低1秒。
                 bool timeUp = !timeData[board.Turn].ConsumeTime(consumeTime);
 
                 if (timeUp && configLoader.VolatileConfig.GameTimeUpType != 0) {
                     if (configLoader.VolatileConfig.GameTimeUpType == 1) {
-                        OnGameEnd(board.Turn ^ 1, GameEndReason.TimeUp); // 負け扱い
+                        OnGameEnd(stats, board.Turn ^ 1, GameEndReason.TimeUp); // 負け扱い
                     } else {
-                        OnGameEnd(-1, GameEndReason.TimeUp); // 引き分け扱い
+                        OnGameEnd(stats, -1, GameEndReason.TimeUp); // 引き分け扱い
                     }
                 } else if (move == ShogiCore.Move.Win) {
                     if (board.IsNyuugyokuWin()) {
-                        OnGameEnd(board.Turn, GameEndReason.Nyuugyoku);
+                        OnGameEnd(stats, board.Turn, GameEndReason.Nyuugyoku);
                     } else {
-                        OnGameEnd(board.Turn ^ 1, GameEndReason.IllegalWinDecl);
+                        OnGameEnd(stats, board.Turn ^ 1, GameEndReason.IllegalWinDecl);
                     }
                 } else if (move == ShogiCore.Move.Resign) {
-                    OnGameEnd(board.Turn ^ 1, GameEndReason.Resign);
+                    OnGameEnd(stats, board.Turn ^ 1, GameEndReason.Resign);
                 } else if (!board.IsLegalMove(ref move)) {
-                    OnGameEnd(board.Turn ^ 1, GameEndReason.IllegalMove);
+                    OnGameEnd(stats, board.Turn ^ 1, GameEndReason.IllegalMove);
                 } else {
                     var boardData = board.ToBoardData();
                     var moveData = move.ToNotation();
@@ -802,16 +823,16 @@ namespace ShogiBoard {
                     if (board.IsEndless(3)) {
                         if (board.IsPerpetualCheck(0)) {
                             // 連続王手の千日手
-                            OnGameEnd(board.Turn, GameEndReason.Perpetual);
+                            OnGameEnd(stats, board.Turn, GameEndReason.Perpetual);
                         } else if (board.IsPerpetualCheck(1)) {
                             // 連続王手の千日手
-                            OnGameEnd(board.Turn ^ 1, GameEndReason.Perpetual);
+                            OnGameEnd(stats, board.Turn ^ 1, GameEndReason.Perpetual);
                         } else {
                             // 通常の千日手
-                            OnGameEnd(-1, GameEndReason.Endless);
+                            OnGameEnd(stats, -1, GameEndReason.Endless);
                         }
                     } else if (board.IsMate()) {
-                        OnGameEnd(board.Turn ^ 1, GameEndReason.Mate); // 最後の一手の方の勝ち
+                        OnGameEnd(stats, board.Turn ^ 1, GameEndReason.Mate); // 最後の一手の方の勝ち
                     }
                 }
             }
@@ -913,24 +934,30 @@ namespace ShogiBoard {
         /// <summary>
         /// 対局終了
         /// </summary>
-        private void OnGameEnd(int turn, GameEndReason reason) {
+        private void OnGameEnd(EngineStatisticsForGame[] stats, int turn, GameEndReason reason) {
             gameWinnerTurn = turn;
             gameEndReason = reason;
-            foreach (var player in Players) {
+            for (int playerIndex = 0; playerIndex < Players.Length; playerIndex++) {
+                var player = Players[playerIndex];
                 var usiPlayer = player as USIPlayer;
                 if (usiPlayer != null) {
-                    Func<double?, string> ToDepthString =
-                        depth => depth.HasValue ? depth.Value.ToString("0.0") : "-";
-                    Func<double?, string> ToNPSString =
-                        nps => nps.HasValue ? nps.Value.ToString("#,##0") : "-";
-                    logger.InfoFormat("{0} 平均深さ：全体={1} 序盤={2} 終盤={3} 平均NPS：全体={1} 序盤={2} 終盤={3}",
+                    stats[playerIndex].Calculate();
+                    EngineStatisticesForAllGames[playerIndex].Add(stats[playerIndex]);
+                    var a = EngineStatisticesForAllGames[playerIndex];
+                    Func<double?, string> ToString1 = value => value.HasValue ? value.Value.ToString("0.0") : "-";
+                    Func<double?, string> ToString2 = value => value.HasValue ? value.Value.ToString("#,##0") : "-";
+                    logger.InfoFormat(@"エンジン" + (playerIndex + 1) + @" {0} 統計情報
+通算平均時間(実測)：全体={1} 序盤={2} 終盤={3}
+通算平均時間(USI)： 全体={4} 序盤={5} 終盤={6}
+通算平均深さ：      全体={7} 序盤={8} 終盤={9}
+通算平均ノード数：  全体={10} 序盤={11} 終盤={12}
+通算平均NPS：       全体={13} 序盤={14} 終盤={15}",
                         usiPlayer.Name,
-                        ToDepthString(usiPlayer.MeanDepth),
-                        ToDepthString(usiPlayer.MeanDepthOfOpening),
-                        ToDepthString(usiPlayer.MeanDepthOfEndGame),
-                        ToNPSString(usiPlayer.MeanNPS),
-                        ToNPSString(usiPlayer.MeanNPSOfOpening),
-                        ToNPSString(usiPlayer.MeanNPSOfEndGame));
+                        ToString2(a.TimeReal.All.Mean), ToString2(a.TimeReal.Opening.Mean), ToString2(a.TimeReal.EndGame.Mean),
+                        ToString2(a.TimeUSI.All.Mean), ToString2(a.TimeUSI.Opening.Mean), ToString2(a.TimeUSI.EndGame.Mean),
+                        ToString1(a.Depth.All.Mean), ToString1(a.Depth.Opening.Mean), ToString1(a.Depth.EndGame.Mean),
+                        ToString2(a.Nodes.All.Mean), ToString2(a.Nodes.Opening.Mean), ToString2(a.Nodes.EndGame.Mean),
+                        ToString2(a.NPS.All.Mean), ToString2(a.NPS.Opening.Mean), ToString2(a.NPS.EndGame.Mean));
                 }
             }
         }
@@ -1010,13 +1037,15 @@ namespace ShogiBoard {
                 networkGameCount < configLoader.VolatileConfig.NetworkGameCount); ) {
                 try {
                     var engine = configLoader.EngineList.Select(configLoader.VolatileConfig.NetworkGameEngineName, configLoader.VolatileConfig.NetworkGameEnginePath);
+                    var stat = new EngineStatisticsForGame();
                     var connection = configLoader.Config.NetworkGameConnections[configLoader.VolatileConfig.NetworkGameConnectionIndex];
                     string csaHost = connection.Address;
                     string csaID = connection.User;
                     string csaPW = connection.Pass;
 
                     // USIエンジン起動
-                    using (USIPlayer player = CreateUSIPlayer(engine, 0)) {
+                    using (USIPlayer player = CreateUSIPlayer(engine, stat, 0)) {
+                        if (!threadValid) break;
                         // ログイン
                         SetTitleStatusText("対局待ち：" + csaHost + " - " + csaID);
                         using (CSAClient client = new CSAClient(csaHost))
@@ -1049,7 +1078,7 @@ namespace ShogiBoard {
                                     }
                                 };
                                 // 対局開始
-                                NetworkGameLoop(client, board, csaID, csaPW, CSAClient.ProtocolModes.CSA);
+                                NetworkGameLoop(client, board, csaID, csaPW, CSAClient.ProtocolModes.CSA, stat);
                                 // 時間消費の停止
                                 FormUtility.SafeInvoke(this, () => {
                                     playerInfoControlP.EndTurn();
@@ -1113,7 +1142,7 @@ namespace ShogiBoard {
         /// <summary>
         /// 通信対局1局分の処理
         /// </summary>
-        private void NetworkGameLoop(CSAClient client, Board board, string csaID, string csaPW, CSAClient.ProtocolModes csaProto) {
+        private void NetworkGameLoop(CSAClient client, Board board, string csaID, string csaPW, CSAClient.ProtocolModes csaProto, EngineStatisticsForGame stat) {
             // ログイン
             client.SendLogin(csaID, csaPW, csaProto);
 
@@ -1194,7 +1223,7 @@ namespace ShogiBoard {
                         });
                         // 先手なら指し手を返す
                         if (client.GameSummary.To_Move == client.GameSummary.Your_Turn) {
-                            NetworkGameDoTurn(client, board);
+                            NetworkGameDoTurn(client, board, stat);
                         }
                         break;
 
@@ -1218,7 +1247,7 @@ namespace ShogiBoard {
                         playerInfoControlN.RemainSeconds = client.SecondTurnRemainSeconds;
                         NetworkGameUpdateOnMoveReceived(client, board, command.MoveDataEx);
                         // 自分の番の処理
-                        NetworkGameDoTurn(client, board);
+                        NetworkGameDoTurn(client, board, stat);
                         break;
 
                     case CSAInternalCommandTypes.SpecialMove: // %TORYOなどがサーバから来た場合
@@ -1246,7 +1275,7 @@ namespace ShogiBoard {
         /// <summary>
         /// 手番時の処理。player.DoTurn()して、結果の指し手でboardを進める。
         /// </summary>
-        private void NetworkGameDoTurn(CSAClient client, Board board) {
+        private void NetworkGameDoTurn(CSAClient client, Board board, EngineStatisticsForGame stat) {
             FormUtility.SafeInvoke(this, () => {
                 // 自分の時間消費の開始
                 GetPlayerInfoControl(board.Turn).StartTurn();
@@ -1254,12 +1283,17 @@ namespace ShogiBoard {
                 engineViewControl1.Clear();
             });
             // 思考
-            Move move = Players[0].DoTurn(board,
+            var startTime = Stopwatch.GetTimestamp();
+            var move = Players[0].DoTurn(board,
                 client.FirstTurnRemainSeconds * 1000,
                 client.SecondTurnRemainSeconds * 1000,
                 client.GameSummary.Times[board.Turn].Byoyomi * 1000);
+            var thinkTime = (int)unchecked((Stopwatch.GetTimestamp() - startTime) * 1000L / Stopwatch.Frequency);
             // 評価値・読み筋
             USIPlayer usiPlayer = Players[0] as USIPlayer; // TODO: 整理
+            if (usiPlayer != null) {
+                stat.Add(usiPlayer, thinkTime);
+            }
             if (usiPlayer == null || !usiPlayer.HasScore) { // scoreを受信してないならコメント無し。(PVが無くてもscoreがあればコメントあり)
                 lastMoveComment = "";
                 lastMoveValue = null;
@@ -1439,13 +1473,15 @@ namespace ShogiBoard {
                 var engine = p.IsThink ?
                     configLoader.EngineList.Select(configLoader.VolatileConfig.ThinkEngineName, configLoader.VolatileConfig.ThinkEnginePath) :
                     configLoader.EngineList.Select(configLoader.VolatileConfig.MateEngineName, configLoader.VolatileConfig.MateEnginePath);
+                var stat = new EngineStatisticsForGame();
                 if (!File.Exists(USIDriver.NormalizeEnginePath(engine.Path))) {
                     FormUtility.SafeInvoke(this, () => {
                         MessageBox.Show(this, typeName + "用のエンジンが存在しません。", "エラー");
                     });
                     return;
                 }
-                using (USIPlayer player = CreateUSIPlayer(engine, 0)) {
+                using (USIPlayer player = CreateUSIPlayer(engine, stat, 0)) {
+                    if (!threadValid) return;
                     try {
                         SetTitleStatusText(typeName + "中：" + engine.Name + " (" + System.IO.Path.GetFileName(engine.Path) + ")");
                         engineViewControl1.Board = p.Board;
@@ -1615,7 +1651,7 @@ namespace ShogiBoard {
         /// <summary>
         /// USIPlayerの作成
         /// </summary>
-        private USIPlayer CreateUSIPlayer(Engine engine, int playerIndex) {
+        private USIPlayer CreateUSIPlayer(Engine engine, EngineStatisticsForGame stat, int playerIndex) {
             USIPlayer player = null;
             try {
                 if (!threadValid)
@@ -1623,7 +1659,7 @@ namespace ShogiBoard {
                 SetTitleStatusText("USIエンジン起動中：" + engine.Name + " (" + System.IO.Path.GetFileName(engine.Path) + ")");
                 USIDriver usiDriver = new USIDriver(engine.Path, null, playerIndex + 1);
                 Players[playerIndex] = player = new USIPlayer(usiDriver);
-                GetEngineViewControl(playerIndex).Attach(player);
+                GetEngineViewControl(playerIndex).Attach(player, stat);
                 usiDriver.Start(configLoader.Config.EnginePriority);
                 player.ByoyomiHack = engine.ByoyomiHack;
                 player.SetOption("USI_Ponder", engine.USIPonder ? "true" : "false");
