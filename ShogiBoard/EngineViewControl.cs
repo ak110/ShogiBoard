@@ -77,12 +77,6 @@ namespace ShogiBoard {
         /// <param name="player"></param>
         public void Detach() {
             if (player != null) {
-                BeginInvoke(new MethodInvoker(() => {
-                    try {
-                        labelEngine.Text = ""; // エンジン名
-                    } catch {
-                    }
-                }));
                 player.InfoReceived -= player_InfoReceived;
                 player.CommandReceived -= player_CommandReceived;
                 player = null;
