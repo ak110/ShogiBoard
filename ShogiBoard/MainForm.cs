@@ -773,6 +773,10 @@ namespace ShogiBoard {
                     logger.Warn("指し手が不正: Empty");
                     break;
                 }
+                if (!threadValid) {
+                    OnGameEnd(stats, -2, GameEndReason.Abort);
+                    break;
+                }
 
                 // 統計
                 if (usiPlayer != null) {
