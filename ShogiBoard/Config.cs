@@ -54,6 +54,10 @@ namespace ShogiBoard {
         /// </summary>
         public ProcessPriorityClass EnginePriority { get; set; }
 
+        public Config() {
+            EnginePriority = ProcessPriorityClass.Normal;
+        }
+
         /// <summary>
         /// 初期化
         /// </summary>
@@ -72,7 +76,6 @@ namespace ShogiBoard {
                     NetworkGameConnections[i] = new NetworkGameConnection(); // デフォルト値
                 }
             }
-            EnginePriority = ProcessPriorityClass.Normal;
         }
     }
 }
