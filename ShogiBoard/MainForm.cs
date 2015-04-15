@@ -896,12 +896,12 @@ namespace ShogiBoard {
             double wr = NN <= double.Epsilon ? 0 : (win + draw * 0.5) * 100.0 / NN;
             // R差 (引き分けは0.5勝扱い)
             double rating = N <= 0 ? 0 : MathUtility.WinRateToRatingDiff(wr / 100.0);
-            // 勝率の95%信頼区間 (引き分けは除く)
+            // 勝率の99%信頼区間 (引き分けは除く)
             double wL, wH, RL, RH;
             if (N <= 0) {
                 wL = wH = RL = RH = 0.0; // 仮
             } else {
-                MathUtility.GetWinConfidence(win, lose, 0.05, out wL, out wH);
+                MathUtility.GetWinConfidence(win, lose, 0.01, out wL, out wH);
                 wL *= 100.0;
                 wH *= 100.0;
                 RL = MathUtility.WinRateToRatingDiff(wL / 100.0);
@@ -923,7 +923,7 @@ namespace ShogiBoard {
             str.Append("勝率：        ").Append(wr.ToString("##0.0").PadLeft(5)).Append("%").AppendLine();
             str.Append("R差：         ").Append(rating.ToString("0")).AppendLine();
             str.Append("有意確率：    ").Append(wp.ToString("##0.0").PadLeft(5)).Append("%").AppendLine();
-            str.Append("95%信頼区間： ")
+            str.Append("99%信頼区間： ")
                 .Append(wL.ToString("##0.0")).Append("% ～ ")
                 .Append(wH.ToString("##0.0")).Append("% (R")
                 .Append(RL.ToString("+0;-0")).Append(" ～ R")
