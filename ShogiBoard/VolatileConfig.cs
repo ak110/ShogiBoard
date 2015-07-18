@@ -75,7 +75,7 @@ namespace ShogiBoard {
         /// </summary>
         public int GameTimeUpType { get; set; }
         /// <summary>
-        /// 通信対局の回数。0で無制限。
+        /// 連続対局の回数。0で無制限。
         /// </summary>
         public int GameCount { get; set; }
         /// <summary>
@@ -103,6 +103,11 @@ namespace ShogiBoard {
         /// 開始局面の棋譜の開始手数。
         /// </summary>
         public int GameStartPosNotationStartCount { get; set; }
+
+        /// <summary>
+        /// 連続対局時、エンジンを再起動するか否か
+        /// </summary>
+        public bool GameEngineRestart { get; set; }
 
         /// <summary>
         /// 通信対局で前回選択したエンジンの名前
@@ -151,6 +156,7 @@ namespace ShogiBoard {
             GameEngineTimeControls = new[] { TimeControl.Normal, TimeControl.Normal };
             GameEngineDepths = new[] { 5, 5 };
             GameEngineNodes = new[] { 10000L, 10000L };
+            GameEngineRestart = false;
         }
 
         /// <summary>

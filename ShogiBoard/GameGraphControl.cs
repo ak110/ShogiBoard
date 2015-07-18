@@ -248,7 +248,7 @@ namespace ShogiBoard {
                     bool update = action();
                     // 次の描画
                     if (update) {
-                        if (IsDisposed) break; // 念のため
+                        if (!Created || IsDisposed) break; // 念のため
                         ar = BeginInvoke(new MethodInvoker(() => {
                             try {
                                 if (!IsDisposed) {

@@ -17,7 +17,7 @@ namespace ShogiBoard {
             System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         USIPlayer player;
-        EngineStatisticsForGame stat;
+        EngineStatisticsForGame stat = new EngineStatisticsForGame(); // ダミーを入れておく
 
         /// <summary>
         /// 局面(PV構築など用に参照を設定しておく)
@@ -52,9 +52,8 @@ namespace ShogiBoard {
         /// アタッチ
         /// </summary>
         /// <param name="player"></param>
-        public void Attach(USIPlayer player, EngineStatisticsForGame stat) {
+        public void Attach(USIPlayer player) {
             this.player = player;
-            this.stat = stat;
             player.CommandReceived += player_CommandReceived;
             player.InfoReceived += player_InfoReceived;
         }
@@ -62,13 +61,14 @@ namespace ShogiBoard {
         /// <summary>
         /// プレイヤー情報を更新
         /// </summary>
-        public void UpdatePlayerInfo(USIPlayer player) {
+        public void GameStart(USIPlayer player, EngineStatisticsForGame stat) {
             BeginInvoke(new MethodInvoker(() => {
                 try {
                     labelEngine.Text = player.Driver.IdName; // エンジン名
                 } catch {
                 }
             }));
+            this.stat = stat;
         }
 
         /// <summary>

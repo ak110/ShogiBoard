@@ -54,6 +54,7 @@ namespace ShogiBoard {
             textBox1.Text = volatileConfig.GameStartPosNotationPath;
             checkBox1.Checked = volatileConfig.GameStartPosNotationShuffle;
             numericUpDown2.Value = volatileConfig.GameStartPosNotationStartCount;
+            checkBoxRestart.Checked = volatileConfig.GameEngineRestart;
 
             UpdateEnables();
         }
@@ -124,6 +125,7 @@ namespace ShogiBoard {
             volatileConfig.GameStartPosNotationPath = textBox1.Text;
             volatileConfig.GameStartPosNotationShuffle = checkBox1.Checked;
             volatileConfig.GameStartPosNotationStartCount = (int)numericUpDown2.Value;
+            volatileConfig.GameEngineRestart = checkBoxRestart.Checked;
 
             // 保存
             ConfigSerializer.Serialize(volatileConfig);
