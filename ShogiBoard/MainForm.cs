@@ -843,7 +843,7 @@ namespace ShogiBoard {
                     }
                     csaFileWriter.AppendMove(PCLNotationWriter.ToString(boardData, moveData) + ",T" + (consumeTime / 1000).ToString(), comment);
                     AddMoveToList(boardData.Turn,
-                        new MoveDataEx(moveData, comment, value, consumeTime),
+                        new MoveDataEx(moveData, comment, value, null, consumeTime),
                         true, true, moveData.ToString(boardData));
 
                     // 進める
