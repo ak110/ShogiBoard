@@ -982,18 +982,7 @@ namespace ShogiBoard {
                     var a = EngineStatisticesForAllGames[playerIndex];
                     Func<double?, string> ToString1 = value => value.HasValue ? value.Value.ToString("0.0") : "-";
                     Func<double?, string> ToString2 = value => value.HasValue ? value.Value.ToString("#,##0") : "-";
-                    logger.InfoFormat(@"エンジン" + (playerIndex + 1) + @" {0} 統計情報
-通算平均時間(実測)：全体={1} 序盤={2} 終盤={3}
-通算平均時間(USI)： 全体={4} 序盤={5} 終盤={6}
-通算平均深さ：      全体={7} 序盤={8} 終盤={9}
-通算平均ノード数：  全体={10} 序盤={11} 終盤={12}
-通算平均NPS：       全体={13} 序盤={14} 終盤={15}",
-                        usiPlayer.Name,
-                        ToString2(a.TimeReal.All.Mean), ToString2(a.TimeReal.Opening.Mean), ToString2(a.TimeReal.EndGame.Mean),
-                        ToString2(a.TimeUSI.All.Mean), ToString2(a.TimeUSI.Opening.Mean), ToString2(a.TimeUSI.EndGame.Mean),
-                        ToString1(a.Depth.All.Mean), ToString1(a.Depth.Opening.Mean), ToString1(a.Depth.EndGame.Mean),
-                        ToString2(a.Nodes.All.Mean), ToString2(a.Nodes.Opening.Mean), ToString2(a.Nodes.EndGame.Mean),
-                        ToString2(a.NPS.All.Mean), ToString2(a.NPS.Opening.Mean), ToString2(a.NPS.EndGame.Mean));
+                    logger.Info(@"エンジン" + (playerIndex + 1) + " " + usiPlayer.Name + " 統計情報" + Environment.NewLine + a.ToString());
                     if (-1 <= turn) {
                         usiPlayer.GameEnd(
                             turn == (playerIndex ^ turnFlip ^ 0) ? GameResult.Win :
