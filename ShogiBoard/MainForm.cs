@@ -40,56 +40,7 @@ namespace ShogiBoard {
         /// <summary>
         /// 持ち時間情報
         /// </summary>
-        struct TimeData {
-            /// <summary>
-            /// 持ち時間[ミリ秒]
-            /// </summary>
-            public int TimeA { get; set; }
-            /// <summary>
-            /// 秒読み[ミリ秒]
-            /// </summary>
-            public int TimeB { get; set; }
-            /// <summary>
-            /// 残り持ち時間[ミリ秒]
-            /// </summary>
-            public int RemainTime { get; set; }
-            /// <summary>
-            /// リセット
-            /// </summary>
-            public void Reset() {
-                RemainTime = TimeA;
-            }
-            /// <summary>
-            /// 時間を消費する
-            /// </summary>
-            /// <param name="time">時間[ms]</param>
-            /// <returns>時間が大丈夫ならtrue、時間切れならfalse。</returns>
-            public bool ConsumeTime(int time) {
-                if (TimeA <= 0) {
-                    if (TimeB <= 0) {
-                        // 持ち時間不明
-                        return true;
-                    } else {
-                        // 秒読みのみ
-                        // 例：秒読み2秒の場合、最大で1秒+端数までOK
-                        return time < TimeB;
-                    }
-                } else {
-                    if (RemainTime < time) {
-                        bool result = (time - RemainTime) <= TimeB;
-                        RemainTime = 0;
-                        return result;
-                    } else {
-                        RemainTime -= time;
-                        return true;
-                    }
-                }
-            }
-        }
-        /// <summary>
-        /// 持ち時間情報
-        /// </summary>
-        readonly TimeData[] timeData = new TimeData[2];
+        PlayerTime[] timeData = new PlayerTime[2] { new PlayerTime(), new PlayerTime() };
 
         /// <summary>
         /// listBox1に入れるオブジェクト
@@ -448,12 +399,8 @@ namespace ShogiBoard {
 
             playerInfoControlP.PlayerName = notation.FirstPlayerName;
             playerInfoControlN.PlayerName = notation.SecondPlayerName;
-            timeData[0].TimeA = notation.TimeA;
-            timeData[0].TimeB = notation.TimeB;
-            timeData[1].TimeA = notation.TimeA;
-            timeData[1].TimeB = notation.TimeB;
-            timeData[0].Reset();
-            timeData[1].Reset();
+            timeData[0].Set(notation.TimeA, notation.TimeB, 0);
+            timeData[1].Set(notation.TimeA, notation.TimeB, 0);
 
             Board.Reset(notation.InitialBoard);
             blunderViewControl.DrawAsync(Board);
@@ -465,7 +412,7 @@ namespace ShogiBoard {
                 BoardData boardData = notation.InitialBoard == null ? BoardData.CreateEquality() : notation.InitialBoard.Clone();
                 int moveCount = 0;
                 foreach (MoveDataEx moveDataEx in notation.Moves) {
-                    timeData[boardData.Turn].ConsumeTime(moveDataEx.Time);
+                    timeData[boardData.Turn].Consume(moveDataEx.Time);
                     boardData.Do(moveDataEx.MoveData);
                     moveCount++;
                     AddMoveToListForAppliedBoard(boardData.Turn ^ 1, boardData, moveDataEx, false, moveCount == notation.Moves.Length);
@@ -696,16 +643,15 @@ namespace ShogiBoard {
             if (0 <= configLoader.VolatileConfig.GameTimeIndex) {
                 gameTime = configLoader.VolatileConfig.GameTimes[configLoader.VolatileConfig.GameTimeIndex];
                 for (int i = 0; i < timeData.Length; i++) {
-                    timeData[i].TimeA = gameTime.TimeASeconds * 1000;
-                    timeData[i].TimeB = gameTime.TimeBSeconds * 1000;
-                    timeData[i].Reset();
+                    timeData[i].Set(
+                        gameTime.TimeASeconds * 1000,
+                        gameTime.TimeBSeconds * 1000,
+                        gameTime.IncTimeSeconds * 1000);
                 }
             } else {
                 gameTime = new VolatileConfig.GameTime();
                 for (int i = 0; i < timeData.Length; i++) {
-                    timeData[i].TimeA = 0;
-                    timeData[i].TimeB = 0;
-                    timeData[i].Reset();
+                    timeData[i].Set(0, 0, 0);
                 }
             }
             lock (Board) {
@@ -725,10 +671,10 @@ namespace ShogiBoard {
                 // 対局者名などの表示更新
                 playerInfoControlP.PlayerName = engines[turnFlip ^ 0].Name;
                 playerInfoControlN.PlayerName = engines[turnFlip ^ 1].Name;
-                playerInfoControlP.TimeASeconds = timeData[turnFlip ^ 0].TimeA / 1000;
-                playerInfoControlN.TimeASeconds = timeData[turnFlip ^ 1].TimeA / 1000;
-                playerInfoControlP.TimeBSeconds = timeData[turnFlip ^ 0].TimeB / 1000;
-                playerInfoControlN.TimeBSeconds = timeData[turnFlip ^ 1].TimeB / 1000;
+                playerInfoControlP.TimeASeconds = timeData[turnFlip ^ 0].RemainTime / 1000;
+                playerInfoControlN.TimeASeconds = timeData[turnFlip ^ 1].RemainTime / 1000;
+                playerInfoControlP.TimeBSeconds = timeData[turnFlip ^ 0].Byoyomi / 1000;
+                playerInfoControlN.TimeBSeconds = timeData[turnFlip ^ 1].Byoyomi / 1000;
                 playerInfoControlP.Reset();
                 playerInfoControlN.Reset();
                 ClearMoveList();
@@ -787,10 +733,7 @@ namespace ShogiBoard {
                     GetEngineViewControl(playerIndex).Clear();
                 });
                 var startTime = Stopwatch.GetTimestamp();
-                var move = player.DoTurn(board,
-                    timeData[0].RemainTime,
-                    timeData[1].RemainTime,
-                    timeData[board.Turn].TimeB);
+                var move = player.DoTurn(board, timeData[0], timeData[1]);
                 var thinkTime = (int)unchecked((Stopwatch.GetTimestamp() - startTime) * 1000L / Stopwatch.Frequency);
                 FormUtility.SafeInvoke(this, () => {
                     GetPlayerInfoControl(board.Turn).EndTurn();
@@ -810,8 +753,7 @@ namespace ShogiBoard {
                 }
 
                 // 時間の処理
-                int consumeTime = Math.Max(1000, thinkTime - thinkTime % 1000); // CSAルール：端数切り捨て最低1秒。
-                bool timeUp = !timeData[board.Turn].ConsumeTime(consumeTime);
+                bool timeUp = !timeData[board.Turn].Consume(ref thinkTime);
 
                 if (timeUp && configLoader.VolatileConfig.GameTimeUpType != 0) {
                     if (configLoader.VolatileConfig.GameTimeUpType == 1) {
@@ -841,9 +783,9 @@ namespace ShogiBoard {
                         comment = BuildComment(usiPlayer, boardData.Clone(), move);
                         value = Board.NegativeByTurn(usiPlayer.LastScore, board.Turn);
                     }
-                    csaFileWriter.AppendMove(PCLNotationWriter.ToString(boardData, moveData) + ",T" + (consumeTime / 1000).ToString(), comment);
+                    csaFileWriter.AppendMove(PCLNotationWriter.ToString(boardData, moveData) + ",T" + (thinkTime / 1000).ToString(), comment);
                     AddMoveToList(boardData.Turn,
-                        new MoveDataEx(moveData, comment, value, null, consumeTime),
+                        new MoveDataEx(moveData, comment, value, null, thinkTime),
                         true, true, moveData.ToString(boardData));
 
                     // 進める
@@ -1212,12 +1154,8 @@ namespace ShogiBoard {
                             // 対局開始局面を描画
                             blunderViewControl.DrawAsync(board);
                             // 持ち時間
-                            timeData[0].TimeA = client.GameSummary.Times[0].Total_Time * 1000;
-                            timeData[0].TimeB = client.GameSummary.Times[0].Byoyomi * 1000;
-                            timeData[1].TimeA = client.GameSummary.Times[1].Total_Time * 1000;
-                            timeData[1].TimeB = client.GameSummary.Times[0].Byoyomi * 1000;
-                            timeData[0].Reset();
-                            timeData[1].Reset();
+                            timeData[0] = new PlayerTime(client.GameSummary.Times[0]);
+                            timeData[1] = new PlayerTime(client.GameSummary.Times[1]);
                             // 対局開始時の情報表示
                             FormUtility.SafeInvoke(this, () => {
                                 // エンジン情報欄を初期化
@@ -1264,7 +1202,7 @@ namespace ShogiBoard {
                         // 棋譜へ記録
                         csaFileWriter.AppendMove(command.ReceivedString, lastMoveComment);
                         // 指し手受信時の画面更新
-                        timeData[board.Turn ^ 1].ConsumeTime(command.MoveDataEx.Time);
+                        timeData[board.Turn ^ 1].Consume(command.MoveDataEx.Time);
                         NetworkGameUpdateOnMoveReceived(client, board, command.MoveDataEx, lastMoveValue, lastMoveComment);
                         break;
 
@@ -1316,11 +1254,10 @@ namespace ShogiBoard {
                 engineViewControl1.Clear();
             });
             // 思考
+            timeData[0].RemainTime = client.FirstTurnRemainSeconds * 1000;
+            timeData[1].RemainTime = client.SecondTurnRemainSeconds * 1000;
             var startTime = Stopwatch.GetTimestamp();
-            var move = Players[0].DoTurn(board,
-                client.FirstTurnRemainSeconds * 1000,
-                client.SecondTurnRemainSeconds * 1000,
-                client.GameSummary.Times[board.Turn].Byoyomi * 1000);
+            var move = Players[0].DoTurn(board, timeData[0], timeData[1]);
             var thinkTime = (int)unchecked((Stopwatch.GetTimestamp() - startTime) * 1000L / Stopwatch.Frequency);
             // 評価値・読み筋
             USIPlayer usiPlayer = Players[0] as USIPlayer; // TODO: 整理
@@ -1770,8 +1707,8 @@ namespace ShogiBoard {
                 // ついでにフォーカスもここにしておく
                 listBox1.Focus();
                 // グラフも描画
-                if (moveDataEx.Value.HasValue || 0 <= timeData[turn].TimeA) {
-                    gameGraphControl1.AddAsync(moveCount - 1, moveDataEx.Value ?? int.MinValue, timeData[turn].RemainTime, timeData[turn].TimeA, updateGraph);
+                if (moveDataEx.Value.HasValue || 0 <= timeData[turn].Total) {
+                    gameGraphControl1.AddAsync(moveCount - 1, moveDataEx.Value ?? int.MinValue, timeData[turn].RemainTime, timeData[turn].Total, updateGraph);
                 }
             });
         }

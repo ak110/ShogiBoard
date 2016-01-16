@@ -86,7 +86,7 @@
             this.groupBox1.Controls.Add(this.engineSelectControl1);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(742, 98);
+            this.groupBox1.Size = new System.Drawing.Size(791, 98);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "先手";
@@ -114,7 +114,7 @@
             // 
             this.buttonOk.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOk.Location = new System.Drawing.Point(231, 538);
+            this.buttonOk.Location = new System.Drawing.Point(255, 538);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(96, 23);
             this.buttonOk.TabIndex = 4;
@@ -126,7 +126,7 @@
             // 
             this.buttonSave.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.buttonSave.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonSave.Location = new System.Drawing.Point(333, 538);
+            this.buttonSave.Location = new System.Drawing.Point(357, 538);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(96, 23);
             this.buttonSave.TabIndex = 5;
@@ -138,7 +138,7 @@
             // 
             this.buttonCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(435, 538);
+            this.buttonCancel.Location = new System.Drawing.Point(459, 538);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(96, 23);
             this.buttonCancel.TabIndex = 6;
@@ -153,7 +153,7 @@
             this.groupBox2.Controls.Add(this.engineSelectControl2);
             this.groupBox2.Location = new System.Drawing.Point(12, 116);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(742, 98);
+            this.groupBox2.Size = new System.Drawing.Size(791, 98);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "後手";
@@ -194,14 +194,14 @@
             this.groupBox3.Controls.Add(this.label5);
             this.groupBox3.Location = new System.Drawing.Point(12, 220);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(742, 129);
+            this.groupBox3.Size = new System.Drawing.Size(791, 129);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "対局設定";
             // 
             // numericUpDown3
             // 
-            this.numericUpDown3.Location = new System.Drawing.Point(478, 76);
+            this.numericUpDown3.Location = new System.Drawing.Point(550, 74);
             this.numericUpDown3.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -225,7 +225,7 @@
             // checkBox2
             // 
             this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(418, 77);
+            this.checkBox2.Location = new System.Drawing.Point(490, 75);
             this.checkBox2.Name = "checkBox2";
             this.checkBox2.Size = new System.Drawing.Size(268, 16);
             this.checkBox2.TabIndex = 17;
@@ -241,34 +241,37 @@
             "判定しない",
             "負け扱い",
             "引き分け扱い"});
-            this.comboBox1.Location = new System.Drawing.Point(478, 22);
+            this.comboBox1.Location = new System.Drawing.Point(550, 20);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(121, 20);
             this.comboBox1.TabIndex = 13;
             // 
             // gameTimePickerControl3
             // 
+            this.gameTimePickerControl3.IncTimeSeconds = 86400;
             this.gameTimePickerControl3.Location = new System.Drawing.Point(107, 68);
             this.gameTimePickerControl3.Name = "gameTimePickerControl3";
-            this.gameTimePickerControl3.Size = new System.Drawing.Size(273, 21);
+            this.gameTimePickerControl3.Size = new System.Drawing.Size(382, 21);
             this.gameTimePickerControl3.TabIndex = 3;
             this.gameTimePickerControl3.TimeASeconds = 599940;
             this.gameTimePickerControl3.TimeBSeconds = 9999;
             // 
             // gameTimePickerControl2
             // 
+            this.gameTimePickerControl2.IncTimeSeconds = 86400;
             this.gameTimePickerControl2.Location = new System.Drawing.Point(107, 46);
             this.gameTimePickerControl2.Name = "gameTimePickerControl2";
-            this.gameTimePickerControl2.Size = new System.Drawing.Size(273, 21);
+            this.gameTimePickerControl2.Size = new System.Drawing.Size(382, 21);
             this.gameTimePickerControl2.TabIndex = 2;
             this.gameTimePickerControl2.TimeASeconds = 599940;
             this.gameTimePickerControl2.TimeBSeconds = 9999;
             // 
             // gameTimePickerControl1
             // 
+            this.gameTimePickerControl1.IncTimeSeconds = 86400;
             this.gameTimePickerControl1.Location = new System.Drawing.Point(107, 21);
             this.gameTimePickerControl1.Name = "gameTimePickerControl1";
-            this.gameTimePickerControl1.Size = new System.Drawing.Size(273, 21);
+            this.gameTimePickerControl1.Size = new System.Drawing.Size(382, 21);
             this.gameTimePickerControl1.TabIndex = 1;
             this.gameTimePickerControl1.TimeASeconds = 599940;
             this.gameTimePickerControl1.TimeBSeconds = 9999;
@@ -318,7 +321,7 @@
             // 
             // numericUpDown1
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(478, 51);
+            this.numericUpDown1.Location = new System.Drawing.Point(550, 49);
             this.numericUpDown1.Maximum = new decimal(new int[] {
             9999,
             0,
@@ -332,7 +335,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(589, 53);
+            this.label6.Location = new System.Drawing.Point(661, 51);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(122, 12);
             this.label6.TabIndex = 16;
@@ -341,7 +344,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(416, 26);
+            this.label4.Location = new System.Drawing.Point(488, 24);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(52, 12);
             this.label4.TabIndex = 12;
@@ -350,7 +353,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(416, 55);
+            this.label5.Location = new System.Drawing.Point(488, 53);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(53, 12);
             this.label5.TabIndex = 14;
@@ -371,7 +374,7 @@
             this.groupBox4.Controls.Add(this.panel2);
             this.groupBox4.Location = new System.Drawing.Point(12, 355);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(742, 97);
+            this.groupBox4.Size = new System.Drawing.Size(791, 97);
             this.groupBox4.TabIndex = 3;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "開始局面";
@@ -509,10 +512,12 @@
             // 
             // groupBox5
             // 
+            this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox5.Controls.Add(this.checkBoxRestart);
             this.groupBox5.Location = new System.Drawing.Point(12, 458);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(742, 49);
+            this.groupBox5.Size = new System.Drawing.Size(791, 49);
             this.groupBox5.TabIndex = 7;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "動作設定";
@@ -533,7 +538,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(766, 572);
+            this.ClientSize = new System.Drawing.Size(815, 572);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);

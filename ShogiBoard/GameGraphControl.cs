@@ -57,6 +57,7 @@ namespace ShogiBoard {
             Disposed += GameGraphControl_Disposed;
             Clear();
             thread = new Thread(DrawingThread);
+            thread.Name = "GameGraphControl";
             thread.IsBackground = true;
             thread.Start();
         }
@@ -247,8 +248,7 @@ namespace ShogiBoard {
                     // actionを実行
                     bool update = action();
                     // 次の描画
-                    if (update) {
-                        if (!Created || IsDisposed) break; // 念のため
+                    if (update && Created && !IsDisposed) {
                         ar = BeginInvoke(new MethodInvoker(() => {
                             try {
                                 if (!IsDisposed) {

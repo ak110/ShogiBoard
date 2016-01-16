@@ -22,6 +22,10 @@ namespace ShogiBoard {
             /// 秒読み[秒]
             /// </summary>
             public int TimeBSeconds { get; set; }
+            /// <summary>
+            /// 加算時間[秒]
+            /// </summary>
+            public int IncTimeSeconds { get; set; }
         }
         /// <summary>
         /// エンジンの時間制御方法
@@ -174,7 +178,11 @@ namespace ShogiBoard {
             // 無ければ作る
             for (int i = 0; i < GameTimes.Length; i++) {
                 if (GameTimes[i] == null) {
-                    GameTimes[i] = new GameTime() { TimeASeconds = 25, TimeBSeconds = 0 };
+                    GameTimes[i] = new GameTime() {
+                        TimeASeconds = 10,
+                        TimeBSeconds = 0,
+                        IncTimeSeconds = 10,
+                    };
                 }
             }
 

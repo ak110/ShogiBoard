@@ -21,6 +21,7 @@ namespace ShogiBoard {
             set {
                 numericUpDown1.Enabled = value;
                 numericUpDown2.Enabled = value;
+                numericUpDown3.Enabled = value;
             }
         }
 
@@ -37,6 +38,13 @@ namespace ShogiBoard {
         public int TimeBSeconds {
             get { return (int)numericUpDown2.Value; }
             set { numericUpDown2.Value = value; }
+        }
+        /// <summary>
+        /// 加算[秒]
+        /// </summary>
+        public int IncTimeSeconds {
+            get { return (int)numericUpDown3.Value; }
+            set { numericUpDown3.Value = value; }
         }
     }
 }

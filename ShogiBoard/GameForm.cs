@@ -37,11 +37,14 @@ namespace ShogiBoard {
                 default: goto case 0;
             }
             gameTimePickerControl1.TimeASeconds = volatileConfig.GameTimes[0].TimeASeconds;
-            gameTimePickerControl1.TimeBSeconds = volatileConfig.GameTimes[0].TimeBSeconds;
             gameTimePickerControl2.TimeASeconds = volatileConfig.GameTimes[1].TimeASeconds;
-            gameTimePickerControl2.TimeBSeconds = volatileConfig.GameTimes[1].TimeBSeconds;
             gameTimePickerControl3.TimeASeconds = volatileConfig.GameTimes[2].TimeASeconds;
+            gameTimePickerControl1.TimeBSeconds = volatileConfig.GameTimes[0].TimeBSeconds;
+            gameTimePickerControl2.TimeBSeconds = volatileConfig.GameTimes[1].TimeBSeconds;
             gameTimePickerControl3.TimeBSeconds = volatileConfig.GameTimes[2].TimeBSeconds;
+            gameTimePickerControl1.IncTimeSeconds = volatileConfig.GameTimes[0].IncTimeSeconds;
+            gameTimePickerControl2.IncTimeSeconds = volatileConfig.GameTimes[1].IncTimeSeconds;
+            gameTimePickerControl3.IncTimeSeconds = volatileConfig.GameTimes[2].IncTimeSeconds;
             comboBox1.SelectedIndex = volatileConfig.GameTimeUpType;
             numericUpDown1.Value = volatileConfig.GameCount;
             checkBox2.Checked = volatileConfig.GameEndByMoveCount;
@@ -111,11 +114,14 @@ namespace ShogiBoard {
             //else if (radioButton7.Checked) volatileConfig.GameTimeIndex = VolatileConfig.GameTimeIndexNodes;
             else volatileConfig.GameTimeIndex = 0;
             volatileConfig.GameTimes[0].TimeASeconds = gameTimePickerControl1.TimeASeconds;
-            volatileConfig.GameTimes[0].TimeBSeconds = gameTimePickerControl1.TimeBSeconds;
             volatileConfig.GameTimes[1].TimeASeconds = gameTimePickerControl2.TimeASeconds;
-            volatileConfig.GameTimes[1].TimeBSeconds = gameTimePickerControl2.TimeBSeconds;
             volatileConfig.GameTimes[2].TimeASeconds = gameTimePickerControl3.TimeASeconds;
+            volatileConfig.GameTimes[0].TimeBSeconds = gameTimePickerControl1.TimeBSeconds;
+            volatileConfig.GameTimes[1].TimeBSeconds = gameTimePickerControl2.TimeBSeconds;
             volatileConfig.GameTimes[2].TimeBSeconds = gameTimePickerControl3.TimeBSeconds;
+            volatileConfig.GameTimes[0].IncTimeSeconds = gameTimePickerControl1.IncTimeSeconds;
+            volatileConfig.GameTimes[1].IncTimeSeconds = gameTimePickerControl2.IncTimeSeconds;
+            volatileConfig.GameTimes[2].IncTimeSeconds = gameTimePickerControl3.IncTimeSeconds;
             volatileConfig.GameTimeUpType = comboBox1.SelectedIndex;
             volatileConfig.GameCount = (int)numericUpDown1.Value;
             volatileConfig.GameEndByMoveCount = checkBox2.Checked;
