@@ -671,8 +671,8 @@ namespace ShogiBoard {
                 // 対局者名などの表示更新
                 playerInfoControlP.PlayerName = engines[turnFlip ^ 0].Name;
                 playerInfoControlN.PlayerName = engines[turnFlip ^ 1].Name;
-                playerInfoControlP.TimeASeconds = timeData[turnFlip ^ 0].RemainTime / 1000;
-                playerInfoControlN.TimeASeconds = timeData[turnFlip ^ 1].RemainTime / 1000;
+                playerInfoControlP.TimeASeconds = timeData[turnFlip ^ 0].Remain / 1000;
+                playerInfoControlN.TimeASeconds = timeData[turnFlip ^ 1].Remain / 1000;
                 playerInfoControlP.TimeBSeconds = timeData[turnFlip ^ 0].Byoyomi / 1000;
                 playerInfoControlN.TimeBSeconds = timeData[turnFlip ^ 1].Byoyomi / 1000;
                 playerInfoControlP.Reset();
@@ -726,8 +726,8 @@ namespace ShogiBoard {
 
                 FormUtility.SafeInvoke(this, () => {
                     // 自分の時間消費の開始
-                    playerInfoControlP.RemainSeconds = timeData[turnFlip ^ 0].RemainTime / 1000;
-                    playerInfoControlN.RemainSeconds = timeData[turnFlip ^ 1].RemainTime / 1000;
+                    playerInfoControlP.RemainSeconds = timeData[turnFlip ^ 0].Remain / 1000;
+                    playerInfoControlN.RemainSeconds = timeData[turnFlip ^ 1].Remain / 1000;
                     GetPlayerInfoControl(board.Turn).StartTurn();
                     // エンジンの表示をクリア
                     GetEngineViewControl(playerIndex).Clear();
@@ -1212,8 +1212,8 @@ namespace ShogiBoard {
                         // 受信した指し手でboardを進める。
                         board.Do(ShogiCore.Move.FromNotation(board, command.MoveDataEx.MoveData));
                         // 指し手受信時の画面更新
-                        timeData[0].RemainTime = client.FirstTurnRemainSeconds * 1000;
-                        timeData[1].RemainTime = client.SecondTurnRemainSeconds * 1000;
+                        timeData[0].Remain = client.FirstTurnRemainSeconds * 1000;
+                        timeData[1].Remain = client.SecondTurnRemainSeconds * 1000;
                         playerInfoControlP.RemainSeconds = client.FirstTurnRemainSeconds;
                         playerInfoControlN.RemainSeconds = client.SecondTurnRemainSeconds;
                         NetworkGameUpdateOnMoveReceived(client, board, command.MoveDataEx);
@@ -1254,8 +1254,8 @@ namespace ShogiBoard {
                 engineViewControl1.Clear();
             });
             // 思考
-            timeData[0].RemainTime = client.FirstTurnRemainSeconds * 1000;
-            timeData[1].RemainTime = client.SecondTurnRemainSeconds * 1000;
+            timeData[0].Remain = client.FirstTurnRemainSeconds * 1000;
+            timeData[1].Remain = client.SecondTurnRemainSeconds * 1000;
             var startTime = Stopwatch.GetTimestamp();
             var move = Players[0].DoTurn(board, timeData[0], timeData[1]);
             var thinkTime = (int)unchecked((Stopwatch.GetTimestamp() - startTime) * 1000L / Stopwatch.Frequency);
@@ -1708,7 +1708,7 @@ namespace ShogiBoard {
                 listBox1.Focus();
                 // グラフも描画
                 if (moveDataEx.Value.HasValue || 0 <= timeData[turn].Total) {
-                    gameGraphControl1.AddAsync(moveCount - 1, moveDataEx.Value ?? int.MinValue, timeData[turn].RemainTime, timeData[turn].Total, updateGraph);
+                    gameGraphControl1.AddAsync(moveCount - 1, moveDataEx.Value ?? int.MinValue, timeData[turn].Remain, timeData[turn].Total, updateGraph);
                 }
             });
         }
