@@ -1142,7 +1142,9 @@ namespace ShogiBoard {
                                 BoardData boardData = board.ToBoardData(); //手抜き
                                 for (int i = 0; i < client.Moves.Count; i++) {
                                     boardData.Do(client.Moves[i]);
-                                    AddMoveToListForAppliedBoard(boardData.Turn ^ 1, boardData, new MoveDataEx { MoveData = client.Moves[i], Time = client.SecondsList[i] * 1000 }, true, i + 1 == client.Moves.Count);
+                                    AddMoveToListForAppliedBoard(boardData.Turn ^ 1, boardData,
+                                        new MoveDataEx { MoveData = client.Moves[i], Time = client.MilliSecondsList[i] },
+                                        true, i + 1 == client.Moves.Count);
                                     board.Do(ShogiCore.Move.FromNotation(board, client.Moves[i]));
                                 }
                                 lock (Board) {
@@ -1212,10 +1214,10 @@ namespace ShogiBoard {
                         // 受信した指し手でboardを進める。
                         board.Do(ShogiCore.Move.FromNotation(board, command.MoveDataEx.MoveData));
                         // 指し手受信時の画面更新
-                        timeData[0].Remain = client.FirstTurnRemainSeconds * 1000;
-                        timeData[1].Remain = client.SecondTurnRemainSeconds * 1000;
-                        playerInfoControlP.RemainSeconds = client.FirstTurnRemainSeconds;
-                        playerInfoControlN.RemainSeconds = client.SecondTurnRemainSeconds;
+                        timeData[0].Remain = client.FirstTurnRemainMilliSeconds;
+                        timeData[1].Remain = client.SecondTurnRemainMilliSeconds;
+                        playerInfoControlP.RemainSeconds = client.FirstTurnRemainMilliSeconds;
+                        playerInfoControlN.RemainSeconds = client.SecondTurnRemainMilliSeconds;
                         NetworkGameUpdateOnMoveReceived(client, board, command.MoveDataEx);
                         // 自分の番の処理
                         NetworkGameDoTurn(client, board, stat);
@@ -1254,8 +1256,8 @@ namespace ShogiBoard {
                 engineViewControl1.Clear();
             });
             // 思考
-            timeData[0].Remain = client.FirstTurnRemainSeconds * 1000;
-            timeData[1].Remain = client.SecondTurnRemainSeconds * 1000;
+            timeData[0].Remain = client.FirstTurnRemainMilliSeconds;
+            timeData[1].Remain = client.SecondTurnRemainMilliSeconds;
             var startTime = Stopwatch.GetTimestamp();
             var move = Players[0].DoTurn(board, timeData[0], timeData[1]);
             var thinkTime = (int)unchecked((Stopwatch.GetTimestamp() - startTime) * 1000L / Stopwatch.Frequency);
