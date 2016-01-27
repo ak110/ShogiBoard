@@ -120,6 +120,7 @@ namespace ShogiBoard {
             string infoHashFull = "";
             string infoPVOrString = null;
             string pvLengthString = null;
+            bool lowerBound = false, upperBound = false;
 
             foreach (USIInfo info in e.SubCommands) {
                 switch (info.Name) {
@@ -139,6 +140,8 @@ namespace ShogiBoard {
                             infoScore = player.LastScoreString;
                         }
                         break;
+                    case "lowerbound": lowerBound = true; break;
+                    case "upperbound": upperBound = true; break;
 
                     case "pv": {
                             var pvList = info.Parameters;
@@ -183,6 +186,8 @@ namespace ShogiBoard {
             if (long.TryParse(infoHashFull, out hashFull)) {
                 infoHashFull = (hashFull / 10.0).ToString("0.0").PadLeft(5) + "%";
             }
+            if (lowerBound) infoScore += "↓";
+            if (upperBound) infoScore += "↑";
 
             string toolTipText = pvLengthString;
             if (!string.IsNullOrEmpty(infoDepth)) {

@@ -1259,7 +1259,14 @@ namespace ShogiBoard {
             timeData[0].Remain = client.FirstTurnRemainMilliSeconds;
             timeData[1].Remain = client.SecondTurnRemainMilliSeconds;
             var startTime = Stopwatch.GetTimestamp();
-            var move = Players[0].DoTurn(board, timeData[0], timeData[1]);
+            Move move;
+            try {
+                move = Players[0].DoTurn(board, timeData[0], timeData[1]);
+            } catch (Exception e) {
+                logger.Fatal("通信対局中に例外発生", e);
+                client.Dispose();
+                return;
+            }
             var thinkTime = (int)unchecked((Stopwatch.GetTimestamp() - startTime) * 1000L / Stopwatch.Frequency);
             // 評価値・読み筋
             USIPlayer usiPlayer = Players[0] as USIPlayer; // TODO: 整理
