@@ -736,17 +736,8 @@ namespace ShogiBoard {
                     move = player.DoTurn(board, timeData[0], timeData[1]);
                 } catch (Exception e) {
                     logger.Warn("思考中に例外発生", e);
-                    if (usiPlayer != null && usiPlayer.TimeUp) {
-                        // 時間切れ
-                        if (configLoader.VolatileConfig.GameTimeUpType == 1) {
-                            OnGameEnd(stats, board.Turn ^ 1, turnFlip, GameEndReason.TimeUp); // 負け扱い
-                        } else {
-                            OnGameEnd(stats, -1, turnFlip, GameEndReason.TimeUp); // 引き分け扱い
-                        }
-                    } else {
-                        // 異常終了
-                        OnGameEnd(stats, board.Turn ^ 1, turnFlip, GameEndReason.Error);
-                    }
+                    // 異常終了
+                    OnGameEnd(stats, board.Turn ^ 1, turnFlip, GameEndReason.Error);
                     break;
                 }
                 var thinkTime = (int)unchecked((Stopwatch.GetTimestamp() - startTime) * 1000L / Stopwatch.Frequency);
