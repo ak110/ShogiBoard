@@ -64,7 +64,10 @@ namespace ShogiBoard {
         public void GameStart(USIPlayer player, EngineStatisticsForGame stat) {
             BeginInvoke(new MethodInvoker(() => {
                 try {
-                    labelEngine.Text = player.Driver.IdName; // エンジン名
+                    labelEngine.Text = player.Name; // プレイヤー名
+                    toolTip1.SetToolTip(labelEngine,
+                        "名前: " + player.Driver.IdName + Environment.NewLine +
+                        "作者: " + player.Driver.IdAuthor);
                 } catch {
                 }
             }));

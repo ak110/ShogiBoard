@@ -46,6 +46,7 @@
             this.labelEngine = new System.Windows.Forms.Label();
             this.labelMeanNPS = new System.Windows.Forms.Label();
             this.labelMeanDepth = new System.Windows.Forms.Label();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -110,20 +111,20 @@
             this.選択した読み筋をコピーCToolStripMenuItem,
             this.全ての読み筋をコピーAToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(227, 48);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(199, 48);
             this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
             // 
             // 選択した読み筋をコピーCToolStripMenuItem
             // 
             this.選択した読み筋をコピーCToolStripMenuItem.Name = "選択した読み筋をコピーCToolStripMenuItem";
-            this.選択した読み筋をコピーCToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+            this.選択した読み筋をコピーCToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
             this.選択した読み筋をコピーCToolStripMenuItem.Text = "選択した読み筋をコピー(&C)";
             this.選択した読み筋をコピーCToolStripMenuItem.Click += new System.EventHandler(this.選択した読み筋をコピーCToolStripMenuItem_Click);
             // 
             // 全ての読み筋をコピーAToolStripMenuItem
             // 
             this.全ての読み筋をコピーAToolStripMenuItem.Name = "全ての読み筋をコピーAToolStripMenuItem";
-            this.全ての読み筋をコピーAToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+            this.全ての読み筋をコピーAToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
             this.全ての読み筋をコピーAToolStripMenuItem.Text = "全ての読み筋をコピー(&A)";
             this.全ての読み筋をコピーAToolStripMenuItem.Click += new System.EventHandler(this.全ての読み筋をコピーAToolStripMenuItem_Click);
             // 
@@ -189,6 +190,12 @@
             this.labelMeanDepth.TabIndex = 3;
             this.labelMeanDepth.Text = "平均深さ：xx.x";
             // 
+            // toolTip1
+            // 
+            this.toolTip1.AutomaticDelay = 0;
+            this.toolTip1.UseAnimation = false;
+            this.toolTip1.UseFading = false;
+            // 
             // EngineViewControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -230,6 +237,6 @@
         private System.Windows.Forms.Label labelEngine;
         private System.Windows.Forms.Label labelMeanNPS;
         private System.Windows.Forms.Label labelMeanDepth;
-
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

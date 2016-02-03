@@ -1645,7 +1645,7 @@ namespace ShogiBoard {
                     return null;
                 SetTitleStatusText("USIエンジン起動中：" + engine.Name + " (" + System.IO.Path.GetFileName(engine.Path) + ")");
                 USIDriver usiDriver = new USIDriver(engine.Path, null, playerIndex + 1);
-                Players[playerIndex] = player = new USIPlayer(usiDriver);
+                Players[playerIndex] = player = new USIPlayer(engine.Name, usiDriver);
                 GetEngineViewControl(playerIndex).Attach(player);
                 usiDriver.Start(configLoader.Config.EnginePriority);
                 player.ByoyomiHack = engine.ByoyomiHack;
