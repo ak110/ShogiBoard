@@ -1723,7 +1723,11 @@ namespace ShogiBoard {
                 listBox1.Focus();
                 // グラフも描画
                 if (moveDataEx.Value.HasValue || 0 <= timeData[turn].Total) {
-                    gameGraphControl1.AddAsync(moveCount - 1, moveDataEx.Value ?? int.MinValue, timeData[turn].Remain, timeData[turn].Total, updateGraph);
+                    int total = timeData[turn].Total + timeData[turn].Increment * 20; // フィッシャーモードの場合は40手分くらいグラフに余裕を持たせる
+                    double startTime = total <= 0 ? 1.0 : (double)timeData[turn].Total / total;
+                    double time = total <= 0 ? -1.0 : (double)timeData[turn].Remain / total;
+                    gameGraphControl1.StartTime = startTime;
+                    gameGraphControl1.AddAsync(moveCount - 1, moveDataEx.Value ?? int.MinValue, time, updateGraph);
                 }
             });
         }

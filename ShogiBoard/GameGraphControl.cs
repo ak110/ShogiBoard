@@ -51,7 +51,13 @@ namespace ShogiBoard {
 
         int moveCount = 0;
 
+        /// <summary>
+        /// 開始時の持ち時間のグラフの割合(0～1)
+        /// </summary>
+        public double StartTime { get; set; }
+
         public GameGraphControl() {
+            StartTime = 1.0;
             InitializeComponent();
             labelLine.Text = "";
             Disposed += GameGraphControl_Disposed;
@@ -114,11 +120,9 @@ namespace ShogiBoard {
         /// 評価値と思考時間を追加
         /// </summary>
         /// <param name="value">評価値。int.MinValueなら評価値無し。</param>
-        /// <param name="remainTime">残り時間</param>
-        /// <param name="timeA">持ち時間。0以下で描画無し。</param>
+        /// <param name="time">残り時間の割合。負なら描画無し。</param>
         /// <param name="update">更新するのか否か</param>
-        public void AddAsync(int moveCount, int value, int remainTime, int timeA, bool update) {
-            double time = timeA <= 0 ? -1.0 : (double)remainTime / timeA;
+        public void AddAsync(int moveCount, int value, double time, bool update) {
             lock (drawingQueue) {
                 drawingQueue.Enqueue(() => Add(moveCount, value, time, update));
                 Monitor.Pulse(drawingQueue);
@@ -166,8 +170,8 @@ namespace ShogiBoard {
                     g.FillRectangle(bgBrush, 0, 0, bitmap.Width, BitmapHeight);
                     // 持ち時間
                     GraphData[] lastData = new[] { // 手番毎の一つ前のデータ。最初はダミー。
-                        new GraphData { MoveCount = -1, Time = 1.0, },
-                        new GraphData { MoveCount = -1, Time = 1.0, },
+                        new GraphData { MoveCount = -1, Time = StartTime, },
+                        new GraphData { MoveCount = -1, Time = StartTime, },
                     };
                     foreach (GraphData gr in graphData) {
                         int turn = gr.MoveCount % 2;
