@@ -217,10 +217,8 @@ namespace ShogiBoard {
                     if (!string.IsNullOrEmpty(infoPVOrString)) {
                         AddListItem(infoTime, infoDepth, infoNodes, infoScore, infoPVOrString, pvLengthString);
                     }
-                    stat.Depth.Calculate();
-                    stat.NPS.Calculate();
-                    double? meanDepth = stat.Depth.Result.MeanOfAll;
-                    double? meanNPS = stat.NPS.Result.MeanOfAll;
+                    double? meanDepth = stat.MeanDepth;
+                    double? meanNPS = stat.MeanNPS;
                     if (meanDepth.HasValue) {
                         labelMeanDepth.Text = "平均深さ：" + meanDepth.Value.ToString("#0.0");
                     } else {

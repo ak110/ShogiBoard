@@ -925,12 +925,11 @@ namespace ShogiBoard {
                 var player = Players[playerIndex];
                 var usiPlayer = player as USIPlayer;
                 if (usiPlayer != null) {
-                    stats[playerIndex].Calculate();
-                    EngineStatisticesForAllGames[playerIndex].Add(stats[playerIndex]);
-                    var a = EngineStatisticesForAllGames[playerIndex];
-                    Func<double?, string> ToString1 = value => value.HasValue ? value.Value.ToString("0.0") : "-";
-                    Func<double?, string> ToString2 = value => value.HasValue ? value.Value.ToString("#,##0") : "-";
-                    logger.Info(@"エンジン" + (playerIndex + 1) + " " + usiPlayer.Name + " 統計情報" + Environment.NewLine + a.ToString());
+                    if (reason.IsGameCompleted()) {
+                        EngineStatisticesForAllGames[playerIndex].Add(stats[playerIndex]);
+                        var a = EngineStatisticesForAllGames[playerIndex];
+                        logger.Info(@"エンジン" + (playerIndex + 1) + " " + usiPlayer.Name + " 統計情報" + Environment.NewLine + a.ToString());
+                    }
                     if (-1 <= turn) {
                         usiPlayer.GameEnd(
                             turn == (playerIndex ^ turnFlip ^ 0) ? GameResult.Win :
