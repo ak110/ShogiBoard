@@ -561,8 +561,8 @@ namespace ShogiBoard {
                         } else {
                             GetEngineViewControl(1).Attach(player1);
                         }
-                        player0.GameStart();
-                        player1.GameStart();
+                        player0.GameStart(configLoader.Config.EnginePriority);
+                        player1.GameStart(configLoader.Config.EnginePriority);
                         GetEngineViewControl(0).GameStart(player0, stats[0]);
                         GetEngineViewControl(1).GameStart(player1, stats[1]);
 
@@ -598,14 +598,14 @@ namespace ShogiBoard {
                     } catch (USIEngineException e) {
                         logger.Warn("USIエンジンの起動に失敗", e);
                         for (int i = 0; threadValid && i < 10; i++) {
-                            SetTitleStatusText("USIエンジン起動失敗：" + e.InnerException.Message + " (10秒後に再接続)" + new string('.', i + 1));
+                            SetTitleStatusText("USIエンジン起動失敗：" + e.InnerException.Message + " (10秒後に再起動)" + new string('.', i + 1));
                             Thread.Sleep(1000);
                         }
                     } catch (Exception e) {
                         logger.Warn("対局中にエラー発生", e);
                         if (IsSocketException(e)) {
                             for (int i = 0; threadValid && i < 10; i++) {
-                                SetTitleStatusText("対局中に通信エラー発生：" + e.Message + " (10秒後に再接続)" + new string('.', i + 1));
+                                SetTitleStatusText("対局中にエラー発生：" + e.Message + " (10秒後に再起動)" + new string('.', i + 1));
                                 Thread.Sleep(1000);
                             }
                         } else {
@@ -1023,7 +1023,7 @@ namespace ShogiBoard {
                     // USIエンジン起動
                     using (USIPlayer player0 = CreateUSIPlayer(engine, 0)) {
                         if (!threadValid) break;
-                        player0.GameStart();
+                        player0.GameStart(configLoader.Config.EnginePriority);
                         GetEngineViewControl(0).GameStart(player0, stat0);
                         if (!threadValid) break;
                         // ログイン
@@ -1466,7 +1466,7 @@ namespace ShogiBoard {
                 }
                 using (USIPlayer player0 = CreateUSIPlayer(engine, 0)) {
                     if (!threadValid) return;
-                    player0.GameStart();
+                    player0.GameStart(configLoader.Config.EnginePriority);
                     GetEngineViewControl(0).GameStart(player0, stat0);
                     try {
                         SetTitleStatusText(typeName + "中：" + engine.Name + " (" + System.IO.Path.GetFileName(engine.Path) + ")");
@@ -1646,7 +1646,6 @@ namespace ShogiBoard {
                 USIDriver usiDriver = new USIDriver(engine.Path, null, playerIndex + 1);
                 Players[playerIndex] = player = new USIPlayer(engine.Name, usiDriver);
                 GetEngineViewControl(playerIndex).Attach(player);
-                usiDriver.Start(configLoader.Config.EnginePriority);
                 player.ByoyomiHack = engine.ByoyomiHack;
                 player.SetOption("USI_Ponder", engine.USIPonder ? "true" : "false");
                 player.SetOption("USI_Hash", engine.USIHash.ToString());
