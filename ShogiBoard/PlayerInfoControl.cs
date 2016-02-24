@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using ShogiCore;
 
 namespace ShogiBoard {
     /// <summary>
@@ -31,8 +32,6 @@ namespace ShogiBoard {
         /// </summary>
         public int ByoyomiSeconds { get; set; }
 
-        bool tickCalled;
-
         public PlayerInfoControl() {
             InitializeComponent();
         }
@@ -51,18 +50,16 @@ namespace ShogiBoard {
         /// プレイヤー名
         /// </summary>
         public string PlayerName {
-            get {
-                return label1.Text.TrimStart('▲', '△');
-            }
-            set {
-                label1.Text = "▲△"[Turn].ToString() + value;
-            }
+            get { return label1.Text.TrimStart('▲', '△'); }
+            set { label1.Text = "▲△"[Turn].ToString() + value; }
         }
 
         /// <summary>
         /// リセット
         /// </summary>
-        public void Reset() {
+        public void Reset(PlayerTime playerTime) {
+            TimeASeconds = playerTime.Total / 1000;
+            TimeBSeconds = playerTime.Byoyomi / 1000;
             RemainSeconds = TimeASeconds;
             ByoyomiSeconds = TimeBSeconds;
             UpdateTimeDisplay();
@@ -72,7 +69,6 @@ namespace ShogiBoard {
         /// 時間消費開始
         /// </summary>
         public void StartTurn() {
-            tickCalled = false;
             timer1.Enabled = true;
             ByoyomiSeconds = TimeBSeconds; // 秒読みは毎回リセット
         }
@@ -82,19 +78,13 @@ namespace ShogiBoard {
         /// </summary>
         public void EndTurn() {
             timer1.Enabled = false;
-            // CSAルールでは最低1秒消費なのでそのように。(適当)
-            if (!tickCalled) {
-                timer1_Tick(this, EventArgs.Empty);
-            }
+            UpdateTimeDisplay();
         }
 
         /// <summary>
         /// 時間消費(1秒に1回呼ばれる想定)
         /// </summary>
         private void timer1_Tick(object sender, EventArgs e) {
-            // windowsのイベント処理が滞るとずれるけど手抜き
-            tickCalled = true;
-
             // 残り時間算出
             if (0 < RemainSeconds) {
                 RemainSeconds--;

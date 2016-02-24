@@ -33,6 +33,7 @@ namespace ShogiBoard {
             if (!DesignMode) {
                 Clear();
                 labelEngine.Text = ""; // エンジン名
+                labelPonder.Text = "予想手：";
             }
         }
 
@@ -54,24 +55,12 @@ namespace ShogiBoard {
         /// <param name="player"></param>
         public void Attach(USIPlayer player) {
             this.player = player;
-            player.CommandReceived += player_CommandReceived;
-            player.InfoReceived += player_InfoReceived;
-        }
-
-        /// <summary>
-        /// プレイヤー情報を更新
-        /// </summary>
-        public void GameStart(USIPlayer player, EngineStatisticsForGame stat) {
-            BeginInvoke(new MethodInvoker(() => {
-                try {
-                    labelEngine.Text = player.Name; // プレイヤー名
-                    toolTip1.SetToolTip(labelEngine,
-                        "名前: " + player.Driver.IdName + Environment.NewLine +
-                        "作者: " + player.Driver.IdAuthor);
-                } catch {
-                }
-            }));
-            this.stat = stat;
+            player.CommandReceived += Player_CommandReceived;
+            player.InfoReceived += Player_InfoReceived;
+            player.PositionChanged += Player_PositionChanged;
+            player.PonderStarting += Player_PonderStarting;
+            player.PonderHit += Player_PonderHit;
+            player.PonderStopped += Player_PonderStopped;
         }
 
         /// <summary>
@@ -80,10 +69,29 @@ namespace ShogiBoard {
         /// <param name="player"></param>
         public void Detach() {
             if (player != null) {
-                player.InfoReceived -= player_InfoReceived;
-                player.CommandReceived -= player_CommandReceived;
+                player.CommandReceived -= Player_CommandReceived;
+                player.InfoReceived -= Player_InfoReceived;
+                player.PositionChanged -= Player_PositionChanged;
+                player.PonderStarting -= Player_PonderStarting;
+                player.PonderHit -= Player_PonderHit;
+                player.PonderStopped -= Player_PonderStopped;
                 player = null;
             }
+        }
+
+        /// <summary>
+        /// プレイヤー情報を更新
+        /// </summary>
+        public void GameStart(USIPlayer player, EngineStatisticsForGame stat) {
+            this.stat = stat;
+            FormUtility.SafeInvoke(this, () => {
+                Clear();
+                labelEngine.Text = player.Name; // プレイヤー名
+                toolTip1.SetToolTip(labelEngine,
+                    player.Name + Environment.NewLine +
+                    "名前: " + player.Driver.IdName + Environment.NewLine +
+                    "作者: " + player.Driver.IdAuthor);
+            });
         }
 
         /// <summary>
@@ -109,10 +117,10 @@ namespace ShogiBoard {
             }) { ToolTipText = toolTipText });
         }
 
-        void player_CommandReceived(object sender, ShogiCore.USI.USICommandEventArgs e) {
+        void Player_CommandReceived(object sender, ShogiCore.USI.USICommandEventArgs e) {
         }
 
-        void player_InfoReceived(object sender, ShogiCore.USI.USIInfoEventArgs e) {
+        void Player_InfoReceived(object sender, ShogiCore.USI.USIInfoEventArgs e) {
             string infoDepth = "";
             string infoSelDepth = "";
             string infoTime = "";
@@ -234,6 +242,28 @@ namespace ShogiBoard {
                 // 無視
             }
         }
+
+        private void Player_PositionChanged(object sender, DataEventArgs<Board> e) {
+            Board = e.Data;
+            FormUtility.SafeInvoke(this, () => { Clear(); });
+        }
+
+        private void Player_PonderStarting(object sender, DataEventArgs<Board> e) {
+            // 予想手を表示
+            var ponder = SFENNotationReader.ToMoveData(player.LastPonderMove).ToString(e.Data.ToBoardData());
+            FormUtility.SafeInvoke(this, () => { labelPonder.Text = "予想手：" + ponder; });
+        }
+
+        private void Player_PonderHit(object sender, DataEventArgs<Board> e) {
+            // 予想手をクリア
+            FormUtility.SafeInvoke(this, () => { labelPonder.Text = "予想手："; });
+        }
+
+        private void Player_PonderStopped(object sender, DataEventArgs<Board> e) {
+            // 予想手をクリア
+            FormUtility.SafeInvoke(this, () => { labelPonder.Text = "予想手："; });
+        }
+
 
         private void EngineViewControl_SizeChanged(object sender, EventArgs e) {
             AdjustLayout();

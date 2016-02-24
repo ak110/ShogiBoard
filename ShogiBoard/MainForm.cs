@@ -397,10 +397,12 @@ namespace ShogiBoard {
             Notation notation = new NotationLoader().Load(notationString).FirstOrDefault();
             if (notation == null) return;
 
-            playerInfoControlP.PlayerName = notation.FirstPlayerName;
-            playerInfoControlN.PlayerName = notation.SecondPlayerName;
             timeData[0].Set(notation.TimeA, notation.TimeB, 0);
             timeData[1].Set(notation.TimeA, notation.TimeB, 0);
+            playerInfoControlP.PlayerName = notation.FirstPlayerName;
+            playerInfoControlN.PlayerName = notation.SecondPlayerName;
+            playerInfoControlP.Reset(timeData[0]);
+            playerInfoControlN.Reset(timeData[1]);
 
             Board.Reset(notation.InitialBoard);
             blunderViewControl.DrawAsync(Board);
@@ -612,8 +614,13 @@ namespace ShogiBoard {
                             SetTitleStatusText("対局中にエラー発生（停止）：" + e.Message);
                         }
                     } finally {
-                        engineViewControl2.Detach();
-                        engineViewControl1.Detach();
+                        // 時間消費の停止
+                        FormUtility.SafeInvoke(this, () => {
+                            playerInfoControlP.EndTurn();
+                            playerInfoControlN.EndTurn();
+                        });
+                        GetEngineViewControl(1).Detach();
+                        GetEngineViewControl(0).Detach();
                     }
                 }
             } finally {
@@ -661,22 +668,13 @@ namespace ShogiBoard {
             blunderViewControl.DrawAsync(board);
             // 対局開始時の情報表示
             FormUtility.SafeInvoke(this, () => {
-                // エンジン情報欄を初期化
-                engineViewControl1.Board = board;
-                engineViewControl1.Clear();
-                engineViewControl2.Board = board;
-                engineViewControl2.Clear();
                 // 情報表示
                 UpdateGameResult(engines, turnFlip);
                 // 対局者名などの表示更新
                 playerInfoControlP.PlayerName = engines[turnFlip ^ 0].Name;
                 playerInfoControlN.PlayerName = engines[turnFlip ^ 1].Name;
-                playerInfoControlP.TimeASeconds = timeData[turnFlip ^ 0].Remain / 1000;
-                playerInfoControlN.TimeASeconds = timeData[turnFlip ^ 1].Remain / 1000;
-                playerInfoControlP.TimeBSeconds = timeData[turnFlip ^ 0].Byoyomi / 1000;
-                playerInfoControlN.TimeBSeconds = timeData[turnFlip ^ 1].Byoyomi / 1000;
-                playerInfoControlP.Reset();
-                playerInfoControlN.Reset();
+                playerInfoControlP.Reset(timeData[turnFlip ^ 0]);
+                playerInfoControlN.Reset(timeData[turnFlip ^ 1]);
                 ClearMoveList();
             });
 
@@ -727,8 +725,6 @@ namespace ShogiBoard {
                     playerInfoControlP.RemainSeconds = timeData[turnFlip ^ 0].Remain / 1000;
                     playerInfoControlN.RemainSeconds = timeData[turnFlip ^ 1].Remain / 1000;
                     GetPlayerInfoControl(board.Turn).StartTurn();
-                    // エンジンの表示をクリア
-                    GetEngineViewControl(playerIndex).Clear();
                 });
                 var startTime = Stopwatch.GetTimestamp();
                 Move move;
@@ -813,6 +809,10 @@ namespace ShogiBoard {
                         OnGameEnd(stats, board.Turn ^ 1, turnFlip, GameEndReason.Mate); // 最後の一手の方の勝ち
                     }
                 }
+
+                // ponder開始
+                if (gameWinnerTurn == -2)
+                    StartPonder(usiPlayer, board);
             }
 
             // 終局理由を画面へ
@@ -821,11 +821,6 @@ namespace ShogiBoard {
                 csaFileWriter.AppendMove((gameEndReason == GameEndReason.Mate ?
                     GameEndReason.Resign : gameEndReason).ToStringCSA());
             }
-            // 時間消費の停止
-            FormUtility.SafeInvoke(this, () => {
-                playerInfoControlP.EndTurn();
-                playerInfoControlN.EndTurn();
-            });
             // 勝ち数の集計・統計情報の表示
             if (gameWinnerTurn != -2) {
                 if (gameWinnerTurn == -1) { // 引き分け
@@ -993,6 +988,11 @@ namespace ShogiBoard {
                     }
                 }
             }
+            // エンジンが動作中なら止める
+            var player = Players[0] as USIPlayer;
+            if (player != null) {
+                player.Abort();
+            }
             // 5秒くらい待ってダメならAbort
             for (int i = 0; ; i++) {
                 if (i < 50) {
@@ -1059,11 +1059,6 @@ namespace ShogiBoard {
                                 };
                                 // 対局開始
                                 NetworkGameLoop(client, board, csaID, csaPW, CSAClient.ProtocolModes.CSA, stat0);
-                                // 時間消費の停止
-                                FormUtility.SafeInvoke(this, () => {
-                                    playerInfoControlP.EndTurn();
-                                    playerInfoControlN.EndTurn();
-                                });
                             } finally {
                                 lock (networkGameLock) {
                                     csaClient = null;
@@ -1097,7 +1092,12 @@ namespace ShogiBoard {
                         SetTitleStatusText("対局中にエラー発生（停止）：" + e.Message);
                     }
                 } finally {
-                    engineViewControl1.Detach();
+                    // 時間消費の停止
+                    FormUtility.SafeInvoke(this, () => {
+                        playerInfoControlP.EndTurn();
+                        playerInfoControlN.EndTurn();
+                    });
+                    GetEngineViewControl(0).Detach();
                 }
             }
 
@@ -1165,20 +1165,13 @@ namespace ShogiBoard {
                             timeData[1] = new PlayerTime(client.GameSummary.Times[1]);
                             // 対局開始時の情報表示
                             FormUtility.SafeInvoke(this, () => {
-                                // エンジン情報欄を初期化
-                                engineViewControl1.Board = board;
-                                engineViewControl1.Clear();
                                 // 情報表示
                                 SetTitleStatusText("通信対局中：" + client.HostName);
                                 // 対局者名などの表示更新
                                 playerInfoControlP.PlayerName = client.GameSummary.NameP;
-                                playerInfoControlP.TimeASeconds = client.GameSummary.Times[0].Total_Time;
-                                playerInfoControlP.TimeBSeconds = client.GameSummary.Times[0].Byoyomi;
                                 playerInfoControlN.PlayerName = client.GameSummary.NameN;
-                                playerInfoControlN.TimeASeconds = client.GameSummary.Times[1].Total_Time;
-                                playerInfoControlN.TimeBSeconds = client.GameSummary.Times[1].Byoyomi;
-                                playerInfoControlP.Reset();
-                                playerInfoControlN.Reset();
+                                playerInfoControlP.Reset(timeData[0]);
+                                playerInfoControlN.Reset(timeData[1]);
                                 ClearMoveList();
                             });
                         } catch (Exception e) {
@@ -1209,7 +1202,6 @@ namespace ShogiBoard {
                         // 棋譜へ記録
                         csaFileWriter.AppendMove(command.ReceivedString, lastMoveComment);
                         // 指し手受信時の画面更新
-                        timeData[board.Turn ^ 1].Consume(command.MoveDataEx.Time);
                         NetworkGameUpdateOnMoveReceived(client, board, command.MoveDataEx, lastMoveValue, lastMoveComment);
                         break;
 
@@ -1219,10 +1211,6 @@ namespace ShogiBoard {
                         // 受信した指し手でboardを進める。
                         board.Do(ShogiCore.Move.FromNotation(board, command.MoveDataEx.MoveData));
                         // 指し手受信時の画面更新
-                        timeData[0].Remain = client.FirstTurnRemainMilliSeconds;
-                        timeData[1].Remain = client.SecondTurnRemainMilliSeconds;
-                        playerInfoControlP.RemainSeconds = client.FirstTurnRemainMilliSeconds;
-                        playerInfoControlN.RemainSeconds = client.SecondTurnRemainMilliSeconds;
                         NetworkGameUpdateOnMoveReceived(client, board, command.MoveDataEx);
                         // 自分の番の処理
                         NetworkGameDoTurn(client, board, stat);
@@ -1258,11 +1246,9 @@ namespace ShogiBoard {
                 // 自分の時間消費の開始
                 GetPlayerInfoControl(board.Turn).StartTurn();
                 // エンジンの表示をクリア
-                engineViewControl1.Clear();
+                GetEngineViewControl(0).Clear();
             });
             // 思考
-            timeData[0].Remain = client.FirstTurnRemainMilliSeconds;
-            timeData[1].Remain = client.SecondTurnRemainMilliSeconds;
             var startTime = Stopwatch.GetTimestamp();
             Move move;
             try {
@@ -1273,6 +1259,7 @@ namespace ShogiBoard {
                 return;
             }
             var thinkTime = (int)unchecked((Stopwatch.GetTimestamp() - startTime) * 1000L / Stopwatch.Frequency);
+            timeData[board.Turn].Consume(thinkTime);
             // 評価値・読み筋
             USIPlayer usiPlayer = Players[0] as USIPlayer; // TODO: 整理
             if (usiPlayer != null) {
@@ -1298,6 +1285,9 @@ namespace ShogiBoard {
                 client.SendMove(move.ToNotation(), lastMoveComment);
             }
             board.Do(move);
+            // ponder開始
+            if (!move.IsSpecialState)
+                StartPonder(usiPlayer, board);
             FormUtility.SafeInvoke(this, () => {
                 // 相手の時間消費の開始
                 GetPlayerInfoControl(board.Turn).StartTurn();
@@ -1359,6 +1349,10 @@ namespace ShogiBoard {
         /// </summary>
         /// <param name="board">boardはmoveDataEx.MoveDataが適用済みの局面</param>
         private void NetworkGameUpdateOnMoveReceived(CSAClient client, Board board, MoveDataEx moveDataEx, int? value = null, string comment = null) {
+            timeData[0].Remain = client.FirstTurnRemainMilliSeconds;
+            timeData[1].Remain = client.SecondTurnRemainMilliSeconds;
+            playerInfoControlP.RemainSeconds = timeData[0].Remain / 1000;
+            playerInfoControlN.RemainSeconds = timeData[1].Remain / 1000;
             // リストへ追加
             moveDataEx.Value = value;
             moveDataEx.Comment = comment;
@@ -1368,7 +1362,6 @@ namespace ShogiBoard {
             FormUtility.SafeInvoke(this, () => {
                 GetPlayerInfoControl(b.Turn ^ 1).EndTurn();
             });
-
         }
 
         #endregion
@@ -1449,9 +1442,8 @@ namespace ShogiBoard {
                 typeName = p.IsThink ? "検討" : "詰将棋解答";
 
                 FormUtility.SafeInvoke(this, () => {
-                    engineViewControl1.Clear();
-                    engineViewControl2.Hide();
-                    splitContainer3.Panel2Collapsed = true;
+                    GetEngineViewControl(0).Clear();
+                    HidePlayer2EngineView();
                 });
 
                 var engine = p.IsThink ?
@@ -1470,7 +1462,7 @@ namespace ShogiBoard {
                     GetEngineViewControl(0).GameStart(player0, stat0);
                     try {
                         SetTitleStatusText(typeName + "中：" + engine.Name + " (" + System.IO.Path.GetFileName(engine.Path) + ")");
-                        engineViewControl1.Board = p.Board;
+                        GetEngineViewControl(0).Board = p.Board;
                         if (!player0.Driver.GameStarted) {
                             player0.Driver.SendUSINewGame();
                         }
@@ -1483,7 +1475,7 @@ namespace ShogiBoard {
                             DoMate(p, player0);
                         }
                     } finally {
-                        engineViewControl1.Detach();
+                        GetEngineViewControl(0).Detach();
                     }
                 }
             } catch (Exception e) {
@@ -1513,7 +1505,7 @@ namespace ShogiBoard {
                 if (!threadValid) break;
                 if (command.Name == "bestmove") {
                     sw.Stop();
-                    engineViewControl1.AddListItem(time: sw.ElapsedMilliseconds.ToString("#,##0"), pvOrString: "指し手：" + SFENNotationReader.ToMoveData(command.Parameters).ToString(p.Board.ToBoardData()));
+                    GetEngineViewControl(0).AddListItem(time: sw.ElapsedMilliseconds.ToString("#,##0"), pvOrString: "指し手：" + SFENNotationReader.ToMoveData(command.Parameters).ToString(p.Board.ToBoardData()));
                     break;
                 }
             }
@@ -1535,15 +1527,15 @@ namespace ShogiBoard {
                     sw.Stop();
                     switch (command.Parameters) {
                         case "notimplemented":
-                            engineViewControl1.AddListItem(pvOrString: "エンジンが詰将棋解答に対応していません。");
+                            GetEngineViewControl(0).AddListItem(pvOrString: "エンジンが詰将棋解答に対応していません。");
                             return;
 
                         case "timeout":
-                            engineViewControl1.AddListItem(time: sw.ElapsedMilliseconds.ToString("#,##0"), pvOrString: "時間内に詰みを見つけることが出来ませんでした。");
+                            GetEngineViewControl(0).AddListItem(time: sw.ElapsedMilliseconds.ToString("#,##0"), pvOrString: "時間内に詰みを見つけることが出来ませんでした。");
                             return;
 
                         case "nomate":
-                            engineViewControl1.AddListItem(time: sw.ElapsedMilliseconds.ToString("#,##0"), pvOrString: "不詰です。");
+                            GetEngineViewControl(0).AddListItem(time: sw.ElapsedMilliseconds.ToString("#,##0"), pvOrString: "不詰です。");
                             return;
 
                         default:
@@ -1569,8 +1561,8 @@ namespace ShogiBoard {
                         }
 
                         // メッセージ表示
-                        engineViewControl1.AddListItem(time: sw.ElapsedMilliseconds.ToString("#,##0"), pvOrString: "詰みました。");
-                        engineViewControl1.AddListItem(pvOrString: pvString.ToString());
+                        GetEngineViewControl(0).AddListItem(time: sw.ElapsedMilliseconds.ToString("#,##0"), pvOrString: "詰みました。");
+                        GetEngineViewControl(0).AddListItem(pvOrString: pvString.ToString());
                     });
                     return;
                 }
@@ -1617,13 +1609,13 @@ namespace ShogiBoard {
         /// </summary>
         private void ShowPlayer2EngineView() {
             splitContainer3.Panel2Collapsed = false;
-            engineViewControl2.Show();
+            GetEngineViewControl(1).Show();
         }
         /// <summary>
         /// 2個目のエンジン情報表示部分を隠す
         /// </summary>
         private void HidePlayer2EngineView() {
-            engineViewControl2.Hide();
+            GetEngineViewControl(1).Hide();
             splitContainer3.Panel2Collapsed = true;
         }
         /// <summary>
@@ -1756,6 +1748,15 @@ namespace ShogiBoard {
                 Text = appName + text;
                 logger.DebugFormat("Text = {0}", text);
             }
+        }
+
+        /// <summary>
+        /// ponderの開始
+        /// </summary>
+        private void StartPonder(USIPlayer usiPlayer, Board board) {
+            if (usiPlayer == null) return;
+            if (usiPlayer.Options["USI_Ponder"] != "true") return;
+            usiPlayer.StartPonder(board, timeData[0], timeData[1]);
         }
 
         /// <summary>
