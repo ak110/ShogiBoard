@@ -197,8 +197,8 @@ namespace ShogiBoard {
             if (long.TryParse(infoHashFull, out hashFull)) {
                 infoHashFull = (hashFull / 10.0).ToString("0.0").PadLeft(5) + "%";
             }
-            if (lowerBound) infoScore += "↓";
-            if (upperBound) infoScore += "↑";
+            if (lowerBound) infoScore += "↑";
+            if (upperBound) infoScore += "↓";
 
             string toolTipText = pvLengthString;
             if (!string.IsNullOrEmpty(infoDepth)) {
