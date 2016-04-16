@@ -397,8 +397,8 @@ namespace ShogiBoard {
             Notation notation = new NotationLoader().Load(notationString).FirstOrDefault();
             if (notation == null) return;
 
-            timeData[0].Set(notation.TimeA, notation.TimeB, 0);
-            timeData[1].Set(notation.TimeA, notation.TimeB, 0);
+            timeData[0].Set(notation.TimeA, notation.TimeB, notation.TimeInc);
+            timeData[1].Set(notation.TimeA, notation.TimeB, notation.TimeInc);
             playerInfoControlP.PlayerName = notation.FirstPlayerName;
             playerInfoControlN.PlayerName = notation.SecondPlayerName;
             playerInfoControlP.Reset(timeData[0]);
@@ -680,7 +680,9 @@ namespace ShogiBoard {
 
             // GameIDはfloodgate風にでっち上げ。
             // wdoor+negabona-0-32+negabook@g14+gps_bonanza@g14+20130705233351
-            string gameID = "ShogiBoard-" + gameTime.TimeASeconds + "-" + gameTime.TimeBSeconds + "+" + Players[0 ^ turnFlip].Name + "+" + Players[1 ^ turnFlip].Name + "+" + DateTime.Now.ToString("yyyyMMddHHmmssfff");
+            var timeA = gameTime.TimeASeconds;
+            var timeB = gameTime.IncTimeSeconds != 0 ? gameTime.IncTimeSeconds + "F" : gameTime.TimeBSeconds.ToString();
+            var gameID = "ShogiBoard-" + timeA + "-" + timeB + "+" + Players[0 ^ turnFlip].Name + "+" + Players[1 ^ turnFlip].Name + "+" + DateTime.Now.ToString("yyyyMMddHHmmssfff");
             csaFileWriter.Create(
                 Players[0 ^ turnFlip].Name,
                 Players[1 ^ turnFlip].Name,
