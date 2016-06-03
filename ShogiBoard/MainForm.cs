@@ -669,7 +669,7 @@ namespace ShogiBoard {
             // 対局開始時の情報表示
             FormUtility.SafeInvoke(this, () => {
                 // 情報表示
-                UpdateGameResult(engines, turnFlip);
+                UpdateGameResult(engines);
                 // 対局者名などの表示更新
                 playerInfoControlP.PlayerName = engines[turnFlip ^ 0].Name;
                 playerInfoControlN.PlayerName = engines[turnFlip ^ 1].Name;
@@ -706,7 +706,7 @@ namespace ShogiBoard {
                     break;
                 }
 
-                int playerIndex = (board.MoveCount & 1) ^ turnFlip;
+                int playerIndex = board.Turn ^ turnFlip;
                 var player = Players[playerIndex];
                 var usiPlayer = player as USIPlayer;
                 if (usiPlayer != null) {
@@ -838,14 +838,14 @@ namespace ShogiBoard {
                 } else {
                     gameResultCountsPerReason[gameEndReason] = 1;
                 }
-                UpdateGameResult(engines, turnFlip, gameEndReason);
+                UpdateGameResult(engines, gameEndReason);
             }
         }
 
         /// <summary>
         /// 勝ち負けの情報表示部分を更新
         /// </summary>
-        private void UpdateGameResult(Engine[] engines, int turnFlip, GameEndReason gameEndReason = GameEndReason.Unknown) {
+        private void UpdateGameResult(Engine[] engines, GameEndReason gameEndReason = GameEndReason.Unknown) {
             StringBuilder str = new StringBuilder();
             str.AppendFormat("{0}-{1}-{2}/{3}",
                 gameResultCounts[0], gameResultCounts[1], gameResultCounts[2],
